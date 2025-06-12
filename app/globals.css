@@ -120,3 +120,8 @@
     @apply bg-background text-foreground;
   }
 }
+
+.bg-dotted-pattern {
+  background-image: radial-gradient(circle at 1px 1px, rgb(from var(--foreground) r g b / 0.2) 1px, transparent 0);
+  background-size: 15px 15px;
+}
