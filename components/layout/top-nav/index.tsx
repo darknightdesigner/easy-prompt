@@ -64,9 +64,9 @@ const Navbar2 = ({
     title: "OptiPrompt",
   },
   menu = [
-    { title: "Home", url: "#" },
-    { title: "Pricing", url: "#" },
-    { title: "Blog", url: "#" },
+    { title: "Prompts", url: "#" },
+    { title: "Creators", url: "#" },
+    { title: "Explore", url: "#" },
   ],
   auth = {
     login: { title: "Login", url: "#" },
@@ -75,25 +75,25 @@ const Navbar2 = ({
 }: Navbar2Props) => {
   return (
     <>
-      <div className="fixed inset-x-0 top-0 z-50 h-14">
+      <div className="fixed inset-x-0 top-0 z-50 h-13 flex justify-center">
       <section
-        className="bg-background/80 backdrop-blur supports-[backdrop-filter]:bg-background/60 py-2 border-b border-border h-full"
+        className="bg-background py-2 border-b border-border h-full w-full"
       style={{
         borderImage:
-          'linear-gradient(to right, transparent 0%, var(--border) 50%, transparent 100%) 1',
+          'linear-gradient(to right, transparent 10%, var(--border) 50%, transparent 90%) 1',
       }}
     >
-      <div className="mx-auto w-full max-w-screen-lg px-6 relative z-10">
+      <div className="mx-auto w-full max-w-screen-lg relative z-10" >
         {/* Desktop Menu */}
         <nav className="hidden w-full items-center justify-between lg:flex">
           {/* Logo */}
           <a href={logo.url} className="flex items-center gap-2">
-            <CopyIcon size={28} />
-            <span className="text-lg font-semibold tracking-tighter">
+            <CopyIcon size={24} />
+            <span className="text-base font-semibold tracking-tight">
               {logo.title}
             </span>
           </a>
-          <div className="flex flex-1 items-center justify-center gap-6">
+          <div className="flex flex-1 items-center justify-center">
             <div className="flex items-center">
               <NavigationMenuWithoutViewport>
                 <NavigationMenuList className="relative">
@@ -103,7 +103,7 @@ const Navbar2 = ({
             </div>
           </div>
           <div className="flex gap-2">
-            <Button asChild variant="outline" size="sm">
+            <Button asChild variant="ghost" size="sm">
               <a href={auth.login.url}>{auth.login.title}</a>
             </Button>
             <Button asChild size="sm">
@@ -142,7 +142,7 @@ const Navbar2 = ({
                   </Accordion>
 
                   <div className="flex flex-col gap-3">
-                    <Button asChild variant="outline">
+                    <Button asChild variant="ghost">
                       <a href={auth.login.url}>{auth.login.title}</a>
                     </Button>
                     <Button asChild>
@@ -159,7 +159,7 @@ const Navbar2 = ({
       </section>
     </div>
     {/* New fixed gradient shadow */}
-    <div className="pointer-events-none fixed inset-x-0 top-14 z-40 h-1 bg-gradient-to-r from-transparent via-border to-transparent blur-[20px]" />
+    <div className="pointer-events-none fixed inset-x-0 top-12 z-40 h-1 bg-[linear-gradient(to_right,transparent_15%,rgba(0,0,0,0.3)_50%,transparent_85%)] blur-[10px]" />
     </>
   );
 };
@@ -182,12 +182,9 @@ const renderMenuItem = (item: MenuItem) => {
 
   return (
     <NavigationMenuItem key={item.title}>
-      <NavigationMenuLink
-        href={item.url}
-        className="group inline-flex h-10 w-max items-center justify-center rounded-full bg-background px-4 py-2 text-sm font-medium opacity-70 hover:opacity-100 transition-colors hover:bg-muted hover:text-accent-foreground"
-      >
-        {item.title}
-      </NavigationMenuLink>
+      <Button variant="ghost" asChild className="h-8 rounded-full">
+        <a href={item.url}>{item.title}</a>
+      </Button>
     </NavigationMenuItem>
   );
 };
@@ -211,9 +208,15 @@ const renderMobileMenuItem = (item: MenuItem) => {
   }
 
   return (
-    <a key={item.title} href={item.url} className="text-md font-semibold">
-      {item.title}
-    </a>
+    <Button
+      variant="ghost"
+      asChild
+      className="w-full justify-start text-md font-semibold"
+    >
+      <a key={item.title} href={item.url}>
+        {item.title}
+      </a>
+    </Button>
   );
 };
 
