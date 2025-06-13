@@ -74,9 +74,10 @@ const Navbar2 = ({
   },
 }: Navbar2Props) => {
   return (
-    <div className="fixed inset-x-0 top-0 z-50">
+    <>
+      <div className="fixed inset-x-0 top-0 z-50 h-14">
       <section
-        className="bg-background/80 backdrop-blur supports-[backdrop-filter]:bg-background/60 py-2 border-b border-border relative"
+        className="bg-background/80 backdrop-blur supports-[backdrop-filter]:bg-background/60 py-2 border-b border-border h-full"
       style={{
         borderImage:
           'linear-gradient(to right, transparent 0%, var(--border) 50%, transparent 100%) 1',
@@ -155,10 +156,11 @@ const Navbar2 = ({
         </div>
       </div>
 
-      {/* gradient shadow */}
-      <div className="pointer-events-none absolute inset-x-0 top-full -z-10 h-4 bg-gradient-to-r from-transparent via-black/10 to-transparent dark:via-white/10 blur-[10px]" />
       </section>
     </div>
+    {/* New fixed gradient shadow */}
+    <div className="pointer-events-none fixed inset-x-0 top-14 z-40 h-1 bg-gradient-to-r from-transparent via-border to-transparent blur-[20px]" />
+    </>
   );
 };
 
