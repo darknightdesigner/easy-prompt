@@ -1,7 +1,7 @@
 "use client";
 import * as NavigationMenuPrimitive from "@radix-ui/react-navigation-menu";
 import { Book, Menu, Sunset, Trees, Zap } from "lucide-react";
-import React from "react";
+import React, { useRef } from "react";
 
 import { cn } from "@/lib/utils";
 
@@ -12,7 +12,7 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion";
 import { Button } from "@/components/ui/button";
-import { CopyIcon } from "@/components/animated-icons/optiprompt";
+import { CopyIcon, type CopyIconHandle } from "@/components/animated-icons/optiprompt";
 import {
   NavigationMenuContent,
   NavigationMenuItem,
@@ -73,6 +73,7 @@ const Navbar2 = ({
     signup: { title: "Sign up", url: "#" },
   },
 }: Navbar2Props) => {
+  const copyIconRef = useRef<CopyIconHandle>(null);
   return (
     <>
       <div className="fixed inset-x-0 top-0 z-50 h-13 flex justify-center">
@@ -83,12 +84,17 @@ const Navbar2 = ({
           'linear-gradient(to right, transparent 10%, var(--border) 50%, transparent 90%) 1',
       }}
     >
-      <div className="mx-auto w-full max-w-screen-lg relative z-10" >
+      <div className="mx-auto w-full max-w-screen-lg relative z-10 px-6" >
         {/* Desktop Menu */}
-        <nav className="hidden w-full items-center justify-between lg:flex">
+        <nav className="hidden w-full items-center justify-between sm:flex">
           {/* Logo */}
-          <a href={logo.url} className="flex items-center gap-2">
-            <CopyIcon size={24} />
+          <a
+            href={logo.url}
+            className="flex items-center gap-2"
+            onMouseEnter={() => copyIconRef.current?.startAnimation()}
+            onMouseLeave={() => copyIconRef.current?.stopAnimation()}
+          >
+            <CopyIcon ref={copyIconRef} size={24} />
             <span className="text-base font-semibold tracking-tight">
               {logo.title}
             </span>
@@ -113,7 +119,7 @@ const Navbar2 = ({
         </nav>
 
         {/* Mobile Menu */}
-        <div className="block lg:hidden">
+        <div className="block sm:hidden">
           <div className="flex items-center justify-between">
             <a href={logo.url} className="flex items-center gap-2">
               <CopyIcon size={28} />
@@ -124,7 +130,7 @@ const Navbar2 = ({
                   <Menu className="size-4" />
                 </Button>
               </SheetTrigger>
-              <SheetContent className="overflow-y-auto">
+              <SheetContent side="bottom" className="overflow-y-auto rounded-t-lg">
                 <SheetHeader>
                   <SheetTitle>
                     <a href={logo.url} className="flex items-center gap-2">
@@ -159,7 +165,7 @@ const Navbar2 = ({
       </section>
     </div>
     {/* New fixed gradient shadow */}
-    <div className="pointer-events-none fixed inset-x-0 top-12 z-40 h-1 bg-[linear-gradient(to_right,transparent_15%,rgba(0,0,0,0.3)_50%,transparent_85%)] blur-[10px]" />
+    <div className="pointer-events-none fixed inset-x-0 top-12 z-40 h-1 bg-[linear-gradient(to_right,transparent_25%,rgba(0,0,0,0.25)_50%,transparent_75%)] blur-[6px]" />
     </>
   );
 };

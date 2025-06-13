@@ -20,9 +20,9 @@ export default function Home() {
               </div>
             </ContainerEffect>
             <div>
-              <h1 className="mb-3 text-2xl font-semibold tracking-tight text-pretty lg:text-5xl">
+              <h1 className="mb-3 text-3xl font-semibold tracking-tight text-pretty sm:text-4xl lg:text-5xl">
                 <TextEffect preset="fade-in-blur" delay={0.1} speedReveal={1} speedSegment={0.5}>
-                  World-Class Prompts, Made Simple
+                  World-class prompts, made simple
                 </TextEffect>
               </h1>
               <p className="mx-auto max-w-lg text-muted-foreground lg:text-lg">
