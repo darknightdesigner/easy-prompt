@@ -12,6 +12,7 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion";
 import { Button } from "@/components/ui/button";
+import { CopyIcon } from "@/components/animated-icons/optiprompt";
 import {
   NavigationMenuContent,
   NavigationMenuItem,
@@ -57,82 +58,15 @@ interface Navbar2Props {
 
 const Navbar2 = ({
   logo = {
-    url: "https://www.shadcnblocks.com",
-    src: "https://deifkwefumgah.cloudfront.net/shadcnblocks/block/logos/shadcnblockscom-icon.svg",
-    alt: "logo",
-    title: "Shadcnblocks.com",
+    url: "/",
+    src: "/optiprompt-logo.svg",
+    alt: "OptiPrompt logo",
+    title: "OptiPrompt",
   },
   menu = [
     { title: "Home", url: "#" },
-    {
-      title: "Products",
-      url: "#",
-      items: [
-        {
-          title: "Blog",
-          description: "The latest industry news, updates, and info",
-          icon: <Book className="size-5 shrink-0" />,
-          url: "#",
-        },
-        {
-          title: "Company",
-          description: "Our mission is to innovate and empower the world",
-          icon: <Trees className="size-5 shrink-0" />,
-          url: "#",
-        },
-        {
-          title: "Careers",
-          description: "Browse job listing and discover our workspace",
-          icon: <Sunset className="size-5 shrink-0" />,
-          url: "#",
-        },
-        {
-          title: "Support",
-          description:
-            "Get in touch with our support team or visit our community forums",
-          icon: <Zap className="size-5 shrink-0" />,
-          url: "#",
-        },
-      ],
-    },
-    {
-      title: "Resources",
-      url: "#",
-      items: [
-        {
-          title: "Help Center",
-          description: "Get all the answers you need right here",
-          icon: <Zap className="size-5 shrink-0" />,
-          url: "#",
-        },
-        {
-          title: "Contact Us",
-          description: "We are here to help you with any questions you have",
-          icon: <Sunset className="size-5 shrink-0" />,
-          url: "#",
-        },
-        {
-          title: "Status",
-          description: "Check the current status of our services and APIs",
-          icon: <Trees className="size-5 shrink-0" />,
-          url: "#",
-        },
-        {
-          title: "Terms of Service",
-          description: "Our terms and conditions for using our services",
-          icon: <Book className="size-5 shrink-0" />,
-          url: "#",
-        },
-      ],
-    },
-    {
-      title: "Pricing",
-      url: "#",
-    },
-    {
-      title: "Blog",
-      url: "#",
-    },
+    { title: "Pricing", url: "#" },
+    { title: "Blog", url: "#" },
   ],
   auth = {
     login: { title: "Login", url: "#" },
@@ -140,19 +74,20 @@ const Navbar2 = ({
   },
 }: Navbar2Props) => {
   return (
-    <section
-      className="fixed inset-x-0 top-0 z-50 bg-background/80 backdrop-blur supports-[backdrop-filter]:bg-background/60 py-2 border-b"
+    <div className="fixed inset-x-0 top-0 z-50">
+      <section
+        className="bg-background/80 backdrop-blur supports-[backdrop-filter]:bg-background/60 py-2 border-b border-border relative"
       style={{
         borderImage:
           'linear-gradient(to right, transparent 0%, var(--border) 50%, transparent 100%) 1',
       }}
     >
-      <div className="mx-auto w-full max-w-screen-lg px-6">
+      <div className="mx-auto w-full max-w-screen-lg px-6 relative z-10">
         {/* Desktop Menu */}
         <nav className="hidden w-full items-center justify-between lg:flex">
           {/* Logo */}
           <a href={logo.url} className="flex items-center gap-2">
-            <img src={logo.src} className="max-h-8" alt={logo.alt} />
+            <CopyIcon size={28} />
             <span className="text-lg font-semibold tracking-tighter">
               {logo.title}
             </span>
@@ -180,7 +115,7 @@ const Navbar2 = ({
         <div className="block lg:hidden">
           <div className="flex items-center justify-between">
             <a href={logo.url} className="flex items-center gap-2">
-              <img src={logo.src} className="max-h-8" alt={logo.alt} />
+              <CopyIcon size={28} />
             </a>
             <Sheet>
               <SheetTrigger asChild>
@@ -192,7 +127,7 @@ const Navbar2 = ({
                 <SheetHeader>
                   <SheetTitle>
                     <a href={logo.url} className="flex items-center gap-2">
-                      <img src={logo.src} className="max-h-8" alt={logo.alt} />
+                      <CopyIcon size={28} />
                     </a>
                   </SheetTitle>
                 </SheetHeader>
@@ -219,7 +154,11 @@ const Navbar2 = ({
           </div>
         </div>
       </div>
-    </section>
+
+      {/* gradient shadow */}
+      <div className="pointer-events-none absolute inset-x-0 top-full -z-10 h-4 bg-gradient-to-r from-transparent via-black/10 to-transparent dark:via-white/10 blur-[10px]" />
+      </section>
+    </div>
   );
 };
 
@@ -230,7 +169,7 @@ const renderMenuItem = (item: MenuItem) => {
         <NavigationMenuTrigger>{item.title}</NavigationMenuTrigger>
         <NavigationMenuContent className="origin-top-center relative top-11 w-full overflow-hidden rounded-md border shadow data-[motion=from-end]:slide-in-from-right-52 data-[motion=from-start]:slide-in-from-left-52 data-[motion=to-end]:slide-out-to-right-52 data-[motion=to-start]:slide-out-to-left-52 data-[motion^=from-]:animate-in data-[motion^=from-]:fade-in data-[motion^=to-]:animate-out data-[motion^=to-]:fade-out data-[state=closed]:animate-out data-[state=closed]:zoom-out-95 data-[state=open]:animate-in data-[state=open]:zoom-in-90 md:absolute md:left-1/2 md:w-80 md:-translate-x-1/2">
           {item.items.map((subItem) => (
-            <NavigationMenuLink asChild key={subItem.title} className="w-full">
+            <NavigationMenuLink asChild key={subItem.title} className="w-full opacity-70 hover:opacity-100">
               <SubMenuLink item={subItem} />
             </NavigationMenuLink>
           ))}
@@ -243,7 +182,7 @@ const renderMenuItem = (item: MenuItem) => {
     <NavigationMenuItem key={item.title}>
       <NavigationMenuLink
         href={item.url}
-        className="group inline-flex h-10 w-max items-center justify-center rounded-md bg-background px-4 py-2 text-sm font-medium transition-colors hover:bg-muted hover:text-accent-foreground"
+        className="group inline-flex h-10 w-max items-center justify-center rounded-full bg-background px-4 py-2 text-sm font-medium opacity-70 hover:opacity-100 transition-colors hover:bg-muted hover:text-accent-foreground"
       >
         {item.title}
       </NavigationMenuLink>
@@ -260,7 +199,9 @@ const renderMobileMenuItem = (item: MenuItem) => {
         </AccordionTrigger>
         <AccordionContent className="mt-2">
           {item.items.map((subItem) => (
-            <SubMenuLink key={subItem.title} item={subItem} />
+            <NavigationMenuLink asChild key={subItem.title} className="w-full opacity-70 hover:opacity-100">
+              <SubMenuLink item={subItem} />
+            </NavigationMenuLink>
           ))}
         </AccordionContent>
       </AccordionItem>
@@ -277,7 +218,7 @@ const renderMobileMenuItem = (item: MenuItem) => {
 const SubMenuLink = ({ item }: { item: MenuItem }) => {
   return (
     <a
-      className="flex flex-row gap-4 rounded-md p-3 leading-none no-underline transition-colors outline-none select-none hover:bg-muted hover:text-accent-foreground"
+      className="flex flex-row gap-4 rounded-md p-3 leading-none no-underline transition-colors outline-none select-none opacity-70 hover:opacity-100 hover:bg-muted hover:text-accent-foreground"
       href={item.url}
     >
       <div className="text-muted-foreground">{item.icon}</div>
