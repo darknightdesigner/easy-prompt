@@ -122,6 +122,6 @@
 }
 
 .bg-dotted-pattern {
-  background-image: radial-gradient(circle at 1px 1px, rgb(from var(--foreground) r g b / 0.2) 1px, transparent 0);
+  background-image: radial-gradient(circle at 1px 1px, rgb(from var(--foreground) r g b / 0.1) 1px, transparent 0);
   background-size: 12px 12px;
 }

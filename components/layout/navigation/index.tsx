@@ -1,6 +1,6 @@
 "use client";
 import * as NavigationMenuPrimitive from "@radix-ui/react-navigation-menu";
-import { Book, Menu, Sunset, Trees, Zap } from "lucide-react";
+import { BookOpen, List as MenuIcon, Users, Lightning } from "@phosphor-icons/react";
 import React, { useRef } from "react";
 import { motion } from "motion/react";
 import { usePathname } from "next/navigation";
@@ -66,9 +66,9 @@ const Navbar2 = ({
     title: "OptiPrompt",
   },
   menu = [
-    { title: "Prompts", url: "#" },
-    { title: "Creators", url: "#" },
-    { title: "Extension", url: "#" },
+    { title: "Prompts", url: "#", icon: <BookOpen size={18} className="size-4.5" /> },
+    { title: "Creators", url: "#", icon: <Users size={18} className="size-4.5" /> },
+    { title: "Extension", url: "#", icon: <Lightning size={18} className="size-4.5" /> },
   ],
   auth = {
     login: { title: "Login", url: "#" },
@@ -93,9 +93,9 @@ const Navbar2 = ({
           'linear-gradient(to right, transparent 10%, var(--border) 50%, transparent 90%) 1',
       }}
     >
-      <div className="mx-auto w-full max-w-screen-lg relative z-10 px-6" >
+      <div className="mx-auto w-full h-full max-w-screen-lg relative z-10 px-6" >
         {/* Desktop Menu */}
-        <nav className="hidden w-full items-center justify-between sm:flex">
+        <nav className="hidden w-full h-full items-center justify-between sm:flex">
           {/* Logo */}
           <a
             href={logo.url}
@@ -136,7 +136,7 @@ const Navbar2 = ({
             <Sheet>
               <SheetTrigger asChild>
                 <Button variant="outline" size="icon">
-                  <Menu className="size-4" />
+                  <MenuIcon size={16} />
                 </Button>
               </SheetTrigger>
               <SheetContent side="bottom" className="overflow-y-auto rounded-t-lg">
@@ -202,8 +202,11 @@ const renderMenuItem = (item: MenuItem) => {
 
   return (
     <NavigationMenuItem key={item.title}>
-      <Button variant="ghost" asChild className="h-8 rounded-full">
-        <a href={item.url}>{item.title}</a>
+      <Button variant="ghost" asChild className="h-8 rounded-full flex items-center gap-2">
+        <a href={item.url} className="flex items-center gap-2">
+          {item.icon && <span className="text-current">{item.icon}</span>}
+          <span>{item.title}</span>
+        </a>
       </Button>
     </NavigationMenuItem>
   );
@@ -233,8 +236,9 @@ const renderMobileMenuItem = (item: MenuItem) => {
       asChild
       className="w-full justify-start text-md font-semibold"
     >
-      <a key={item.title} href={item.url}>
-        {item.title}
+      <a key={item.title} href={item.url} className="flex items-center gap-2">
+        {item.icon && <span className="text-current">{item.icon}</span>}
+        <span>{item.title}</span>
       </a>
     </Button>
   );
@@ -246,7 +250,7 @@ const SubMenuLink = ({ item }: { item: MenuItem }) => {
       className="flex flex-row gap-4 rounded-md p-3 leading-none no-underline transition-colors outline-none select-none opacity-70 hover:opacity-100 hover:bg-muted hover:text-accent-foreground"
       href={item.url}
     >
-      <div className="text-muted-foreground">{item.icon}</div>
+      <div className="text-current">{item.icon}</div>
       <div>
         <div className="text-sm font-semibold">{item.title}</div>
         {item.description && (
