@@ -62,10 +62,10 @@ export function TextRoll({
             <motion.span
               className='absolute inline-block [backface-visibility:hidden] [transform-origin:50%_25%]'
               initial={
-                variants?.enter?.initial ?? defaultVariants.enter.initial
+                (variants?.enter?.initial ?? defaultVariants.enter.initial) as any
               }
               animate={
-                variants?.enter?.animate ?? defaultVariants.enter.animate
+                (variants?.enter?.animate ?? defaultVariants.enter.animate) as any
               }
               transition={{
                 ...transition,
@@ -77,8 +77,8 @@ export function TextRoll({
             </motion.span>
             <motion.span
               className='absolute inline-block [backface-visibility:hidden] [transform-origin:50%_100%]'
-              initial={variants?.exit?.initial ?? defaultVariants.exit.initial}
-              animate={variants?.exit?.animate ?? defaultVariants.exit.animate}
+              initial={(variants?.exit?.initial ?? defaultVariants.exit.initial) as any}
+              animate={(variants?.exit?.animate ?? defaultVariants.exit.animate) as any}
               transition={{
                 ...transition,
                 duration,
