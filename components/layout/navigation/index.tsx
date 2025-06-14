@@ -2,6 +2,8 @@
 import * as NavigationMenuPrimitive from "@radix-ui/react-navigation-menu";
 import { Book, Menu, Sunset, Trees, Zap } from "lucide-react";
 import React, { useRef } from "react";
+import { motion } from "motion/react";
+import { usePathname } from "next/navigation";
 
 import { cn } from "@/lib/utils";
 
@@ -66,7 +68,7 @@ const Navbar2 = ({
   menu = [
     { title: "Prompts", url: "#" },
     { title: "Creators", url: "#" },
-    { title: "Explore", url: "#" },
+    { title: "Extension", url: "#" },
   ],
   auth = {
     login: { title: "Login", url: "#" },
@@ -74,11 +76,18 @@ const Navbar2 = ({
   },
 }: Navbar2Props) => {
   const copyIconRef = useRef<CopyIconHandle>(null);
+  const pathname = usePathname();
+  const isHome = pathname === "/";
   return (
     <>
-      <div className="fixed inset-x-0 top-0 z-50 h-13 flex justify-center">
+      <motion.div
+        className="fixed inset-x-0 top-0 z-50 h-13 flex justify-center"
+        initial={isHome ? { y: -5, opacity: 0 } : false}
+        animate={isHome ? { y: 0, opacity: 1 } : false}
+        transition={{ type: "spring", stiffness: 60, damping: 16, delay: 0.75 }}
+      >
       <section
-        className="bg-background py-2 border-b border-border h-full w-full"
+        className="py-2 border-b border-border h-full w-full bg-[linear-gradient(to_right,transparent_0%,var(--background)_25%,var(--background)_75%,transparent_100%)]"
       style={{
         borderImage:
           'linear-gradient(to right, transparent 10%, var(--border) 50%, transparent 90%) 1',
@@ -163,9 +172,14 @@ const Navbar2 = ({
       </div>
 
       </section>
-    </div>
+    </motion.div>
     {/* New fixed gradient shadow */}
-    <div className="pointer-events-none fixed inset-x-0 top-12 z-40 h-1 bg-[linear-gradient(to_right,transparent_25%,rgba(0,0,0,0.25)_50%,transparent_75%)] blur-[6px]" />
+    <motion.div
+        className="pointer-events-none fixed inset-x-0 top-12 z-40 h-1 bg-[linear-gradient(to_right,transparent_25%,rgba(0,0,0,0.25)_50%,transparent_75%)] blur-[6px]"
+        initial={isHome ? { y: 0, opacity: 0 } : false}
+        animate={isHome ? { y: 0, opacity: 1 } : false}
+        transition={{ type: "spring", stiffness: 60, damping: 22, delay: 1.25 }}
+      />
     </>
   );
 };

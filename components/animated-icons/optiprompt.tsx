@@ -76,8 +76,8 @@ const CopyIcon = forwardRef<CopyIconHandle, CopyIconProps>(
           <motion.path
             d="M20.6235 6.49031L10.6661 5.56923C9.56618 5.46749 8.59208 6.27663 8.49034 7.37651L7.56926 17.334C7.46752 18.4339 8.27667 19.408 9.37655 19.5097L19.334 20.4308C20.4339 20.5325 21.408 19.7234 21.5097 18.6235L22.4308 8.66602C22.5326 7.56615 21.7234 6.59205 20.6235 6.49031Z"
             variants={{
-              normal: { translateY: 0, translateX: 0 },
-              animate: { translateY: 1, translateX: 1 },
+              normal: { y: 0, x: 0 },
+              animate: { y: 1, x: 1 },
             }}
             animate={controls}
             transition={defaultTransition}
@@ -94,8 +94,8 @@ const CopyIcon = forwardRef<CopyIconHandle, CopyIconProps>(
           <motion.path
             d="M11.8285 14.7152C11.8285 14.7152 12.7321 15.8031 14.7236 15.9873C16.7151 16.1715 17.803 15.2679 17.803 15.2679"
             variants={{
-              normal: { translateY: 0, translateX: 0 },
-              animate: { translateY: 1, translateX: 1 },
+              normal: { y: 0, x: 0 },
+              animate: { y: 1, x: 1 },
             }}
             transition={defaultTransition}
             animate={controls}
