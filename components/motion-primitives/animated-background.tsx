@@ -62,7 +62,7 @@ export function AnimatedBackground({
       child,
       {
         key: index,
-        className: cn('relative inline-flex', child.props.className),
+        className: cn('relative inline-flex', (child as ReactElement<any>).props.className),
         'data-checked': activeId === id ? 'true' : 'false',
         ...interactionProps,
       },
