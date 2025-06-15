@@ -12,8 +12,8 @@ const tileVariants = cva(
   {
     variants: {
       variant: {
-        solid: "bg-background hover:border-foreground",
-        outline: "border-dashed bg-background/50 hover:border-foreground",
+        solid: "bg-card hover:border-foreground",
+        outline: "border-dashed bg-card/50 hover:border-foreground",
       },
       align: {
         start: "items-start text-left",
@@ -131,7 +131,7 @@ const TileTitle = ({
   className,
   ...props
 }: React.HTMLAttributes<HTMLHeadingElement>) => (
-  <h3 className={cn("text-lg font-semibold opacity-70 group-hover:opacity-100", className)} {...props} />
+  <h3 className={cn("text-lg font-semibold opacity-100 sm:opacity-70 sm:group-hover:opacity-100", className)} {...props} />
 );
 TileTitle.displayName = "Tile.Title";
 
@@ -139,7 +139,7 @@ const TileDescription = ({
   className,
   ...props
 }: React.HTMLAttributes<HTMLParagraphElement>) => (
-  <p className={cn("text-sm text-muted-foreground opacity-70 group-hover:opacity-100", className)} {...props} />
+  <p className={cn("text-sm text-muted-foreground opacity-100 sm:opacity-70 sm:group-hover:opacity-100", className)} {...props} />
 );
 TileDescription.displayName = "Tile.Description";
 
