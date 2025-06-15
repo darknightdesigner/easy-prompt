@@ -1,6 +1,6 @@
 "use client";
 import * as NavigationMenuPrimitive from "@radix-ui/react-navigation-menu";
-import { BookOpen, List as MenuIcon, Users, Lightning } from "@phosphor-icons/react";
+import { BookOpen, List as MenuIcon, Users, User, BookmarkSimple, HouseSimple, SignIn as SignInIcon } from "@phosphor-icons/react";
 import React, { useRef } from "react";
 import { motion } from "motion/react";
 import { usePathname } from "next/navigation";
@@ -35,6 +35,8 @@ interface MenuItem {
   url: string;
   description?: string;
   icon?: React.ReactNode;
+  mobileOnly?: boolean;
+  desktopOnly?: boolean;
   items?: MenuItem[];
 }
 
@@ -66,9 +68,11 @@ const Navbar2 = ({
     title: "OptiPrompt",
   },
   menu = [
-    { title: "Prompts", url: "#", icon: <BookOpen size={18} className="size-4.5" /> },
+    { title: "Home", url: "", icon: <HouseSimple size={18} className="size-4.5" />, mobileOnly: true },
+    { title: "Prompts", url: "#", icon: <BookOpen size={18} className="size-4.5" />, desktopOnly: true },
     { title: "Creators", url: "#", icon: <Users size={18} className="size-4.5" /> },
-    { title: "Extension", url: "#", icon: <Lightning size={18} className="size-4.5" /> },
+    { title: "Saved", url: "#", icon: <BookmarkSimple size={18} className="size-4.5" /> },
+    { title: "Profile", url: "#", icon: <User size={18} className="size-4.5" />, mobileOnly: true },
   ],
   auth = {
     login: { title: "Login", url: "#" },
@@ -85,22 +89,22 @@ const Navbar2 = ({
   return (
     <>
       <motion.div
-        className="fixed inset-x-0 bottom-0 sm:top-0 sm:bottom-auto z-50 h-13 flex justify-center"
+        className="fixed inset-x-0 bottom-0 sm:top-0 sm:bottom-auto z-50 h-[54px] sm:h-13 flex justify-center"
         initial={isHome ? { y: -5, opacity: 0 } : false}
         animate={isHome ? { y: 0, opacity: 1 } : false}
         transition={{ type: "spring", stiffness: 60, damping: 16, delay: 0.75 }}
       >
       <section
-        className="navbar-border py-2 border-t border-border sm:border-t-0 sm:border-b h-full w-full bg-background sm:bg-[linear-gradient(to_right,transparent_0%,var(--background)_25%,var(--background)_75%,transparent_100%)]"
+        className="navbar-border py-0 sm:py-2 border-t border-border sm:border-t-0 sm:border-b h-full w-full bg-background sm:bg-[linear-gradient(to_right,transparent_0%,var(--background)_25%,var(--background)_75%,transparent_100%)]"
         
       >
-      <div className="mx-auto w-full h-full max-w-screen-lg relative z-10 px-6" >
+      <div className="mx-auto w-full h-full max-w-none sm:max-w-screen-lg relative z-10 px-0 sm:px-6" >
         {/* Desktop Menu */}
-        <nav className="hidden w-full h-full items-center justify-between sm:flex">
+        <nav className="flex w-full h-full items-center justify-between">
           {/* Logo */}
           <a
             href={logo.url}
-            className="flex items-center gap-2"
+            className="hidden sm:flex items-center gap-2"
             onMouseEnter={() => copyIconRef.current?.startAnimation()}
             onMouseLeave={() => copyIconRef.current?.stopAnimation()}
           >
@@ -109,75 +113,36 @@ const Navbar2 = ({
               {logo.title}
             </span>
           </a>
-          <div className="flex flex-1 items-center justify-center">
-            <div className="flex items-center">
-              <NavigationMenuWithoutViewport>
-                <NavigationMenuList className="relative">
+          <div className="flex w-full sm:flex-1 items-center justify-center">
+            <div className="flex w-full sm:w-auto items-center">
+              <NavigationMenuWithoutViewport className="flex-1 basis-0 grow min-w-0 sm:flex-none sm:grow-0 w-full sm:w-auto max-w-none">
+                <NavigationMenuList className="relative w-full sm:w-auto gap-0 sm:gap-1">
                   {menu.map((item) => renderMenuItem(item))}
                 </NavigationMenuList>
               </NavigationMenuWithoutViewport>
             </div>
           </div>
-          <div className="flex gap-2">
-            <Button asChild variant="ghost" size="sm">
-              <a href={auth.login.url}>{auth.login.title}</a>
+          <div className="hidden sm:flex gap-2">
+            <Button asChild variant="ghost" className="h-auto rounded-full flex flex-col items-center gap-1 sm:h-8 sm:flex-row sm:gap-2">
+              <a href={auth.login.url} className="flex items-center gap-1"><SignInIcon size={16} className="sm:hidden" />{auth.login.title}</a>
             </Button>
-            <Button asChild size="sm">
+            <Button asChild size="sm" className="hidden sm:inline-flex">
               <a href={auth.signup.url}>{auth.signup.title}</a>
             </Button>
           </div>
         </nav>
-
-        {/* Mobile Menu */}
-        <div className="block sm:hidden">
-          <div className="flex items-center justify-between">
-            <a href={logo.url} className="flex items-center gap-2">
-              <CopyIcon size={28} />
-            </a>
-            <Sheet>
-              <SheetTrigger asChild>
-                <Button variant="outline" size="icon">
-                  <MenuIcon size={16} />
-                </Button>
-              </SheetTrigger>
-              <SheetContent side="bottom" className="overflow-y-auto rounded-t-lg">
-                <SheetHeader>
-                  <SheetTitle>
-                    <a href={logo.url} className="flex items-center gap-2">
-                      <CopyIcon size={28} />
-                    </a>
-                  </SheetTitle>
-                </SheetHeader>
-                <div className="flex flex-col gap-6 p-4">
-                  <Accordion
-                    type="single"
-                    collapsible
-                    className="flex w-full flex-col gap-4"
-                  >
-                    {menu.map((item) => renderMobileMenuItem(item))}
-                  </Accordion>
-
-                  <div className="flex flex-col gap-3">
-                    <Button asChild variant="ghost">
-                      <a href={auth.login.url}>{auth.login.title}</a>
-                    </Button>
-                    <Button asChild>
-                      <a href={auth.signup.url}>{auth.signup.title}</a>
-                    </Button>
-                  </div>
-                </div>
-              </SheetContent>
-            </Sheet>
-          </div>
-        </div>
       </div>
-
       </section>
     </motion.div>
             {/* border style: solid on mobile, gradient on sm+ */}
       <style jsx>{`
         .navbar-border {
           border-image: none;
+        }
+        @media (max-width: 639px) {
+          :global([data-slot="navigation-menu"] > div) {
+            width: 100%;
+          }
         }
         @media (min-width: 640px) {
           .navbar-border {
@@ -199,11 +164,11 @@ const Navbar2 = ({
 const renderMenuItem = (item: MenuItem) => {
   if (item.items) {
     return (
-      <NavigationMenuItem key={item.title}>
+      <NavigationMenuItem key={item.title} className={`flex-1 basis-0 grow min-w-0 sm:flex-none sm:grow-0 w-full sm:w-auto ${item.desktopOnly ? 'hidden sm:flex' : ''}`}>
         <NavigationMenuTrigger>{item.title}</NavigationMenuTrigger>
         <NavigationMenuContent className="origin-top-center relative top-11 w-full overflow-hidden rounded-md border shadow data-[motion=from-end]:slide-in-from-right-52 data-[motion=from-start]:slide-in-from-left-52 data-[motion=to-end]:slide-out-to-right-52 data-[motion=to-start]:slide-out-to-left-52 data-[motion^=from-]:animate-in data-[motion^=from-]:fade-in data-[motion^=to-]:animate-out data-[motion^=to-]:fade-out data-[state=closed]:animate-out data-[state=closed]:zoom-out-95 data-[state=open]:animate-in data-[state=open]:zoom-in-90 md:absolute md:left-1/2 md:w-80 md:-translate-x-1/2">
           {item.items.map((subItem) => (
-            <NavigationMenuLink asChild key={subItem.title} className="w-full opacity-70 hover:opacity-100">
+            <NavigationMenuLink asChild key={subItem.url ?? subItem.title} className="w-full opacity-70 hover:opacity-100">
               <SubMenuLink item={subItem} />
             </NavigationMenuLink>
           ))}
@@ -213,9 +178,9 @@ const renderMenuItem = (item: MenuItem) => {
   }
 
   return (
-    <NavigationMenuItem key={item.title}>
-      <Button variant="ghost" asChild className="h-8 rounded-full flex items-center gap-2">
-        <a href={item.url} className="flex items-center gap-2">
+    <NavigationMenuItem key={item.title} className={`flex-1 basis-0 grow min-w-0 sm:flex-none sm:grow-0 w-full sm:w-auto ${item.desktopOnly ? 'hidden sm:flex' : ''}`}>
+      <Button variant="ghost" asChild className={`w-full sm:w-auto min-w-0 h-auto rounded-full flex flex-col items-center gap-1 sm:h-8 sm:flex-row sm:gap-2 ${item.mobileOnly ? 'sm:hidden' : ''}`}>
+        <a href={item.url} className="flex-1 flex w-full sm:w-auto flex-col items-center gap-1 sm:flex-row sm:gap-2 px-0 sm:px-3">
           {item.icon && <span className="text-current">{item.icon}</span>}
           <span>{item.title}</span>
         </a>
@@ -233,7 +198,7 @@ const renderMobileMenuItem = (item: MenuItem) => {
         </AccordionTrigger>
         <AccordionContent className="mt-2">
           {item.items.map((subItem) => (
-            <NavigationMenuLink asChild key={subItem.title} className="w-full opacity-70 hover:opacity-100">
+            <NavigationMenuLink asChild key={subItem.url ?? subItem.title} className="w-full opacity-70 hover:opacity-100">
               <SubMenuLink item={subItem} />
             </NavigationMenuLink>
           ))}
@@ -248,7 +213,7 @@ const renderMobileMenuItem = (item: MenuItem) => {
       asChild
       className="w-full justify-start text-md font-semibold"
     >
-      <a key={item.title} href={item.url} className="flex items-center gap-2">
+      <a key={item.title} href={item.url} className="hidden sm:flex items-center gap-2">
         {item.icon && <span className="text-current">{item.icon}</span>}
         <span>{item.title}</span>
       </a>
