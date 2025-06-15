@@ -1,6 +1,6 @@
 "use client";
-import { TwitterLogo, LinkedinLogo, GithubLogo, DiscordLogo, ArrowUpRight } from "@phosphor-icons/react";
-import { Tile, TileHeader, TileIcon, TileTitle, TileDescription } from "@/components/ui/tile";
+import { TwitterLogo, Code, GithubLogo, DiscordLogo, ArrowUpRight } from "@phosphor-icons/react";
+import { Tile, TileHeader, TileIcon, TileIconSecondary, TileTitle, TileDescription } from "@/components/ui/tile";
 import { cn } from "@/lib/utils";
 import { Button, buttonVariants } from "@/components/ui/button";
 import { TextEffect } from '@/components/motion-primitives/text-effect';
@@ -14,7 +14,7 @@ export default function Home() {
       <div className="absolute inset-x-0 top-0 flex h-full w-full items-center justify-center bg-dotted-pattern opacity-100 [mask-image:linear-gradient(to_bottom,transparent_25%,white_100%)]">
       </div>
       <div className="relative z-10 w-full">
-        <div className="mx-auto flex max-w-md flex-col items-center">
+        <div className="mx-auto flex max-w-md flex-col items-center px-4">
           <div className="flex flex-col items-center gap-3 text-center">
             <ContainerEffect preset="fade-in-blur" delay={0} transition={{ duration: 0.6 }}>
               <div>
@@ -22,12 +22,12 @@ export default function Home() {
               </div>
             </ContainerEffect>
             <div>
-              <h1 className="mb-3 text-3xl font-semibold tracking-tight text-pretty sm:text-4xl lg:text-5xl">
+              <h1 className="mb-3 text-4xl font-semibold tracking-tight text-pretty max-w-xs sm:max-w-full sm:text-5xl">
                 <TextEffect preset="fade-in-blur" delay={0.1} speedReveal={1} speedSegment={0.5}>
                   Powerful prompts, made simple
                 </TextEffect>
               </h1>
-              <p className="mx-auto max-w-lg text-muted-foreground lg:text-lg">
+              <p className="mx-auto max-w-lg text-muted-foreground md:text-lg">
                 <TextEffect as="span" preset="fade-in-blur" delay={0.5} speedReveal={4} speedSegment={1}>
                   Discover powerful prompts, and copy them simply.
                 </TextEffect>
@@ -37,21 +37,21 @@ export default function Home() {
         </div>
       </div>
       <div className="relative z-10 w-full">
-        <div className="mx-auto flex flex-col items-center">
-        <div className="w-full grid max-w-[32rem] sm:max-w-[40rem] lg:max-w-[48rem] grid-cols-1 sm:grid-cols-2 gap-2">
+        <div className="mx-auto flex flex-col items-center sm:max-w-[48rem] px-2">
+        <div className="w-full grid grid-cols-1 sm:grid-cols-2 gap-2">
             <Tile asChild>
               <a href="#">
                 <TileHeader>
                   <TileIcon>
-                    <TwitterLogo className="size-5" />
+                    <TwitterLogo  />
                   </TileIcon>
-                  <TileIcon>
-                    <ArrowUpRight className="size-4 -translate-x-2 translate-y-2 opacity-0 transition-all group-hover:translate-x-0 group-hover:translate-y-0 group-hover:opacity-100" />
-                  </TileIcon>
+                  <TileIconSecondary>
+                    <ArrowUpRight className="opacity-0 transition-all group-hover:opacity-100" />
+                  </TileIconSecondary>
                 </TileHeader>
                 <div>
-                  <TileTitle>Twitter</TileTitle>
-                  <TileDescription>Follow our latest updates and announcements.</TileDescription>
+                  <TileTitle>YouTube Growth</TileTitle>
+                  <TileDescription>590+ prompts</TileDescription>
                 </div>
               </a>
             </Tile>
@@ -59,15 +59,15 @@ export default function Home() {
               <a href="#">
                 <TileHeader>
                   <TileIcon>
-                    <LinkedinLogo className="size-5" />
+                    <Code  />
                   </TileIcon>
-                  <TileIcon>
-                    <ArrowUpRight className="size-4 -translate-x-2 translate-y-2 opacity-0 transition-all group-hover:translate-x-0 group-hover:translate-y-0 group-hover:opacity-100" />
-                  </TileIcon>
+                  <TileIconSecondary>
+                    <ArrowUpRight className="opacity-0 transition-all group-hover:opacity-100" />
+                  </TileIconSecondary>
                 </TileHeader>
                 <div>
-                  <TileTitle>LinkedIn</TileTitle>
-                  <TileDescription>Connect with us and explore career opportunities.</TileDescription>
+                  <TileTitle>Vibe Coding</TileTitle>
+                  <TileDescription>1K+ prompts</TileDescription>
                 </div>
               </a>
             </Tile>
@@ -75,11 +75,11 @@ export default function Home() {
               <a href="#">
                 <TileHeader>
                   <TileIcon>
-                    <GithubLogo className="size-5" />
+                    <GithubLogo  />
                   </TileIcon>
-                  <TileIcon>
-                    <ArrowUpRight className="size-4 -translate-x-2 translate-y-2 opacity-0 transition-all group-hover:translate-x-0 group-hover:translate-y-0 group-hover:opacity-100" />
-                  </TileIcon>
+                  <TileIconSecondary>
+                    <ArrowUpRight className="opacity-0 transition-all group-hover:opacity-100" />
+                  </TileIconSecondary>
                 </TileHeader>
                 <div>
                   <TileTitle>GitHub</TileTitle>
@@ -91,15 +91,15 @@ export default function Home() {
               <a href="#">
                 <TileHeader>
                   <TileIcon>
-                    <DiscordLogo className="size-5" />
+                    <DiscordLogo  />
                   </TileIcon>
-                  <TileIcon>
-                    <ArrowUpRight className="size-4 -translate-x-2 translate-y-2 opacity-0 transition-all group-hover:translate-x-0 group-hover:translate-y-0 group-hover:opacity-100" />
-                  </TileIcon>
+                  <TileIconSecondary>
+                    <ArrowUpRight className="opacity-0 transition-all group-hover:opacity-100" />
+                  </TileIconSecondary>
                 </TileHeader>
                 <div>
                   <TileTitle>Discord</TileTitle>
-                  <TileDescription>Join our Discord and connect with other developers.</TileDescription>
+                  <TileDescription>Join our Discord...</TileDescription>
                 </div>
               </a>
             </Tile>

@@ -78,21 +78,22 @@ const Navbar2 = ({
   const copyIconRef = useRef<CopyIconHandle>(null);
   const pathname = usePathname();
   const isHome = pathname === "/";
+  // Use gradient border only on ≥sm
+  const borderImage = typeof window !== 'undefined' && window.innerWidth >= 640
+    ? 'linear-gradient(to right, transparent 10%, var(--border) 50%, transparent 90%) 1'
+    : undefined;
   return (
     <>
       <motion.div
-        className="fixed inset-x-0 top-0 z-50 h-13 flex justify-center"
+        className="fixed inset-x-0 bottom-0 sm:top-0 sm:bottom-auto z-50 h-13 flex justify-center"
         initial={isHome ? { y: -5, opacity: 0 } : false}
         animate={isHome ? { y: 0, opacity: 1 } : false}
         transition={{ type: "spring", stiffness: 60, damping: 16, delay: 0.75 }}
       >
       <section
-        className="py-2 border-b border-border h-full w-full bg-[linear-gradient(to_right,transparent_0%,var(--background)_25%,var(--background)_75%,transparent_100%)]"
-      style={{
-        borderImage:
-          'linear-gradient(to right, transparent 10%, var(--border) 50%, transparent 90%) 1',
-      }}
-    >
+        className="navbar-border py-2 border-t border-border sm:border-t-0 sm:border-b h-full w-full bg-background sm:bg-[linear-gradient(to_right,transparent_0%,var(--background)_25%,var(--background)_75%,transparent_100%)]"
+        
+      >
       <div className="mx-auto w-full h-full max-w-screen-lg relative z-10 px-6" >
         {/* Desktop Menu */}
         <nav className="hidden w-full h-full items-center justify-between sm:flex">
@@ -173,9 +174,20 @@ const Navbar2 = ({
 
       </section>
     </motion.div>
+            {/* border style: solid on mobile, gradient on sm+ */}
+      <style jsx>{`
+        .navbar-border {
+          border-image: none;
+        }
+        @media (min-width: 640px) {
+          .navbar-border {
+            border-image: linear-gradient(to right, transparent 10%, var(--border) 50%, transparent 90%) 1;
+          }
+        }
+      `}</style>
     {/* New fixed gradient shadow */}
     <motion.div
-        className="pointer-events-none fixed inset-x-0 top-12 z-40 h-1 bg-[linear-gradient(to_right,transparent_25%,rgba(0,0,0,0.25)_50%,transparent_75%)] blur-[6px]"
+        className="pointer-events-none fixed inset-x-0 bottom-12 sm:top-12 sm:bottom-auto z-40 h-1 bg-[linear-gradient(to_right,transparent_25%,rgba(0,0,0,0.25)_50%,transparent_75%)] blur-[6px]"
         initial={isHome ? { y: 0, opacity: 0 } : false}
         animate={isHome ? { y: 0, opacity: 1 } : false}
         transition={{ type: "spring", stiffness: 60, damping: 22, delay: 1.25 }}

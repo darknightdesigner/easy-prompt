@@ -8,7 +8,7 @@ import { cn } from "@/lib/utils";
 /* -------------------------------------------------------------------------- */
 
 const tileVariants = cva(
-  "group relative flex flex-col rounded-xl border p-6 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring w-full",
+  "group relative flex flex-col gap-4 rounded-3xl border p-6 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring w-full",
   {
     variants: {
       variant: {
@@ -69,25 +69,67 @@ const TileHeader = ({
 );
 TileHeader.displayName = "Tile.Header";
 
-const TileIcon = ({
-  className,
-  ...props
-}: React.HTMLAttributes<HTMLSpanElement>) => (
-  <span
-    className={cn(
-      "flex h-5 w-5 items-center justify-center text-foreground/80 group-hover:text-foreground",
-      className
-    )}
-    {...props}
-  />
+const TileIcon = React.forwardRef<HTMLSpanElement, React.HTMLAttributes<HTMLSpanElement>>( (
+  { className, children, ...props }, ref ) => {
+    const enhancedChildren = React.Children.map(children, (child) => {
+      if (React.isValidElement(child)) {
+        // Apply default weight="regular" if none is specified
+        return React.cloneElement(child as React.ReactElement<any>, {
+          weight: (child as any).props?.weight ?? "regular",
+        });
+      }
+      return child;
+    });
+
+    return (
+      <span
+        ref={ref}
+        className={cn(
+          "flex h-9 w-9 items-center justify-center text-foreground/80 opacity-70 group-hover:text-foreground group-hover:opacity-100",
+          className
+        )}
+        {...props}
+      >
+        {enhancedChildren}
+      </span>
+    );
+  }
 );
 TileIcon.displayName = "Tile.Icon";
+
+/* Secondary icon (e.g., arrow) */
+const TileIconSecondary = React.forwardRef<HTMLSpanElement, React.HTMLAttributes<HTMLSpanElement>>( (
+  { className, children, ...props }, ref ) => {
+    const enhancedChildren = React.Children.map(children, (child) => {
+      if (React.isValidElement(child)) {
+        return React.cloneElement(child as React.ReactElement<any>, {
+          weight: (child as any).props?.weight ?? "regular",
+        });
+      }
+      return child;
+    });
+
+    return (
+      <span
+        ref={ref}
+        className={cn(
+          "absolute right-4 top-4 flex h-5 w-5 items-center justify-center text-foreground/80 opacity-0 transition-opacity group-hover:opacity-100",
+          className
+        )}
+        {...props}
+      >
+        {enhancedChildren}
+      </span>
+    );
+  }
+);
+TileIconSecondary.displayName = "Tile.IconSecondary";
 
 const TileTitle = ({
   className,
   ...props
 }: React.HTMLAttributes<HTMLHeadingElement>) => (
-  <h3 className={cn("font-semibold", className)} {...props} />
+  <h3 className={cn("text-lg font-semibold opacity-70 group-hover:opacity-100", className)} {...props} />
 );
 TileTitle.displayName = "Tile.Title";
 
@@ -95,7 +137,7 @@ const TileDescription = ({
   className,
   ...props
 }: React.HTMLAttributes<HTMLParagraphElement>) => (
-  <p className={cn("text-sm text-muted-foreground", className)} {...props} />
+  <p className={cn("text-sm text-muted-foreground opacity-70 group-hover:opacity-100", className)} {...props} />
 );
 TileDescription.displayName = "Tile.Description";
 
@@ -103,4 +145,4 @@ TileDescription.displayName = "Tile.Description";
 /*                                   Export                                   */
 /* -------------------------------------------------------------------------- */
 
-export { Tile, TileHeader, TileIcon, TileTitle, TileDescription };
+export { Tile, TileHeader, TileIcon, TileIconSecondary, TileTitle, TileDescription };
