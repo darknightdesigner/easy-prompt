@@ -76,6 +76,8 @@ const TileIcon = React.forwardRef<HTMLSpanElement, React.HTMLAttributes<HTMLSpan
         // Apply default weight="regular" if none is specified
         return React.cloneElement(child as React.ReactElement<any>, {
           weight: (child as any).props?.weight ?? "regular",
+          size: (child as any).props?.size ?? 32,
+          className: cn((child as any).props?.className, "shrink-0"),
         });
       }
       return child;
