@@ -85,7 +85,7 @@ const TileIcon = React.forwardRef<HTMLSpanElement, React.HTMLAttributes<HTMLSpan
       <span
         ref={ref}
         className={cn(
-          "flex h-9 w-9 items-center justify-center text-foreground/80 opacity-70 group-hover:text-foreground group-hover:opacity-100",
+          "flex h-9 w-9 items-center justify-center text-foreground opacity-70 group-hover:text-foreground group-hover:opacity-100",
           className
         )}
         {...props}
@@ -113,7 +113,7 @@ const TileIconSecondary = React.forwardRef<HTMLSpanElement, React.HTMLAttributes
       <span
         ref={ref}
         className={cn(
-          "absolute right-4 top-4 flex h-5 w-5 items-center justify-center text-foreground/80 opacity-0 transition-opacity group-hover:opacity-100",
+          "absolute right-4 top-4 flex h-5 w-5 items-center justify-center text-foreground opacity-0 transition-opacity group-hover:opacity-100",
           className
         )}
         {...props}
