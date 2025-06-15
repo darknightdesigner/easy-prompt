@@ -14,7 +14,7 @@ export default function Home() {
       <div className="absolute inset-x-0 top-0 flex h-full w-full items-center justify-center bg-dotted-pattern opacity-100 [mask-image:linear-gradient(to_bottom,transparent_25%,white_100%)]">
       </div>
       <div className="relative z-10 w-full">
-        <div className="mx-auto flex max-w-md flex-col items-center px-4">
+        <div className="mx-auto flex flex-col items-center px-4 max-w-xs sm:max-w-md">
           <div className="flex flex-col items-center gap-3 text-center">
             <ContainerEffect preset="fade-in-blur" delay={0} transition={{ duration: 0.6 }}>
               <div>
@@ -22,7 +22,7 @@ export default function Home() {
               </div>
             </ContainerEffect>
             <div>
-              <h1 className="mb-3 text-4xl font-semibold tracking-tight text-pretty max-w-xs sm:max-w-full sm:text-5xl">
+              <h1 className="mb-3 text-4xl font-semibold tracking-tight text-pretty sm:text-5xl">
                 <TextEffect preset="fade-in-blur" delay={0.1} speedReveal={1} speedSegment={0.5}>
                   Powerful prompts, made simple
                 </TextEffect>
