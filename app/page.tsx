@@ -28,9 +28,10 @@ export default function Home() {
                   Powerful prompts, made simple
                 </TextEffect>
               </h1>
+              
               <p className="mx-auto max-w-lg text-muted-foreground md:text-lg">
                 <TextEffect as="span" preset="fade-in-blur" delay={0.5} speedReveal={4} speedSegment={1}>
-                  Discover powerful prompts, and copy them simply.
+                  Discover world-class prompts and copy them simply, using variables
                 </TextEffect>
               </p>
             </div>
@@ -40,8 +41,8 @@ export default function Home() {
       <div className="relative z-10 w-full">
         <div className="mx-auto flex flex-col items-center sm:max-w-[48rem] px-2">
             <motion.div
-              initial={{ opacity: 0, filter: 'blur(5px)' }}
-              animate={{ opacity: 1, filter: 'blur(0px)' }}
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
               transition={{ delay: 0.75, duration: 0.5 }}
               className="w-full grid grid-cols-1 sm:grid-cols-2 gap-2"
             >

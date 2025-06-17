@@ -2,7 +2,7 @@
 import * as NavigationMenuPrimitive from "@radix-ui/react-navigation-menu";
 import { BookOpen, List as MenuIcon, Users, User, BookmarkSimple, HouseSimple, SignIn as SignInIcon } from "@phosphor-icons/react";
 import React, { useRef } from "react";
-import { motion } from "motion/react";
+
 import { usePathname } from "next/navigation";
 
 import { cn } from "@/lib/utils";
@@ -82,17 +82,18 @@ const Navbar2 = ({
   const copyIconRef = useRef<CopyIconHandle>(null);
   const pathname = usePathname();
   const isHome = pathname === "/";
+  // CSS animation class names
+  const navAnimation = isHome ? "animate-slide-fade-down" : "";
+  const shadowAnimation = isHome ? "animate-fade-in" : "";
   // Use gradient border only on ≥sm
   const borderImage = typeof window !== 'undefined' && window.innerWidth >= 640
     ? 'linear-gradient(to right, transparent 10%, var(--border) 50%, transparent 90%) 1'
     : undefined;
   return (
     <>
-      <motion.div
-        className="fixed inset-x-0 bottom-0 sm:top-0 sm:bottom-auto z-50 h-[54px] sm:h-13 flex justify-center"
-        initial={isHome ? { y: -5, opacity: 0 } : false}
-        animate={isHome ? { y: 0, opacity: 1 } : false}
-        transition={{ type: "spring", stiffness: 60, damping: 16, delay: 0.75 }}
+      <div
+        className={cn("fixed inset-x-0 bottom-0 sm:top-0 sm:bottom-auto z-50 h-[54px] sm:h-13 flex justify-center", navAnimation)}
+        
       >
       <section
         className="navbar-border py-0 sm:py-2 border-t border-border sm:border-t-0 sm:border-b h-full w-full bg-background sm:bg-[linear-gradient(to_right,transparent_0%,var(--background)_25%,var(--background)_75%,transparent_100%)]"
@@ -133,7 +134,7 @@ const Navbar2 = ({
         </nav>
       </div>
       </section>
-    </motion.div>
+    </div>
             {/* border style: solid on mobile, gradient on sm+ */}
       <style jsx>{`
         .navbar-border {
@@ -151,11 +152,9 @@ const Navbar2 = ({
         }
       `}</style>
     {/* New fixed gradient shadow */}
-    <motion.div
-        className="pointer-events-none fixed inset-x-0 bottom-12 sm:top-12 sm:bottom-auto z-40 h-1 bg-[linear-gradient(to_right,transparent_25%,rgba(0,0,0,0.25)_50%,transparent_75%)] blur-[6px]"
-        initial={isHome ? { y: 0, opacity: 0 } : false}
-        animate={isHome ? { y: 0, opacity: 1 } : false}
-        transition={{ type: "spring", stiffness: 60, damping: 22, delay: 1.25 }}
+    <div
+        className={cn("pointer-events-none fixed inset-x-0 bottom-12 sm:top-12 sm:bottom-auto z-40 h-1 bg-[linear-gradient(to_right,transparent_25%,rgba(0,0,0,0.25)_50%,transparent_75%)] blur-[6px]", shadowAnimation)}
+        
       />
     </>
   );
