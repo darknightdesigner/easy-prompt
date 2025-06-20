@@ -7,8 +7,19 @@ import { Button, buttonVariants } from "@/components/ui/button";
 import { TextEffect } from '@/components/motion-primitives/text-effect';
 import { ContainerEffect } from '@/components/motion-primitives/container-effect';
 import { CopyIcon } from "@/components/animated-icons/optiprompt"
+import { supabase } from "@/lib/supabase";
+import { useEffect } from "react";
 
 export default function Home() {
+  // Quick Supabase connectivity test (remove after verifying)
+  useEffect(() => {
+    supabase
+      .from("prompt_templates")
+      .select("*")
+      .limit(1)
+      .then(({ data, error }) => console.log("supabase test", { data, error }));
+  }, []);
+
 
   return (
     <section className="relative overflow-hidden py-32 flex flex-col gap-12 items-center justify-center bg-[linear-gradient(to_bottom,var(--background)_0%,var(--secondary)_100%)] sm:bg-[linear-gradient(to_bottom,var(--background)_50%,var(--secondary)_100%)]">
