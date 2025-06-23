@@ -41,6 +41,7 @@ export function InView({
   const MotionComponent = motion[as as keyof typeof motion] as typeof as;
 
   return (
+    // @ts-expect-error --- MotionComponent generic may disallow children for some intrinsic elements
     <MotionComponent
       ref={ref}
       initial='hidden'
