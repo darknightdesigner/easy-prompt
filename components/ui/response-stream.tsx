@@ -388,6 +388,7 @@ function ResponseStream({
 
   const Container = as as keyof React.JSX.IntrinsicElements
 
+  // @ts-expect-error -- generic Container may forbid children in TS 5.4 but safe at runtime
   return <Container className={className}>{renderContent()}</Container>
 }
 
