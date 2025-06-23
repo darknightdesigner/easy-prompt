@@ -17,28 +17,26 @@ import { supabase } from "@/lib/supabase";
 import React, { useEffect, useState } from "react";
 import { cn } from "@/lib/utils";
 import { TileSkeleton } from "@/components/ui/tile-skeleton";
+import { RainbowButton } from "@/components/ui/rainbow-button";
+import { ShimmerButton } from "@/components/magicui/shimmer-button";
 
 const HeroSection = React.memo(function HeroSection() {
   return (
     <div className="relative z-10 w-full">
-      <div className="mx-auto flex flex-col items-center px-4 max-w-xs sm:max-w-md">
-        <div className="flex flex-col items-center gap-3 text-center">
-          <ContainerEffect preset="fade-in-blur" delay={0} transition={{ duration: 0.6 }}>
-            <CopyIcon size={42} />
-          </ContainerEffect>
+      <div className="mx-auto flex flex-col items-center px-4 max-w-md sm:max-w-lg">
+        <div className="flex flex-col items-center gap-2 text-center">
 
-          <h1 className="mb-3 text-4xl font-semibold tracking-tight text-pretty sm:text-5xl">
+          <h1 className="mb-1 text-5xl font-semibold tracking-tight text-pretty sm:text-6xl">
             <TextEffect
               preset="fade-in-blur"
               delay={0.1}
               speedReveal={1}
               speedSegment={0.5}
             >
-              Powerful prompts, made simple
+              Powerful prompts, made simple.
             </TextEffect>
           </h1>
-
-          <p className="mx-auto max-w-lg text-muted-foreground md:text-lg">
+          <p className="mx-auto max-w-sm text-muted-foreground md:text-xl">
             <TextEffect
               as="span"
               preset="fade-in-blur"
@@ -49,9 +47,17 @@ const HeroSection = React.memo(function HeroSection() {
               Discover world-class prompts and copy them simply, using variables
             </TextEffect>
           </p>
+          <ContainerEffect preset="fade-in-blur" delay={0.6} transition={{ duration: 0.6 }}>
+            <div className="mt-4 flex flex-wrap justify-center gap-3">
+              <ShimmerButton>
+                <Icons.Plus weight="bold" />
+                Create Template
+              </ShimmerButton>
+            </div>
+          </ContainerEffect>
+          </div>
         </div>
       </div>
-    </div>
   );
 });
 
