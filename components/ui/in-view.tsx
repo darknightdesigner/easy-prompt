@@ -38,11 +38,12 @@ export function InView({
 
   const [isViewed, setIsViewed] = useState(false)
 
-  const MotionComponent = motion[as as keyof typeof motion] as typeof as;
+  // Cast to any to avoid overly strict generic prop inference from TS 5.5
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const MotionComponent = motion[as as keyof typeof motion] as any;
 
   return (
-    // @ts-expect-error --- MotionComponent generic may disallow children for some intrinsic elements
-    <MotionComponent
+        <MotionComponent
       ref={ref}
       initial='hidden'
       onAnimationComplete={() => {
