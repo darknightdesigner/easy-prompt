@@ -8,12 +8,12 @@ import { cn } from "@/lib/utils";
 /* -------------------------------------------------------------------------- */
 
 const tileVariants = cva(
-  "group relative flex flex-col gap-4 rounded-3xl border p-6 transition-colors backdrop-blur-[15px] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring w-full",
+  "group relative flex flex-col gap-4 rounded-3xl border border-foreground/10 p-6 transition-colors transition-transform transform hover:-translate-y-px focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring w-full",
   {
     variants: {
       variant: {
-        solid: "bg-card/60 hover:border-foreground hover:bg-card/90",
-        outline: "border-dashed bg-card/90 hover:border-foreground",
+        solid: "bg-card border-foreground/10 hover:border-foreground hover:shadow-md",
+        outline: "bg-card/75 hover:bg-card/80 backdrop-blur-[1px] border-foreground/10 hover:border-primary hover:shadow-md",
       },
       align: {
         start: "items-start text-left",
@@ -27,9 +27,6 @@ const tileVariants = cva(
   }
 );
 
-/* -------------------------------------------------------------------------- */
-/*                                   Types                                    */
-/* -------------------------------------------------------------------------- */
 
 export interface TileProps
   extends React.HTMLAttributes<HTMLDivElement>,
@@ -38,9 +35,6 @@ export interface TileProps
   asChild?: boolean;
 }
 
-/* -------------------------------------------------------------------------- */
-/*                                  Component                                 */
-/* -------------------------------------------------------------------------- */
 
 const Tile = React.forwardRef<HTMLDivElement, TileProps>(
   ({ className, variant, align, asChild, ...props }, ref) => {
@@ -87,7 +81,7 @@ const TileIcon = React.forwardRef<HTMLSpanElement, React.HTMLAttributes<HTMLSpan
       <span
         ref={ref}
         className={cn(
-          "flex h-9 w-9 items-center justify-center text-foreground opacity-90 group-hover:text-foreground group-hover:opacity-100",
+          "flex h-9 w-9 items-center justify-center text-foreground",
           className
         )}
         {...props}
@@ -115,7 +109,7 @@ const TileIconSecondary = React.forwardRef<HTMLSpanElement, React.HTMLAttributes
       <span
         ref={ref}
         className={cn(
-          "absolute right-4 top-4 flex h-5 w-5 items-center justify-center text-foreground opacity-0 transition-opacity group-hover:opacity-100",
+          "absolute right-4 top-4 flex h-5 w-5 items-center justify-center text-foreground",
           className
         )}
         {...props}
@@ -131,7 +125,7 @@ const TileTitle = ({
   className,
   ...props
 }: React.HTMLAttributes<HTMLHeadingElement>) => (
-  <h3 className={cn("text-lg font-semibold opacity-100 sm:opacity-70 sm:group-hover:opacity-100", className)} {...props} />
+  <h3 className={cn("text-lg font-semibold opacity-100", className)} {...props} />
 );
 TileTitle.displayName = "Tile.Title";
 
@@ -139,7 +133,7 @@ const TileDescription = ({
   className,
   ...props
 }: React.HTMLAttributes<HTMLParagraphElement>) => (
-  <p className={cn("text-sm text-muted-foreground opacity-100 sm:opacity-70 sm:group-hover:opacity-100", className)} {...props} />
+  <p className={cn("text-sm text-muted-foreground opacity-100", className)} {...props} />
 );
 TileDescription.displayName = "Tile.Description";
 

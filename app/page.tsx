@@ -17,6 +17,7 @@ import { supabase } from "@/lib/supabase";
 import React, { useEffect, useState } from "react";
 import { TileSkeleton } from "@/components/ui/tile-skeleton";
 import { ShimmerButton } from "@/components/magicui/shimmer-button";
+import { Button } from "@/components/ui/button";
 import WavyCanvas from "@/components/graphics/WavyCanvas";
 
 const HeroSection = React.memo(function HeroSection() {
@@ -26,7 +27,7 @@ const HeroSection = React.memo(function HeroSection() {
         
           <div className="flex flex-col items-center gap-2 text-center mt-16 relative z-10">
 
-          <h1 className="mb-text-5xl font-semibold tracking-tight text-pretty sm:text-6xl">
+          <h1 className="mb-2 text-5xl font-semibold tracking-tight text-pretty sm:text-6xl">
             <TextEffect
               preset="fade-in-blur"
               delay={0.1}
@@ -36,7 +37,7 @@ const HeroSection = React.memo(function HeroSection() {
               Powerful prompts, made simple.
             </TextEffect>
           </h1>
-          <p className="mx-auto max-w-sm text-muted-foreground md:text-xl">
+          <p className="mx-auto max-w-xs text-muted-foreground sm:text-xl">
             <TextEffect
               as="span"
               preset="fade-in-blur"
@@ -53,6 +54,9 @@ const HeroSection = React.memo(function HeroSection() {
                 <Icons.Plus weight="bold" />
                 Create Template
               </ShimmerButton>
+              <Button variant="secondary">
+                View Prompts
+              </Button>
             </div>
           </ContainerEffect>
           </div>
@@ -92,7 +96,6 @@ export default function Home() {
       });
   }, []);
 
-  // fade-in tiles 1 s after they have loaded
   useEffect(() => {
     if (!loading) {
       const timer = setTimeout(() => setShowTiles(true), 1000);
@@ -103,23 +106,29 @@ export default function Home() {
   }, [loading]);
 
   return (
-    <section className="relative overflow-hidden py-32 flex flex-col gap-12 items-center justify-center bg-[linear-gradient(to_bottom,var(--background)_0%,var(--secondary)_100%)] sm:bg-[linear-gradient(to_bottom,var(--background)_50%,var(--secondary)_100%)]">
-      {/* background dots */}
-      <div className="absolute inset-x-0 top-0 flex h-full w-full items-center justify-center bg-dotted-pattern opacity-100 [mask-image:linear-gradient(to_bottom,transparent_0%,white_100%)]" />
-
+    <section className="relative overflow-hidden py-32 flex flex-col gap-12 items-center justify-center bg-[linear-gradient(to_bottom,var(--background)_25%,var(--secondary)_100%)] sm:bg-[linear-gradient(to_bottom,var(--background)_50%,var(--secondary)_100%)]">
+      <div
+        className="absolute inset-0 z-0 pointer-events-none before:absolute before:inset-0 before:content-[''] before:bg-[url('https://cdn.prod.website-files.com/61a6b59cc1578e2a2caf13c5/61ae57c4d73bf15eadf011b8_grain.gif')] before:bg-repeat before:[mask-image:linear-gradient(to_top,_black_0%,_black_25%,_transparent_100%)] before:opacity-0"
+      />
       {/* wavy background */}
-      <div className="absolute w-screen pointer-events-none z-5">
-        <div className="relative w-full h-full">
-          <div className="absolute inset-0">
-            <WavyCanvas />
-          </div>
-        </div>
+      <div className="absolute inset-0 flex items-center justify-center pointer-events-none z-5">
+        <motion.div
+          className="w-full mb-[80dvh] sm:mb-0"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 2, delay: 0.5 }}
+        >
+          <WavyCanvas />
+        </motion.div>
       </div>
-
       <HeroSection />
-
       {/* FEATURED CATEGORIES */}
-      <div className="relative z-10 w-full">
+      <motion.div
+          className="relative z-10 w-full"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 1, delay: 1 }}
+        >
         <div className="mx-auto flex flex-col items-center sm:max-w-[48rem] px-2">
           {loading ? (
             <div className="w-full grid grid-cols-1 sm:grid-cols-2 gap-2">
@@ -135,7 +144,7 @@ export default function Home() {
                   Icons.SquaresFour; // fallback icon
 
                 return (
-                  <Tile asChild key={tag.id}>
+                  <Tile variant="solid" asChild key={tag.id}>
                     <a href="#">
                       <TileHeader>
                         <TileIcon>
@@ -158,7 +167,7 @@ export default function Home() {
             </div>
           )}
         </div>
-      </div>
+      </motion.div>
     </section>
   );
 }
