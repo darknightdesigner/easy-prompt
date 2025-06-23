@@ -50,6 +50,7 @@ export function TextMorph({
   };
 
   return (
+    // @ts-expect-error --- Generic ElementType children typing mismatch
     <Component className={cn(className)} aria-label={children} style={style}>
       <AnimatePresence mode='popLayout' initial={false}>
         {characters.map((character) => (
