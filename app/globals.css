@@ -85,15 +85,15 @@
 :root {
   --radius: 0.625rem;
   --background: oklch(1 0 0);
-  --foreground: oklch(0.141 0.005 285.823);
+  --foreground: oklch(0.2316 0.0038 286.1);
   --card: oklch(1 0 0);
   --card-foreground: oklch(0.141 0.005 285.823);
   --popover: oklch(1 0 0);
   --popover-foreground: oklch(0.141 0.005 285.823);
   --primary: oklch(0.21 0.006 285.885);
   --primary-foreground: oklch(0.985 0 0);
-  --secondary: oklch(0.98 0.001 286.375);
-  --secondary-foreground: oklch(0.21 0.006 285.885);
+  --secondary: oklch(0.95 0.001 286.375);
+  --secondary-foreground: oklch(0.6217 0.0074 286.18);
   --muted: oklch(0.967 0.001 286.375);
   --muted-foreground: oklch(0.552 0.016 285.938);
   --accent: oklch(0.967 0.001 286.375);
@@ -116,15 +116,15 @@
   --sidebar-border: oklch(0.92 0.004 286.32);
   --sidebar-ring: oklch(0.705 0.015 286.067);
   --color-1: 0 0% 100%;
-  --color-2: 189 79% 90%;
-  --color-3: 227 100% 58%;
-  --color-4: 220 66% 78%;
-  --color-5: 231 59% 53%;
+  --color-2: 220 80% 98%;
+  --color-3: 220 80% 95%;
+  --color-4: 220 80% 85%;
+  --color-5: 220 80% 80%;
 }
 
 .dark {
   --background: oklch(0.12 0 0);
-  --foreground: oklch(0.985 0 0);
+  --foreground: oklch(0.9851 0 0);
   --card: oklch(0.21 0.006 285.885);
   --card-foreground: oklch(0.985 0 0);
   --popover: oklch(0.21 0.006 285.885);
@@ -147,18 +147,18 @@
   --chart-4: oklch(0.627 0.265 303.9);
   --chart-5: oklch(0.645 0.246 16.439);
   --sidebar: oklch(0.21 0.006 285.885);
-  --sidebar-foreground: oklch(0.985 0 0);
+  --sidebar-foreground: oklch(0.3703 0.0119 285.81);
   --sidebar-primary: oklch(0.488 0.243 264.376);
   --sidebar-primary-foreground: oklch(0.985 0 0);
   --sidebar-accent: oklch(0.274 0.006 286.033);
   --sidebar-accent-foreground: oklch(0.985 0 0);
   --sidebar-border: oklch(1 0 0 / 10%);
   --sidebar-ring: oklch(0.552 0.016 285.938);
-  --color-1: 0 0% 100%;
-  --color-2: 210 100% 81.4%;
-  --color-3: 200 100% 60%;
-  --color-4: 190 95% 55%;
-  --color-5: 180 90% 50%;
+  --color-1: 0 0% 75%;
+  --color-2: 220 80% 25%;
+  --color-3: 220 80% 15%;
+  --color-4: 220 80% 7%;
+  --color-5: 220 80% 3%;
 }
 
 @layer base {
@@ -173,4 +173,15 @@
 .bg-dotted-pattern {
   background-image: radial-gradient(circle at 1px 1px, rgb(from var(--foreground) r g b / 0.1) 1px, transparent 0);
   background-size: 12px 12px;
+}
+
+@layer utilities {
+  /* Shimmer button gradient variable for light mode */
+  .shimmer-btn-bg {
+    --bg: var(--foreground);
+  }
+  /* Shimmer button gradient variable for dark mode */
+  .dark .shimmer-btn-bg {
+    --bg: var(--sidebar-foreground);
+  }
 }

@@ -37,11 +37,11 @@ export const ShimmerButton = React.forwardRef<
 >(
   (
     {
-      shimmerColor = "var(--primary-foreground)",
+      shimmerColor = "#ffffff",
       shimmerSize = "0.1em",
       shimmerDuration = "1.5s",
-      borderRadius = "100px",
-      background = "var(--primary)",
+      borderRadius = "200px",
+      background = "var(--foreground)",
       size = "default",
       className,
       children,
@@ -53,7 +53,7 @@ export const ShimmerButton = React.forwardRef<
       <button
         style={
           {
-            "--spread": "90deg",
+            "--spread": "180deg",
             "--shimmer-color": shimmerColor,
             "--radius": borderRadius,
             "--speed": shimmerDuration,
@@ -66,7 +66,7 @@ export const ShimmerButton = React.forwardRef<
         className={cn(
           shimmerButtonVariants({ size }),
           "group relative z-0 flex cursor-pointer items-center justify-center overflow-hidden whitespace-nowrap text-primary-foreground [background:var(--bg)] [border-radius:var(--radius)]",
-          "transform-gpu transition-transform duration-300 ease-in-out active:translate-y-px shadow-[0_2px_4px_rgba(0,0,0,0.08)] dark:shadow-[0_2px_4px_rgba(0,0,0,0.3)]",
+          "transform-gpu transition-transform duration-300 ease-in-out active:translate-y-px shadow-[0_2px_4px_rgba(0,0,0,0.06)]",
           className,
         )}
         ref={ref}
@@ -75,7 +75,7 @@ export const ShimmerButton = React.forwardRef<
         {/* spark container */}
         <div
           className={cn(
-            "-z-30 blur-[6px]",
+            "-z-30 blur-[1x]",
             "absolute inset-0 overflow-visible [container-type:size]",
           )}
         >
@@ -92,16 +92,16 @@ export const ShimmerButton = React.forwardRef<
           className={cn(
             "insert-0 absolute size-full",
 
-            "rounded-2xl px-4 py-1.5 text-sm font-medium shadow-[inset_0_-8px_10px_var(--shadow-base)]",
+            "rounded-2xl px-4 py-1.5 text-sm font-medium shadow-[inset_0_4px_4px_rgba(255,255,255,0.15),inset_0_-4px_4px_rgba(0,0,0,0.15)]",
 
             // transition
             "transform-gpu transition-all duration-300 ease-in-out",
 
             // on hover
-            "group-hover:shadow-[inset_0_-6px_10px_var(--shadow-hover)]",
+            "group-hover:shadow-[inset_0_4px_4px_rgba(255,255,255,0.15),inset_0_-4px_4px_rgba(0,0,0,0.15)]",
 
             // on click
-            "group-active:shadow-[inset_0_-10px_10px_var(--shadow-hover)]",
+            "group-active:shadow-[inset_0_4px_4px_rgba(255,255,255,0.15),inset_0_-4px_4px_rgba(0,0,0,0.15)]",
           )}
         />
 

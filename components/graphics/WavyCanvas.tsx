@@ -178,8 +178,6 @@ void main() {
   setGradientColor(uGradientStops, vUv.y, finalColor);
 
   finalColor.rgb += random(uvScreen) * TEXTURE_NOISE_OPACITY;
-  finalColor *= smoothstep(0.0, 0.15, vUv.x);
-  finalColor *= smoothstep(1.0, 0.85, vUv.x);
 
   gl_FragColor = finalColor;
 }
@@ -189,10 +187,10 @@ void main() {
 const WavyShaderMaterial = shaderMaterial(
   {
     uTime: 0,
-    uAmplitude: 1.1,
-    uDensity: 0.25,
+    uAmplitude: 0.2,
+    uDensity: 1.1,
     uSpeed: 0.05,
-    uGradientRepeat: 2,
+    uGradientRepeat: 3,
     uGradientStops: [],
   },
   vertexShader,
@@ -264,7 +262,7 @@ export default function WavyCanvas({ className }: { className?: string }) {
   return (
     <div
       className={cn(
-        "pointer-events-none w-full h-[500px]",
+        "pointer-events-none w-full h-[1200px]",
         className
       )}
     >
