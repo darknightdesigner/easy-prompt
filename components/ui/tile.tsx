@@ -8,12 +8,12 @@ import { cn } from "@/lib/utils";
 /* -------------------------------------------------------------------------- */
 
 const tileVariants = cva(
-  "group relative flex flex-col gap-4 rounded-3xl border p-6 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring w-full",
+  "group relative flex flex-col gap-4 rounded-3xl border p-6 transition-colors backdrop-blur-[15px] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring w-full",
   {
     variants: {
       variant: {
-        solid: "bg-card hover:border-foreground",
-        outline: "border-dashed bg-card/50 hover:border-foreground",
+        solid: "bg-card/60 hover:border-foreground hover:bg-card/90",
+        outline: "border-dashed bg-card/90 hover:border-foreground",
       },
       align: {
         start: "items-start text-left",
@@ -87,7 +87,7 @@ const TileIcon = React.forwardRef<HTMLSpanElement, React.HTMLAttributes<HTMLSpan
       <span
         ref={ref}
         className={cn(
-          "flex h-9 w-9 items-center justify-center text-foreground opacity-70 group-hover:text-foreground group-hover:opacity-100",
+          "flex h-9 w-9 items-center justify-center text-foreground opacity-90 group-hover:text-foreground group-hover:opacity-100",
           className
         )}
         {...props}

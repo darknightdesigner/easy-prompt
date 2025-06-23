@@ -15,18 +15,18 @@ import { ContainerEffect } from "@/components/motion-primitives/container-effect
 import { CopyIcon } from "@/components/animated-icons/optiprompt";
 import { supabase } from "@/lib/supabase";
 import React, { useEffect, useState } from "react";
-import { cn } from "@/lib/utils";
 import { TileSkeleton } from "@/components/ui/tile-skeleton";
-import { RainbowButton } from "@/components/ui/rainbow-button";
 import { ShimmerButton } from "@/components/magicui/shimmer-button";
+import WavyCanvas from "@/components/graphics/WavyCanvas";
 
 const HeroSection = React.memo(function HeroSection() {
   return (
     <div className="relative z-10 w-full">
       <div className="mx-auto flex flex-col items-center px-4 max-w-md sm:max-w-lg">
-        <div className="flex flex-col items-center gap-2 text-center">
+        
+          <div className="flex flex-col items-center gap-2 text-center mt-16 relative z-10">
 
-          <h1 className="mb-1 text-5xl font-semibold tracking-tight text-pretty sm:text-6xl">
+          <h1 className="mb-text-5xl font-semibold tracking-tight text-pretty sm:text-6xl">
             <TextEffect
               preset="fade-in-blur"
               delay={0.1}
@@ -105,7 +105,16 @@ export default function Home() {
   return (
     <section className="relative overflow-hidden py-32 flex flex-col gap-12 items-center justify-center bg-[linear-gradient(to_bottom,var(--background)_0%,var(--secondary)_100%)] sm:bg-[linear-gradient(to_bottom,var(--background)_50%,var(--secondary)_100%)]">
       {/* background dots */}
-      <div className="absolute inset-x-0 top-0 flex h-full w-full items-center justify-center bg-dotted-pattern opacity-100 [mask-image:linear-gradient(to_bottom,transparent_25%,white_100%)]" />
+      <div className="absolute inset-x-0 top-0 flex h-full w-full items-center justify-center bg-dotted-pattern opacity-100 [mask-image:linear-gradient(to_bottom,transparent_0%,white_100%)]" />
+
+      {/* wavy background */}
+      <div className="absolute w-screen pointer-events-none z-5">
+        <div className="relative w-full h-full">
+          <div className="absolute inset-0">
+            <WavyCanvas />
+          </div>
+        </div>
+      </div>
 
       <HeroSection />
 

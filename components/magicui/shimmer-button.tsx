@@ -59,13 +59,13 @@ export const ShimmerButton = React.forwardRef<
             "--speed": shimmerDuration,
             "--cut": shimmerSize,
             "--bg": background,
-            "--shadow-base": "color-mix(in oklch, var(--primary-foreground) 30%, transparent)",
-            "--shadow-hover": "color-mix(in oklch, var(--primary-foreground) 60%, transparent)",
+            "--shadow-base": "color-mix(in oklch, var(--primary-foreground) 20%, transparent)",
+            "--shadow-hover": "color-mix(in oklch, var(--primary-foreground) 40%, transparent)",
           } as CSSProperties
         }
         className={cn(
           shimmerButtonVariants({ size }),
-          "group relative z-0 flex cursor-pointer items-center justify-center overflow-hidden whitespace-nowrap border border-white/10 text-primary-foreground [background:var(--bg)] [border-radius:var(--radius)]",
+          "group relative z-0 flex cursor-pointer items-center justify-center overflow-hidden whitespace-nowrap text-primary-foreground [background:var(--bg)] [border-radius:var(--radius)]",
           "transform-gpu transition-transform duration-300 ease-in-out active:translate-y-px shadow-[0_2px_4px_rgba(0,0,0,0.08)] dark:shadow-[0_2px_4px_rgba(0,0,0,0.3)]",
           className,
         )}

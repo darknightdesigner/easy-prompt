@@ -62,12 +62,7 @@
     transform: translateZ(0) rotate(360deg);
     }
   }
-  --animate-rainbow: rainbow var(--speed, 2s) infinite linear;
-  --color-color-5: var(----color-5);
-  --color-color-4: var(----color-4);
-  --color-color-3: var(----color-3);
-  --color-color-2: var(----color-2);
-  --color-color-1: var(----color-1);
+  --animate-rainbow: rainbow var(--speed, 1s) infinite linear;
 
   @keyframes rainbow {
     0% {
@@ -120,11 +115,11 @@
   --sidebar-accent-foreground: oklch(0.21 0.006 285.885);
   --sidebar-border: oklch(0.92 0.004 286.32);
   --sidebar-ring: oklch(0.705 0.015 286.067);
-  --color-1: 0 100% 63%;
-  --color-2: 270 100% 63%;
-  --color-3: 210 100% 63%;
-  --color-4: 195 100% 63%;
-  --color-5: 90 100% 63%;
+  --color-1: 0 0% 100%;
+  --color-2: 189 79% 90%;
+  --color-3: 227 100% 58%;
+  --color-4: 220 66% 78%;
+  --color-5: 231 59% 53%;
 }
 
 .dark {
@@ -159,6 +154,11 @@
   --sidebar-accent-foreground: oklch(0.985 0 0);
   --sidebar-border: oklch(1 0 0 / 10%);
   --sidebar-ring: oklch(0.552 0.016 285.938);
+  --color-1: 0 0% 100%;
+  --color-2: 210 100% 81.4%;
+  --color-3: 200 100% 60%;
+  --color-4: 190 95% 55%;
+  --color-5: 180 90% 50%;
 }
 
 @layer base {
