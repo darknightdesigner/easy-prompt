@@ -3,6 +3,8 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 
 import { ThemeProvider } from "@/components/ui/theme-provider";
+import { SessionContextProvider } from '@supabase/auth-helpers-react'
+import { supabaseBrowser } from '@/lib/supabaseBrowser'
 import { IconProvider } from "@/components/icon-provider";
 import { TopNav } from "@/components/layout/navigation";
 
@@ -26,25 +28,30 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const supabase = supabaseBrowser();
+  
   return (
-    <html lang="en" suppressHydrationWarning>
+    <SessionContextProvider supabaseClient={supabase}>\n      <html lang="en" suppressHydrationWarning>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
         
+          
+
           <IconProvider>
-          <ThemeProvider
-            attribute="class"
-            defaultTheme="system"
-            enableSystem
-            disableTransitionOnChange
-          >
-          <TopNav />
-          {children}
-        </ThemeProvider>
-        </IconProvider>
-        
-      </body>
-    </html>
+            <ThemeProvider
+              attribute="class"
+              defaultTheme="system"
+              enableSystem
+              disableTransitionOnChange
+            >
+              <TopNav />
+              {children}
+            </ThemeProvider>
+          </IconProvider>
+          
+        </body>
+      </html>
+    </SessionContextProvider>
   );
 }
