@@ -34,7 +34,7 @@ const HeroSection = React.memo(function HeroSection() {
               speedReveal={1}
               speedSegment={0.5}
             >
-              Powerful prompts, made simple.
+              Powerful prompts made simple
             </TextEffect>
           </h1>
           <p className="mx-auto max-w-xs text-muted-foreground sm:text-xl">
