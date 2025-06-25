@@ -189,7 +189,7 @@ const WavyShaderMaterial = shaderMaterial(
     uTime: 0,
     uAmplitude: 0.2,
     uDensity: 1.1,
-    uSpeed: 0.05,
+    uSpeed: 0.02,
     uGradientRepeat: 3,
     uGradientStops: [],
   },

@@ -113,10 +113,10 @@ export default function Home() {
       {/* wavy background */}
       <div className="absolute inset-0 flex items-center justify-center pointer-events-none z-5">
         <motion.div
-          className="w-full mb-[80dvh] sm:mb-0"
+          className="w-full sm:mb-0"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
-          transition={{ duration: 2, delay: 0.5 }}
+          transition={{ duration: 3, delay: 1.5 }}
         >
           <WavyCanvas />
         </motion.div>
@@ -144,7 +144,7 @@ export default function Home() {
                   Icons.SquaresFour; // fallback icon
 
                 return (
-                  <Tile variant="solid" asChild key={tag.id}>
+                  <Tile variant="outline" asChild key={tag.id}>
                     <a href="#">
                       <TileHeader>
                         <TileIcon>
