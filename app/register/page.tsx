@@ -1,5 +1,8 @@
 import { Metadata } from "next";
 import { AuthForm } from "@/components/auth/auth-form";
+import { CopyIcon } from "@/components/animated-icons/optiprompt";
+import Link from "next/link";
+import { Tooltip, TooltipContent, TooltipTrigger, TooltipProvider } from "@/components/ui/tooltip";
 
 export const metadata: Metadata = {
   title: "Create account",
@@ -8,11 +11,21 @@ export const metadata: Metadata = {
 export default function RegisterPage() {
   return (
     <main className="flex min-h-screen flex-col items-center justify-center p-4">
-      <div className="w-full max-w-sm space-y-6">
-        <h1 className="text-2xl font-bold text-center">Create account</h1>
+      <div className="w-full max-w-sm space-y-6 pb-24">
+        <div className="flex flex-col items-center gap-2">
+          <TooltipProvider>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Link href="/"><CopyIcon size={32} /></Link>
+              </TooltipTrigger>
+              <TooltipContent side="right">Let's go home</TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
+          <h1 className="text-2xl font-bold text-center">Create account</h1>
+        </div>
         <AuthForm variant="signup" />
         <p className="text-center text-sm">
-          Already have an account? <a className="underline" href="/login">Sign in</a>
+          Already have an account? <a className="underline" href="/login">Log in</a>
         </p>
       </div>
     </main>

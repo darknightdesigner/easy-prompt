@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { FcGoogle } from "react-icons/fc";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -17,6 +18,7 @@ export function AuthForm({ variant }: AuthFormProps) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
+  const [oauthLoading, setOauthLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   async function handleSubmit(e: React.FormEvent) {
@@ -41,27 +43,34 @@ export function AuthForm({ variant }: AuthFormProps) {
     router.replace("/");
   }
 
+  async function handleGoogle() {
+    try {
+      setOauthLoading(true);
+      await supabase.auth.signInWithOAuth({ provider: "google" });
+    } finally {
+      setOauthLoading(false);
+    }
+  }
+
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
       <div className="space-y-2">
-        <label className="text-sm font-medium" htmlFor="email">
-          Email
-        </label>
         <Input
           id="email"
           type="email"
+          className="shadow-none"
+          placeholder="your@email.com"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           required
         />
       </div>
       <div className="space-y-2">
-        <label className="text-sm font-medium" htmlFor="password">
-          Password
-        </label>
         <Input
           id="password"
           type="password"
+          className="shadow-none"
+          placeholder="password"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
           required
@@ -69,7 +78,11 @@ export function AuthForm({ variant }: AuthFormProps) {
       </div>
       {error && <p className="text-sm text-destructive">{error}</p>}
       <Button type="submit" className="w-full" disabled={loading}>
-        {loading ? "Loading…" : variant === "signup" ? "Create account" : "Sign in"}
+        {loading ? "Loading…" : variant === "signup" ? "Create account" : "Log in"}
+      </Button>
+      <Button variant="outline" className="w-full" onClick={handleGoogle} disabled={oauthLoading}>
+        <FcGoogle className="mr-2 size-5" />
+        {oauthLoading ? "Redirecting…" : "Continue with Google"}
       </Button>
     </form>
   );

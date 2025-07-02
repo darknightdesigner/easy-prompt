@@ -75,8 +75,8 @@ const Navbar2 = ({
     { title: "Profile", url: "#", icon: <User size={18} className="size-4.5" />, mobileOnly: true },
   ],
   auth = {
-    login: { title: "Login", url: "#" },
-    signup: { title: "Sign up", url: "#" },
+    login: { title: "Login", url: "/login" },
+    signup: { title: "Sign up", url: "/register" },
   },
 }: Navbar2Props) => {
   const copyIconRef = useRef<CopyIconHandle>(null);

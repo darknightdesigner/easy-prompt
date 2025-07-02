@@ -5,7 +5,7 @@ import "./globals.css";
 import { ThemeProvider } from "@/components/ui/theme-provider";
 import { SupabaseProvider } from "@/components/supabase-provider"
 import { IconProvider } from "@/components/icon-provider";
-import { TopNav } from "@/components/layout/navigation";
+import { TopNavConditional } from "@/components/layout/top-nav-conditional";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -45,7 +45,7 @@ export default function RootLayout({
               enableSystem
               disableTransitionOnChange
             >
-              <TopNav />
+              <TopNavConditional />
               {children}
             </ThemeProvider>
           </IconProvider>
