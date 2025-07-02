@@ -19,6 +19,7 @@ import { TileSkeleton } from "@/components/ui/tile-skeleton";
 import { ShimmerButton } from "@/components/magicui/shimmer-button";
 import { Button } from "@/components/ui/button";
 import WavyCanvas from "@/components/graphics/WavyCanvas";
+import { SessionStatus } from "@/components/session-status";
 
 const HeroSection = React.memo(function HeroSection() {
   return (
@@ -122,6 +123,7 @@ export default function Home() {
         </motion.div>
       </div>
       <HeroSection />
+      <SessionStatus />
       {/* FEATURED CATEGORIES */}
       <motion.div
           className="relative z-10 w-full"
