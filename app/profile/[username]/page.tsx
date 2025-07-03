@@ -5,7 +5,7 @@ import { ProfileCard } from "@/components/profile/profile-card";
 type Params = { username: string };
 
 export default async function PublicProfilePage({ params }: { params: Promise<Params> }) {
-  const supabase = supabaseServer();
+  const supabase = await supabaseServer();
   const { data: profile } = await supabase
     .from("profiles")
     .select("display_name, username, bio, avatar_url")

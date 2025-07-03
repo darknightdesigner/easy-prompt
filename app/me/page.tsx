@@ -3,7 +3,7 @@ import { redirect } from "next/navigation";
 import { ProfileCard } from "@/components/profile/profile-card";
 
 export default async function MyProfilePage() {
-  const supabase = supabaseServer();
+  const supabase = await supabaseServer();
   const {
     data: { session },
   } = await supabase.auth.getSession();
@@ -23,7 +23,7 @@ export default async function MyProfilePage() {
     // no row, insert default
     const { data: newProfile } = await supabase
       .from("profiles")
-      .insert({ id: session.user.id, display_name: session.user.email, username: session.user.email.split("@")[0] })
+      .insert({ id: session.user.id, display_name: session.user.email ?? session.user.id, username: (session.user.email ?? session.user.id).split("@")[0] })
       .select("display_name, username, bio, avatar_url")
       .single();
     return (
