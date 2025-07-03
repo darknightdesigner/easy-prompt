@@ -13,7 +13,7 @@ import {
 import { TextEffect } from "@/components/motion-primitives/text-effect";
 import { ContainerEffect } from "@/components/motion-primitives/container-effect";
 import { CopyIcon } from "@/components/animated-icons/optiprompt";
-import { supabase } from "@/lib/supabase";
+import { supabaseBrowser } from "@/lib/supabaseBrowser";
 import React, { useEffect, useState } from "react";
 import { TileSkeleton } from "@/components/ui/tile-skeleton";
 import { ShimmerButton } from "@/components/magicui/shimmer-button";
@@ -78,6 +78,7 @@ type FeaturedTag = {
 };
 
 export default function Home() {
+  const supabase = supabaseBrowser();
   const [featuredTags, setFeaturedTags] = useState<FeaturedTag[]>([]);
   const [loading, setLoading] = useState(true);
   const [showTiles, setShowTiles] = useState(false);

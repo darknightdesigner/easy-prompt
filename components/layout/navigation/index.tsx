@@ -1,6 +1,6 @@
 "use client";
 import * as NavigationMenuPrimitive from "@radix-ui/react-navigation-menu";
-import { BookOpen, List as MenuIcon, Users, User, BookmarkSimple, HouseSimple, SignIn as SignInIcon } from "@phosphor-icons/react";
+import { BookOpen, List as MenuIcon, Users, User, BookmarkSimple, HouseSimple, SignIn as SignInIcon, SignOut } from "@phosphor-icons/react";
 import React, { useRef } from "react";
 
 import { usePathname } from "next/navigation";
@@ -14,6 +14,8 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion";
 import { Button } from "@/components/ui/button";
+import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuItem } from "@/components/ui/dropdown-menu";
+import { useSessionContext, useSupabaseClient } from "@supabase/auth-helpers-react";
 import { CopyIcon, type CopyIconHandle } from "@/components/animated-icons/optiprompt";
 import {
   NavigationMenuContent,
@@ -81,6 +83,8 @@ const Navbar2 = ({
 }: Navbar2Props) => {
   const copyIconRef = useRef<CopyIconHandle>(null);
   const pathname = usePathname();
+  const { session } = useSessionContext();
+  const supabase = useSupabaseClient();
   const isHome = pathname === "/";
   // CSS animation class names
   const navAnimation = isHome ? "animate-slide-fade-down" : "";
@@ -124,12 +128,34 @@ const Navbar2 = ({
             </div>
           </div>
           <div className="hidden sm:flex gap-2">
-            <Button asChild variant="ghost" className="h-auto rounded-full flex flex-col items-center gap-1 sm:h-8 sm:flex-row sm:gap-2">
-              <a href={auth.login.url} className="flex items-center gap-1"><SignInIcon size={16} className="sm:hidden" />{auth.login.title}</a>
-            </Button>
-            <Button asChild size="sm" className="hidden sm:inline-flex">
-              <a href={auth.signup.url}>{auth.signup.title}</a>
-            </Button>
+            {session ? (
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button variant="outline" className="h-8 w-8 p-0 rounded-full shadow-none">
+                    <User size={18} />
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end">
+                  <DropdownMenuLabel className="max-w-[12rem] truncate">
+                    {session.user.email}
+                  </DropdownMenuLabel>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem onSelect={() => supabase.auth.signOut()} className="cursor-pointer">
+                    <SignOut size={14} />
+                    Sign out
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            ) : (
+              <>
+                <Button asChild variant="outline" className="h-auto rounded-full flex flex-col items-center gap-1 sm:h-8 sm:flex-row sm:gap-2 shadow-none">
+                  <a href={auth.login.url} className="flex items-center gap-1"><SignInIcon size={16} className="sm:hidden" />{auth.login.title}</a>
+                </Button>
+                <Button asChild size="sm" className="hidden sm:inline-flex">
+                  <a href={auth.signup.url}>{auth.signup.title}</a>
+                </Button>
+              </>
+            )}
           </div>
         </nav>
       </div>
