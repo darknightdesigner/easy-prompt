@@ -4,6 +4,7 @@ import { BookOpen, List as MenuIcon, Users, User, BookmarkSimple, HouseSimple, S
 import React, { useRef } from "react";
 
 import { usePathname, useRouter } from "next/navigation";
+import Link from "next/link";
 
 import { cn } from "@/lib/utils";
 
@@ -108,7 +109,7 @@ const Navbar2 = ({
         {/* Desktop Menu */}
         <nav className="flex w-full h-full items-center justify-between">
           {/* Logo */}
-          <a
+          <Link
             href={logo.url}
             className="hidden sm:flex items-center gap-2"
             onMouseEnter={() => copyIconRef.current?.startAnimation()}
@@ -118,7 +119,7 @@ const Navbar2 = ({
             <span className="text-base font-semibold tracking-tight">
               {logo.title}
             </span>
-          </a>
+          </Link>
           <div className="flex w-full items-center justify-center sm:absolute sm:left-1/2 sm:-translate-x-1/2 sm:w-auto">
             <div className="flex w-full sm:w-auto items-center">
               <NavigationMenuWithoutViewport className="flex-1 basis-0 grow min-w-0 sm:flex-none sm:grow-0 w-full sm:w-auto max-w-none">
@@ -143,9 +144,12 @@ const Navbar2 = ({
                   </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end">
-                  <DropdownMenuLabel className="max-w-[12rem] truncate">
-                    {session.user.email}
-                  </DropdownMenuLabel>
+                  <DropdownMenuItem asChild className="cursor-pointer">
+                    <Link href="/me" className="flex items-center gap-2">
+                      <User size={14} />
+                      Profile
+                    </Link>
+                  </DropdownMenuItem>
                   <DropdownMenuSeparator />
                   <DropdownMenuItem onSelect={async () => { await supabase.auth.signOut(); router.refresh(); }} className="cursor-pointer">
                     <SignOut size={14} />
@@ -156,10 +160,10 @@ const Navbar2 = ({
             ) : (
               <>
                 <Button asChild variant="outline" className="h-auto rounded-full flex flex-col items-center gap-1 sm:h-8 sm:flex-row sm:gap-2 shadow-none">
-                  <a href={auth.login.url} className="flex items-center gap-1"><SignInIcon size={16} className="sm:hidden" />{auth.login.title}</a>
+                  <Link href={auth.login.url} className="flex items-center gap-1"><SignInIcon size={16} className="sm:hidden" />{auth.login.title}</Link>
                 </Button>
                 <Button asChild size="sm" className="hidden sm:inline-flex">
-                  <a href={auth.signup.url}>{auth.signup.title}</a>
+                  <Link href={auth.signup.url}>{auth.signup.title}</Link>
                 </Button>
               </>
             )}
@@ -212,10 +216,10 @@ const renderMenuItem = (item: MenuItem) => {
   return (
     <NavigationMenuItem key={item.title} className={`flex-1 basis-0 grow min-w-0 sm:flex-none sm:grow-0 w-full sm:w-auto ${item.desktopOnly ? 'hidden sm:flex' : ''}`}>
       <Button variant="ghost" asChild className={`w-full sm:w-auto min-w-0 h-auto rounded-full flex flex-col items-center gap-1 sm:h-8 sm:flex-row sm:gap-2 ${item.mobileOnly ? 'sm:hidden' : ''}`}>
-        <a href={item.url} className="flex-1 flex w-full sm:w-auto flex-col items-center gap-1 sm:flex-row sm:gap-2 px-0 sm:px-3">
+        <Link href={item.url} className="flex-1 flex w-full sm:w-auto flex-col items-center gap-1 sm:flex-row sm:gap-2 px-0 sm:px-3">
           {item.icon && <span className="text-current">{item.icon}</span>}
           <span>{item.title}</span>
-        </a>
+        </Link>
       </Button>
     </NavigationMenuItem>
   );
@@ -245,17 +249,17 @@ const renderMobileMenuItem = (item: MenuItem) => {
       asChild
       className="w-full justify-start text-md font-semibold"
     >
-      <a key={item.title} href={item.url} className="hidden sm:flex items-center gap-2">
+      <Link key={item.title} href={item.url} className="hidden sm:flex items-center gap-2">
         {item.icon && <span className="text-current">{item.icon}</span>}
         <span>{item.title}</span>
-      </a>
+      </Link>
     </Button>
   );
 };
 
 const SubMenuLink = ({ item }: { item: MenuItem }) => {
   return (
-    <a
+    <Link
       className="flex flex-row gap-4 rounded-md p-3 leading-none no-underline transition-colors outline-none select-none opacity-70 hover:opacity-100 hover:bg-muted hover:text-accent-foreground"
       href={item.url}
     >
@@ -268,7 +272,7 @@ const SubMenuLink = ({ item }: { item: MenuItem }) => {
           </p>
         )}
       </div>
-    </a>
+    </Link>
   );
 };
 
