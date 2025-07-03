@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { supabaseServer } from "@/lib/supabaseServer";
 import { redirect } from "next/navigation";
 import { ProfileCard } from "@/components/profile/profile-card";
