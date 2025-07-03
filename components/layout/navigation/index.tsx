@@ -3,7 +3,7 @@ import * as NavigationMenuPrimitive from "@radix-ui/react-navigation-menu";
 import { BookOpen, List as MenuIcon, Users, User, BookmarkSimple, HouseSimple, SignIn as SignInIcon, SignOut } from "@phosphor-icons/react";
 import React, { useRef } from "react";
 
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 
 import { cn } from "@/lib/utils";
 
@@ -82,6 +82,7 @@ const Navbar2 = ({
   },
 }: Navbar2Props) => {
   const copyIconRef = useRef<CopyIconHandle>(null);
+  const router = useRouter();
   const pathname = usePathname();
   const { session } = useSessionContext();
   const supabase = useSupabaseClient();
@@ -118,7 +119,7 @@ const Navbar2 = ({
               {logo.title}
             </span>
           </a>
-          <div className="flex w-full sm:flex-1 items-center justify-center">
+          <div className="flex w-full items-center justify-center sm:absolute sm:left-1/2 sm:-translate-x-1/2 sm:w-auto">
             <div className="flex w-full sm:w-auto items-center">
               <NavigationMenuWithoutViewport className="flex-1 basis-0 grow min-w-0 sm:flex-none sm:grow-0 w-full sm:w-auto max-w-none">
                 <NavigationMenuList className="relative w-full sm:w-auto gap-0 sm:gap-1">
@@ -146,7 +147,7 @@ const Navbar2 = ({
                     {session.user.email}
                   </DropdownMenuLabel>
                   <DropdownMenuSeparator />
-                  <DropdownMenuItem onSelect={() => supabase.auth.signOut()} className="cursor-pointer">
+                  <DropdownMenuItem onSelect={async () => { await supabase.auth.signOut(); router.refresh(); }} className="cursor-pointer">
                     <SignOut size={14} />
                     Sign out
                   </DropdownMenuItem>
