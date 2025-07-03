@@ -74,7 +74,7 @@ const Navbar2 = ({
     { title: "Prompts", url: "#", icon: <BookOpen size={18} className="size-4.5" />, desktopOnly: true },
     { title: "Creators", url: "#", icon: <Users size={18} className="size-4.5" /> },
     { title: "Saved", url: "#", icon: <BookmarkSimple size={18} className="size-4.5" /> },
-    { title: "Profile", url: "#", icon: <User size={18} className="size-4.5" />, mobileOnly: true },
+    { title: "Profile", url: "/me", icon: <User size={18} className="size-4.5" />, mobileOnly: true },
   ],
   auth = {
     login: { title: "Login", url: "/login" },
@@ -122,7 +122,13 @@ const Navbar2 = ({
             <div className="flex w-full sm:w-auto items-center">
               <NavigationMenuWithoutViewport className="flex-1 basis-0 grow min-w-0 sm:flex-none sm:grow-0 w-full sm:w-auto max-w-none">
                 <NavigationMenuList className="relative w-full sm:w-auto gap-0 sm:gap-1">
-                  {menu.map((item) => renderMenuItem(item))}
+                  {menu
+                      .map((item) =>
+                        item.title === "Profile"
+                          ? { ...item, url: session ? "/me" : auth.login.url }
+                          : item
+                      )
+                      .map((item) => renderMenuItem(item))}
                 </NavigationMenuList>
               </NavigationMenuWithoutViewport>
             </div>
