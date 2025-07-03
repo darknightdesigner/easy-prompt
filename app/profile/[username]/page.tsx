@@ -2,7 +2,7 @@ import { supabaseServer } from "@/lib/supabaseServer";
 import { redirect } from "next/navigation";
 import { ProfileCard } from "@/components/profile/profile-card";
 
-export default async function PublicProfilePage({ params }: { params: { username: string } }) {
+export default async function PublicProfilePage({ params }: { params: { username: string }; searchParams?: Record<string, string | string[]> }) {
   const supabase = supabaseServer();
   const { data: profile } = await supabase
     .from("profiles")
