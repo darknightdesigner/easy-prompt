@@ -142,11 +142,13 @@ function PromptTemplate({
           {(displayName || title) && (
             <div className="flex items-start gap-2 p-2">
               {authorAvatar && (
-                <img
-                  src={authorAvatar}
-                  alt={displayName ?? username}
-                  className="w-[38px] h-[38px] rounded-full object-cover"
-                />
+                <Link href={username ? `/user/${username}` : "#"} className="shrink-0" prefetch={false}>
+                  <img
+                    src={authorAvatar}
+                    alt={displayName ?? username}
+                    className="w-[38px] h-[38px] rounded-full object-cover"
+                  />
+                </Link>
               )}
               <div className="flex flex-col">
                 <Link href={username ? `/user/${username}` : "#"} className="flex items-center gap-1 font-semibold text-foreground hover:underline">
@@ -241,7 +243,7 @@ function PromptTemplateTextarea({
       onChange={(e) => setValue(e.target.value)}
       onKeyDown={handleKeyDown}
       className={cn(
-        "text-base md:text-base text-card-foreground min-h-48 w-full p-4 resize-none border-none !bg-transparent dark:!bg-transparent shadow-none outline-none focus-visible:ring-0 focus-visible:ring-offset-0",
+        "text-base md:text-base text-card-foreground min-h-48 w-full p-4 resize-none overflow-hidden md:overflow-auto border-none !bg-transparent dark:!bg-transparent shadow-none outline-none focus-visible:ring-0 focus-visible:ring-offset-0",
         className
       )}
       rows={1}
