@@ -40,6 +40,10 @@ type PromptTemplateContextType = {
   totalSteps: number
   completedSteps: number
   shareUrl: string
+  variables: string[]
+  startWizard: () => void
+  currentStep: number
+  setCurrentStep: React.Dispatch<React.SetStateAction<number>>
   disabled?: boolean
 }
 
@@ -58,6 +62,10 @@ const PromptTemplateContext = createContext<PromptTemplateContextType>({
   totalSteps: 0,
   completedSteps: 0,
   shareUrl: '',
+  variables: [],
+  startWizard: () => {},
+  currentStep: -1,
+  setCurrentStep: () => {},
   disabled: false,
 })
 
@@ -118,10 +126,63 @@ function PromptTemplate({
   const shareUrl = propShareUrl || clientUrl;
   const effectiveMaxHeight = expanded ? 10000 : maxHeight;
 
-  const variables = React.useMemo(() => extractVariables(value ?? internalValue), [value, internalValue]);
-  let totalSteps = variables.length;
-  if (totalSteps === 0) totalSteps = 4; // TEMP: hard-coded for visual demo
-  const completedSteps = Math.floor(totalSteps / 2);
+  // Step-by-step wizard state
+  const [currentStep, setCurrentStep] = useState(-1); // -1 means wizard inactive
+  const [variableValues, setVariableValues] = useState<Record<string, string>>({});
+
+  // Extract unique template variables once per value change.
+  const variables = React.useMemo(
+    () => extractVariables(value ?? internalValue),
+    [value, internalValue]
+  );
+  const totalSteps = variables.length;
+
+  // Keep variableValues and currentStep in sync when variables list changes
+  useEffect(() => {
+    // Prune removed variables and add newly detected ones
+    setVariableValues(prev => {
+      const next: Record<string, string> = {};
+      variables.forEach(v => {
+        next[v] = prev[v] ?? "";
+      });
+      return next;
+    });
+
+    // Clamp currentStep so it never exceeds new totalSteps
+    setCurrentStep(prev => {
+      if (prev === -1) return prev; // wizard inactive
+      if (variables.length === 0) return -1; // no variables -> deactivate wizard
+      return Math.min(prev, variables.length - 1);
+    });
+  }, [variables]);
+  const completedSteps = currentStep >= 0 ? Math.min(currentStep + 1, totalSteps) : 0;
+
+  // Helpers
+  const currentVar = currentStep >= 0 ? variables[currentStep] ?? "" : "";
+  const handleVariableChange = (val: string) =>
+    setVariableValues((prev) => ({ ...prev, [currentVar]: val }));
+
+  const startWizard = () => setCurrentStep(0);
+
+  const generateFinalContent = React.useCallback(() => {
+    let finalContent = value ?? internalValue;
+    variables.forEach((v) => {
+      const replacement = variableValues[v] ?? `{${v}}`;
+      finalContent = finalContent.replace(new RegExp(`\\{${v}\\}`, "g"), replacement);
+    });
+    return finalContent;
+  }, [value, internalValue, variables, variableValues]);
+
+  // Auto-copy to clipboard once all steps are completed
+  useEffect(() => {
+    if (totalSteps > 0 && currentStep >= totalSteps) {
+      const final = generateFinalContent();
+      navigator.clipboard.writeText(final).catch(() => {/* ignore */});
+      // wizard complete -> reset after copy
+      setCurrentStep(-1);
+    }
+  }, [currentStep, totalSteps, generateFinalContent]);
+
 
   const handleChange = (newValue: string) => {
     setInternalValue(newValue)
@@ -146,9 +207,13 @@ function PromptTemplate({
           totalSteps,
           completedSteps,
           shareUrl,
+          variables,
+          startWizard,
+          currentStep,
+          setCurrentStep,
         }}
       >
-        <div className={cn("inline-flex flex-col border bg-secondary rounded-[28px] p-1 gap-1", className)}>
+        <div className={cn("flex flex-col w-full min-w-full flex-shrink-0 border bg-secondary rounded-[28px] p-1 gap-1", className)}>
           {(displayName || title) && (
             <div className="flex items-start gap-2 p-2">
               {authorAvatar && (
@@ -180,9 +245,25 @@ function PromptTemplate({
               </div>
             </div>
           )}
-          <div className="border-input bg-card rounded-[24px] border shadow-[0px_2px_6px_0px_rgba(0,0,0,0.05)]">
-            {children}
-            <PromptProgressBar totalSteps={totalSteps} completedSteps={completedSteps} />
+          <div className="w-full flex-1 border-input bg-card rounded-[24px] border shadow-[0px_2px_6px_0px_rgba(0,0,0,0.05)]">
+            {/* Wizard step input */}
+            {variables.length > 0 && currentStep >= 0 && currentStep < totalSteps ? (
+                <Textarea
+                  value={variableValues[currentVar] ?? ""}
+                  onChange={(e) => handleVariableChange(e.target.value)}
+                  placeholder={`Enter ${currentVar.replace(/_/g, " ")}`}
+                  className="text-base md:text-base text-card-foreground min-h-[240px] w-full p-4 resize-none overflow-hidden md:overflow-auto border-none !bg-transparent dark:!bg-transparent shadow-none outline-none focus-visible:ring-0 focus-visible:ring-offset-0"
+                  rows={1}
+                />
+            ) : (
+              children
+            )}
+            {totalSteps > 0 && (
+              <PromptProgressBar
+                totalSteps={totalSteps}
+                completedSteps={completedSteps}
+              />
+            )}
             {footer ?? (<div className="p-3"><DefaultPromptFooter /></div>)}
           </div>
         </div>
@@ -253,7 +334,7 @@ function PromptTemplateTextarea({
       onChange={(e) => setValue(e.target.value)}
       onKeyDown={handleKeyDown}
       className={cn(
-        "text-base md:text-base text-card-foreground min-h-48 w-full p-4 resize-none overflow-hidden md:overflow-auto border-none !bg-transparent dark:!bg-transparent shadow-none outline-none focus-visible:ring-0 focus-visible:ring-offset-0",
+        "text-base md:text-base text-card-foreground min-h-[240px] w-full p-4 resize-none overflow-hidden md:overflow-auto border-none !bg-transparent dark:!bg-transparent shadow-none outline-none focus-visible:ring-0 focus-visible:ring-offset-0",
         className
       )}
       rows={1}
@@ -323,7 +404,15 @@ function DefaultPromptFooter() {
     sharesCount: initialShares,
     savesCount: initialSaves,
     shareUrl,
+    variables,
+    startWizard,
+    currentStep,
+    setCurrentStep,
+    totalSteps,
+    value: promptValue,
   } = usePromptTemplate();
+
+  const wizardActive = variables.length > 0 && currentStep >= 0 && currentStep < totalSteps;
 
   // Local toggled state & counts
   const [likesCount, setLikesCount] = useState(initialLikes);
@@ -344,6 +433,15 @@ function DefaultPromptFooter() {
   const [shared, setShared] = useState(false);
   const shareUrlSafe = typeof window !== 'undefined' ? shareUrl || window.location.href : shareUrl;
 
+  const [copied, setCopied] = useState(false);
+  const handleCopyLink = () => {
+    if (typeof navigator !== 'undefined') {
+      navigator.clipboard.writeText(shareUrlSafe);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    }
+  }
+
   const handleShareClick = () => {
     if (!shared) {
       setSharesCount(prev => prev + 1);
@@ -361,31 +459,89 @@ function DefaultPromptFooter() {
 
   return (
     <PromptTemplateActions className="flex items-center justify-between">
-      <div className="flex items-center">
-        <PromptTemplateAction>
-          <Button variant="ghost" size="sm" type="button" className={cn("gap-1", liked && "opacity-100 text-[color:var(--like-active)] hover:text-[color:var(--like-active)]")} onClick={toggleLike}>
-            <Icon name="heart" weight={liked ? "fill" : "bold"} className="size-4.5" />
-            {likesCount > 0 && <SlidingNumber value={likesCount} className="text-sm" />}
-          </Button>
-        </PromptTemplateAction>
-        <PromptTemplateAction>
-          <Button variant="ghost" size="sm" type="button" className="gap-1" onClick={toggleComment}>
-            <Icon name="chat" weight="bold" className="size-4.5" />
-            {commentsCount > 0 && <SlidingNumber value={commentsCount} className="text-sm" />}
-          </Button>
-        </PromptTemplateAction>
-        <PromptTemplateAction>
-          <Popover>
-            <PopoverTrigger asChild>
-              <Button variant="ghost" size="sm" type="button" className="gap-1" onClick={handleShareClick}>
-                <Icon name="share" className="size-4.5" />
-                {sharesCount > 0 && <SlidingNumber value={sharesCount} className="text-sm" />}
+      <div className="flex items-center gap-1">
+        {wizardActive && (
+          <>
+            <PromptTemplateAction>
+              <Button
+                variant="ghost"
+                size="sm"
+                type="button"
+                disabled={currentStep === 0}
+                onClick={() => setCurrentStep((s) => Math.max(0, s - 1))}
+              >
+                <Icon name="arrow-left" className="size-4.5" />
               </Button>
-            </PopoverTrigger>
+            </PromptTemplateAction>
+            <PromptTemplateAction>
+              <Button
+                variant="ghost"
+                size="sm"
+                type="button"
+                onClick={() => setCurrentStep((s) => s + 1)}
+              >
+                <Icon name="arrow-right" className="size-4.5" />
+              </Button>
+            </PromptTemplateAction>
+          </>
+        )}
+        {!wizardActive && (
+          <PromptTemplateAction>
+            <Button
+              variant="ghost"
+              size="sm"
+              type="button"
+              className={cn(
+                "gap-1",
+                liked &&
+                  "opacity-100 text-[color:var(--like-active)] hover:text-[color:var(--like-active)]"
+              )}
+              onClick={toggleLike}
+            >
+              <Icon name="heart" weight={liked ? "fill" : "bold"} className="size-4.5" />
+              {likesCount > 0 && (
+                <SlidingNumber value={likesCount} className="text-sm" />
+              )}
+            </Button>
+          </PromptTemplateAction>
+        )}
+        {!wizardActive && (
+          <PromptTemplateAction>
+            <Button
+              variant="ghost"
+              size="sm"
+              type="button"
+              className="gap-1"
+              onClick={toggleComment}
+            >
+              <Icon name="chat" weight="bold" className="size-4.5" />
+              {commentsCount > 0 && (
+                <SlidingNumber value={commentsCount} className="text-sm" />
+              )}
+            </Button>
+          </PromptTemplateAction>
+        )}
+        {!wizardActive && (
+          <PromptTemplateAction>
+            <Popover>
+              <PopoverTrigger asChild>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  type="button"
+                  className="gap-1"
+                  onClick={handleShareClick}
+                >
+                  <Icon name="share" className="size-4.5" />
+                  {sharesCount > 0 && (
+                    <SlidingNumber value={sharesCount} className="text-sm" />
+                  )}
+                </Button>
+              </PopoverTrigger>
             <PopoverContent align="start" className="p-1 w-44">
               <div className="flex flex-col">
-                <Button variant="ghost" size="sm" className="justify-start" onClick={() => { navigator.clipboard.writeText(shareUrlSafe); }}>
-                  <Icon name="link" className="size-4.5" /> Copy link
+                <Button variant="ghost" size="sm" className="justify-start" onClick={handleCopyLink}>
+                  <Icon name={copied ? "check" : "link"} className="size-4.5" /> {copied ? "Copied" : "Copy link"}
                 </Button>
                 <Button asChild variant="ghost" size="sm" className="justify-start">
                   <a href={`https://twitter.com/intent/tweet?url=${encodeURIComponent(shareUrlSafe)}`} target="_blank" rel="noopener noreferrer">
@@ -393,7 +549,7 @@ function DefaultPromptFooter() {
                   </a>
                 </Button>
                 <Button asChild variant="ghost" size="sm" className="justify-start">
-                  <a href={`https://www.threads.net/intent/post?url=${encodeURIComponent(shareUrlSafe)}`} target="_blank" rel="noopener noreferrer">
+                  <a href={`https://www.threads.net/intent/post?text=${encodeURIComponent(shareUrlSafe)}`} target="_blank" rel="noopener noreferrer">
                     <Icon name="threads" className="size-4.5 mr-1" />Threads
                   </a>
                 </Button>
@@ -403,27 +559,73 @@ function DefaultPromptFooter() {
                 </Button>
               </div>
             </PopoverContent>
-          </Popover>
-        </PromptTemplateAction>
-        <PromptTemplateAction>
-          <Button variant="ghost" size="sm" type="button" className={cn("gap-1", saved && "opacity-100")} onClick={toggleSave}>
-            <Icon name="bookmark" weight={saved ? "fill" : "bold"} className="size-4.5" />
-            {savesCount > 0 && <SlidingNumber value={savesCount} className="text-sm" />}
-          </Button>
-        </PromptTemplateAction>
+            </Popover>
+          </PromptTemplateAction>
+        )}
+        {!wizardActive && (
+          <PromptTemplateAction>
+            <Button
+              variant="ghost"
+              size="sm"
+              type="button"
+              className={cn("gap-1", saved && "opacity-100")}
+              onClick={toggleSave}
+            >
+              <Icon name="bookmark" weight={saved ? "fill" : "bold"} className="size-4.5" />
+              {savesCount > 0 && (
+                <SlidingNumber value={savesCount} className="text-sm" />
+              )}
+            </Button>
+          </PromptTemplateAction>
+        )}
       </div>
       <div className="flex items-center gap-1">
+        {!wizardActive && (
+          <PromptTemplateAction>
+            <Button size="icon" type="button" variant="outline" className="gap-1 shadow-none size-8" onClick={toggleExpanded}>
+              <Icon name={expanded ? "caret-up" : "caret-down"} className="size-4.5" />
+            </Button>
+          </PromptTemplateAction>
+        )}
         <PromptTemplateAction>
-          <Button size="icon" type="button" variant="outline" className="gap-1 shadow-none size-8" onClick={toggleExpanded}>
-            <Icon name={expanded ? "caret-up" : "caret-down"} className="size-4.5" />
-          </Button>
+          {variables.length > 0 && currentStep >= 0 && currentStep < totalSteps && (
+            <>
+              <Button variant="outline" size="sm" className="gap-1 shadow-none mr-1 leading-none" onClick={() => setCurrentStep(-1)}>
+                Cancel
+              </Button>
+              <Button size="sm" className="gap-1" onClick={() => setCurrentStep(s => s + 1)}>
+                {currentStep + 1 === totalSteps ? (
+                  <>
+                    <Icon name="check" className="size-4" /> Copy
+                  </>
+                ) : (
+                  <>
+                    Next <Icon name="arrow-right" className="size-4" />
+                  </>
+                )}
+              </Button>
+            </>
+          )}
         </PromptTemplateAction>
-        <PromptTemplateAction>
-          <Button size="sm" type="button" className="gap-1">
+        {!wizardActive && (
+          <PromptTemplateAction>
+            <Button
+              size="sm"
+              type="button"
+              className="gap-1"
+              onClick={() => {
+                if (variables.length > 0) {
+                  startWizard();
+                } else {
+                  navigator.clipboard.writeText(promptValue).catch(() => {});
+                }
+              }}
+          >
             <Icon name="copyPrompt" className="size-4.5" />
             Copy
           </Button>
         </PromptTemplateAction>
+        )}
       </div>
     </PromptTemplateActions>
   );
