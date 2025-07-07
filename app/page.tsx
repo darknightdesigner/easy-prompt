@@ -81,7 +81,7 @@ export default function Home() {
         <div className="relative w-full sm:max-w-[44rem] px-4">
           <PromptTemplate
             className="w-full"
-            authorAvatar="http://localhost:3845/assets/059de995a4eb4d80b6dbdca8d3573ffbffc73b7a.png"
+            authorAvatar="https://ci3.googleusercontent.com/mail-sig/AIorK4yctzAmNSeWRCuUGwYHYlqVFpxrb40OIXsdWX-IOdVDk9b3GmtZUcGmrRLYDjMQnbTCcv9qFLpnpEEt"
             displayName="Andres Gonzalez"
             username="batman"
             title="Create specialized YouTube video scripts based on your niche"
