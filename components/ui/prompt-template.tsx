@@ -378,7 +378,7 @@ function DefaultPromptFooter() {
         </PromptTemplateAction>
         <PromptTemplateAction>
           <Button size="sm" type="button" className="gap-1">
-            <Icon name="copy" className="size-4" />
+            <Icon name="copyPrompt" className="size-4" />
             Copy
           </Button>
         </PromptTemplateAction>

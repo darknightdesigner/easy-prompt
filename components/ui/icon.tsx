@@ -2,7 +2,8 @@
 
 import * as Phosphor from "@phosphor-icons/react";
 import React from "react";
-
+import { CopyPromptIcon } from "@/components/ui/icons/copy-prompt-icon";
+// (local CopyPromptIcon removed – using shared component)
 // Map logical icon names to a concrete Phosphor glyph (or custom SVG component).
 // Add or swap entries here to change icons application-wide.
 const registry = {
@@ -18,6 +19,7 @@ const registry = {
   chat: Phosphor.ChatCircleIcon,
   share: Phosphor.PaperPlaneTiltIcon,
   sliders: Phosphor.SlidersHorizontalIcon,
+  copyPrompt: CopyPromptIcon,
   "caret-down": Phosphor.CaretDownIcon,
   "caret-up": Phosphor.CaretUpIcon,
   verified: Phosphor.SealCheckIcon,
@@ -28,7 +30,7 @@ const registry = {
 } as const;
 
 type Registry = typeof registry;
-export type IconName = keyof Registry; // includes 'verified', 'caret-down', 'caret-up'
+export type IconName = keyof Registry; // includes 'verified', 'caret-down', 'caret-up', 'copyPrompt'
 
 type IconProps = {
   /** Key defined in the registry */
