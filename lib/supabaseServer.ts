@@ -7,7 +7,7 @@ import { createServerClient } from '@supabase/ssr'
  * with automatic cookie-based auth.
  */
 export const supabaseServer = async () => {
-  const cookieStore = cookies();
+  const cookieStore = await cookies();
 
   return createServerClient(
     process.env.SUPABASE_URL!,
