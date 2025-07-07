@@ -3,9 +3,7 @@
 import * as Phosphor from "@phosphor-icons/react";
 import React from "react";
 import { CopyPromptIcon } from "@/components/ui/icons/copy-prompt-icon";
-// (local CopyPromptIcon removed – using shared component)
-// Map logical icon names to a concrete Phosphor glyph (or custom SVG component).
-// Add or swap entries here to change icons application-wide.
+
 const registry = {
   copy: Phosphor.CopyIcon,
   paperclip: Phosphor.PaperclipIcon,
@@ -18,6 +16,10 @@ const registry = {
   heart: Phosphor.HeartIcon,
   chat: Phosphor.ChatCircleIcon,
   share: Phosphor.PaperPlaneTiltIcon,
+  link: Phosphor.LinkSimpleIcon,
+  twitter: Phosphor.XLogoIcon,
+  email: Phosphor.EnvelopeSimpleIcon,
+  threads: Phosphor.ThreadsLogoIcon,
   sliders: Phosphor.SlidersHorizontalIcon,
   copyPrompt: CopyPromptIcon,
   "caret-down": Phosphor.CaretDownIcon,
@@ -28,6 +30,7 @@ const registry = {
   logout: Phosphor.SignOutIcon,
   menu: Phosphor.ListIcon,
 } as const;
+
 
 type Registry = typeof registry;
 export type IconName = keyof Registry; // includes 'verified', 'caret-down', 'caret-up', 'copyPrompt'

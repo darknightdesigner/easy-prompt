@@ -1,5 +1,6 @@
 'use client';
 import { useEffect, useId } from 'react';
+import { cn } from '@/lib/utils';
 import {
   MotionValue,
   motion,
@@ -80,12 +81,14 @@ type SlidingNumberProps = {
   value: number;
   padStart?: boolean;
   decimalSeparator?: string;
+  className?: string;
 };
 
 export function SlidingNumber({
   value,
   padStart = false,
   decimalSeparator = '.',
+  className,
 }: SlidingNumberProps) {
   const absValue = Math.abs(value);
   const [integerPart, decimalPart] = absValue.toString().split('.');
@@ -98,7 +101,7 @@ export function SlidingNumber({
   );
 
   return (
-    <div className='flex items-center'>
+    <div className={cn('flex items-center', className)}>
       {value < 0 && '-'}
       {integerDigits.map((_, index) => (
         <Digit

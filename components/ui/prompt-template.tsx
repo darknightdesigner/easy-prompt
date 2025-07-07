@@ -5,6 +5,8 @@ import { PromptProgressBar } from "@/components/ui/prompt-progress-bar";
 import { extractVariables } from "@/lib/prompt-variables";
 import { Button } from "@/components/ui/button"
 import { Icon } from "@/components/ui/icon"
+import { SlidingNumber } from "@/components/motion-primitives/sliding-number"
+import { Popover, PopoverTrigger, PopoverContent } from "@/components/ui/popover"
 import Link from "next/link"
 import {
   Tooltip,
@@ -37,6 +39,7 @@ type PromptTemplateContextType = {
   savesCount: number
   totalSteps: number
   completedSteps: number
+  shareUrl: string
   disabled?: boolean
 }
 
@@ -54,6 +57,7 @@ const PromptTemplateContext = createContext<PromptTemplateContextType>({
   savesCount: 0,
   totalSteps: 0,
   completedSteps: 0,
+  shareUrl: '',
   disabled: false,
 })
 
@@ -82,6 +86,8 @@ type PromptTemplateProps = {
   commentsCount?: number
   sharesCount?: number
   savesCount?: number
+  /** Optional share URL (falls back to window.location.href) */
+  shareUrl?: string
   children: React.ReactNode
   className?: string
 }
@@ -103,10 +109,13 @@ function PromptTemplate({
   commentsCount,
   sharesCount,
   savesCount,
+  shareUrl: propShareUrl,
   children,
 }: PromptTemplateProps) {
   const [internalValue, setInternalValue] = useState(value || "");
   const [expanded, setExpanded] = useState(false);
+  const clientUrl = typeof window !== 'undefined' ? window.location.href : '';
+  const shareUrl = propShareUrl || clientUrl;
   const effectiveMaxHeight = expanded ? 10000 : maxHeight;
 
   const variables = React.useMemo(() => extractVariables(value ?? internalValue), [value, internalValue]);
@@ -136,6 +145,7 @@ function PromptTemplate({
           savesCount: savesCount ?? 0,
           totalSteps,
           completedSteps,
+          shareUrl,
         }}
       >
         <div className={cn("inline-flex flex-col border bg-secondary rounded-[28px] p-1 gap-1", className)}>
@@ -312,6 +322,7 @@ function DefaultPromptFooter() {
     commentsCount: initialComments,
     sharesCount: initialShares,
     savesCount: initialSaves,
+    shareUrl,
   } = usePromptTemplate();
 
   // Local toggled state & counts
@@ -331,9 +342,13 @@ function DefaultPromptFooter() {
 
   const [sharesCount, setSharesCount] = useState(initialShares);
   const [shared, setShared] = useState(false);
-  const toggleShare = () => {
-    setSharesCount(prev => prev + (shared ? -1 : 1));
-    setShared(!shared);
+  const shareUrlSafe = typeof window !== 'undefined' ? shareUrl || window.location.href : shareUrl;
+
+  const handleShareClick = () => {
+    if (!shared) {
+      setSharesCount(prev => prev + 1);
+      setShared(true);
+    }
   };
 
   const [savesCount, setSavesCount] = useState(initialSaves);
@@ -349,38 +364,63 @@ function DefaultPromptFooter() {
       <div className="flex items-center">
         <PromptTemplateAction>
           <Button variant="ghost" size="sm" type="button" className={cn("gap-1", liked && "opacity-100 text-[color:var(--like-active)] hover:text-[color:var(--like-active)]")} onClick={toggleLike}>
-            <Icon name="heart" weight={liked ? "fill" : "bold"} className="size-4" />
-            {likesCount > 0 && <span className="text-xs">{likesCount}</span>}
+            <Icon name="heart" weight={liked ? "fill" : "bold"} className="size-4.5" />
+            {likesCount > 0 && <SlidingNumber value={likesCount} className="text-sm" />}
           </Button>
         </PromptTemplateAction>
         <PromptTemplateAction>
           <Button variant="ghost" size="sm" type="button" className="gap-1" onClick={toggleComment}>
-            <Icon name="chat" weight="bold" className="size-4" />
-            {commentsCount > 0 && <span className="text-xs">{commentsCount}</span>}
+            <Icon name="chat" weight="bold" className="size-4.5" />
+            {commentsCount > 0 && <SlidingNumber value={commentsCount} className="text-sm" />}
           </Button>
         </PromptTemplateAction>
         <PromptTemplateAction>
-          <Button variant="ghost" size="sm" type="button" className="gap-1" onClick={toggleShare}>
-            <Icon name="share" className="size-4" />
-            {sharesCount > 0 && <span className="text-xs">{sharesCount}</span>}
-          </Button>
+          <Popover>
+            <PopoverTrigger asChild>
+              <Button variant="ghost" size="sm" type="button" className="gap-1" onClick={handleShareClick}>
+                <Icon name="share" className="size-4.5" />
+                {sharesCount > 0 && <SlidingNumber value={sharesCount} className="text-sm" />}
+              </Button>
+            </PopoverTrigger>
+            <PopoverContent align="start" className="p-1 w-44">
+              <div className="flex flex-col">
+                <Button variant="ghost" size="sm" className="justify-start" onClick={() => { navigator.clipboard.writeText(shareUrlSafe); }}>
+                  <Icon name="link" className="size-4.5" /> Copy link
+                </Button>
+                <Button asChild variant="ghost" size="sm" className="justify-start">
+                  <a href={`https://twitter.com/intent/tweet?url=${encodeURIComponent(shareUrlSafe)}`} target="_blank" rel="noopener noreferrer">
+                    <Icon name="twitter" className="size-4.5 mr-1" />X
+                  </a>
+                </Button>
+                <Button asChild variant="ghost" size="sm" className="justify-start">
+                  <a href={`https://www.threads.net/intent/post?url=${encodeURIComponent(shareUrlSafe)}`} target="_blank" rel="noopener noreferrer">
+                    <Icon name="threads" className="size-4.5 mr-1" />Threads
+                  </a>
+                </Button>
+                <Button asChild variant="ghost" size="sm" className="justify-start">
+                  <a href={`mailto:?subject=Check%20this%20prompt&body=${encodeURIComponent(shareUrlSafe)}`}>
+                      <Icon name="email" className="size-4.5 mr-1" />Email</a>
+                </Button>
+              </div>
+            </PopoverContent>
+          </Popover>
         </PromptTemplateAction>
         <PromptTemplateAction>
           <Button variant="ghost" size="sm" type="button" className={cn("gap-1", saved && "opacity-100")} onClick={toggleSave}>
-            <Icon name="bookmark" weight={saved ? "fill" : "bold"} className="size-4" />
-            {savesCount > 0 && <span className="text-xs">{savesCount}</span>}
+            <Icon name="bookmark" weight={saved ? "fill" : "bold"} className="size-4.5" />
+            {savesCount > 0 && <SlidingNumber value={savesCount} className="text-sm" />}
           </Button>
         </PromptTemplateAction>
       </div>
       <div className="flex items-center gap-1">
         <PromptTemplateAction>
           <Button size="icon" type="button" variant="outline" className="gap-1 shadow-none size-8" onClick={toggleExpanded}>
-            <Icon name={expanded ? "caret-up" : "caret-down"} className="size-4" />
+            <Icon name={expanded ? "caret-up" : "caret-down"} className="size-4.5" />
           </Button>
         </PromptTemplateAction>
         <PromptTemplateAction>
           <Button size="sm" type="button" className="gap-1">
-            <Icon name="copyPrompt" className="size-4" />
+            <Icon name="copyPrompt" className="size-4.5" />
             Copy
           </Button>
         </PromptTemplateAction>

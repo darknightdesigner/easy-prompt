@@ -90,6 +90,7 @@ export default function Home() {
             sharesCount={4}
             savesCount={21}
             verified={true}
+            shareUrl={"/prompts/sample-video-script"}
             value={`You are an award-winning YouTube scriptwriter and growth strategist.
 
 TASK  
