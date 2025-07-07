@@ -1,34 +1,24 @@
 "use client";
 
-import * as Icons from "@phosphor-icons/react";
+import { Icon } from "@/components/ui/icon";
 import { motion } from "motion/react";
-import {
-  Tile,
-  TileHeader,
-  TileIcon,
-  TileIconSecondary,
-  TileTitle,
-  TileDescription,
-} from "@/components/ui/tile";
 import { TextEffect } from "@/components/motion-primitives/text-effect";
 import { ContainerEffect } from "@/components/motion-primitives/container-effect";
 import { CopyIcon } from "@/components/animated-icons/optiprompt";
-import { supabaseBrowser } from "@/lib/supabaseBrowser";
-import React, { useEffect, useState } from "react";
-import { TileSkeleton } from "@/components/ui/tile-skeleton";
-import { ShimmerButton } from "@/components/magicui/shimmer-button";
+import React from "react";
 import { Button } from "@/components/ui/button";
 import WavyCanvas from "@/components/graphics/WavyCanvas";
-
+import {
+  PromptTemplate,
+  PromptTemplateTextarea,
+} from "@/components/ui/prompt-template";
 
 const HeroSection = React.memo(function HeroSection() {
   return (
     <div className="relative z-10 w-full">
-      <div className="mx-auto flex flex-col items-center px-4 max-w-md sm:max-w-lg">
-        
-          <div className="flex flex-col items-center gap-2 text-center mt-16 relative z-10">
-
-          <h1 className="mb-2 text-5xl font-semibold tracking-tight text-pretty sm:text-6xl">
+      <div className="mx-auto flex flex-col items-center px-4">
+        <div className="flex flex-col items-center gap-2 text-center mt-16 relative z-10">
+          <h1 className="mb-2 text-4xl font-semibold tracking-tight text-pretty sm:text-5xl">
             <TextEffect
               preset="fade-in-blur"
               delay={0.1}
@@ -38,7 +28,7 @@ const HeroSection = React.memo(function HeroSection() {
               Powerful prompts made simple
             </TextEffect>
           </h1>
-          <p className="mx-auto max-w-xs text-muted-foreground sm:text-xl">
+          <p className="mx-auto text-muted-foreground">
             <TextEffect
               as="span"
               preset="fade-in-blur"
@@ -46,131 +36,112 @@ const HeroSection = React.memo(function HeroSection() {
               speedReveal={4}
               speedSegment={1}
             >
-              Discover world-class prompts and copy them simply, using variables
+              {"Discover world-class prompts and copy them simply, using {variables}"}
             </TextEffect>
           </p>
           <ContainerEffect preset="fade-in-blur" delay={0.6} transition={{ duration: 0.6 }}>
-            <div className="mt-4 flex flex-wrap justify-center gap-3">
-              <ShimmerButton>
-                <Icons.Plus weight="bold" />
+            <div className="mt-3 flex flex-wrap justify-center gap-3">
+              <Button variant="outline">
+                <Icon name="plus" weight="bold" />
                 Create Template
-              </ShimmerButton>
-              <Button variant="secondary">
-                View Prompts
+              </Button>
+              <Button variant="outline">
+                <Icon name="book" weight="bold" />
+                Explore Prompts
               </Button>
             </div>
           </ContainerEffect>
-          </div>
         </div>
       </div>
+    </div>
   );
 });
 
 HeroSection.displayName = "HeroSection";
 
-type FeaturedTag = {
-  id: string;
-  name: string;
-  icon: string | null;
-  icon_weight: string | null;
-  tagline: string | null;
-  template_count: number | null;
-};
-
 export default function Home() {
-  const supabase = supabaseBrowser();
-  const [featuredTags, setFeaturedTags] = useState<FeaturedTag[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [showTiles, setShowTiles] = useState(false);
-
-  useEffect(() => {
-    supabase
-      .from("featured_tags")
-      .select(
-        "id, name, icon, icon_weight, tagline, template_count"
-      )
-      .then(({ data, error }) => {
-        if (error) console.error(error);
-        else {
-          setFeaturedTags(data ?? []);
-          setLoading(false);
-        }
-      });
-  }, []);
-
-  useEffect(() => {
-    if (!loading) {
-      const timer = setTimeout(() => setShowTiles(true), 1000);
-      return () => clearTimeout(timer);
-    } else {
-      setShowTiles(false);
-    }
-  }, [loading]);
-
   return (
-    <section className="relative overflow-hidden py-32 flex flex-col gap-12 items-center justify-center bg-[linear-gradient(to_bottom,var(--background)_25%,var(--secondary)_100%)] sm:bg-[linear-gradient(to_bottom,var(--background)_50%,var(--secondary)_100%)]">
+    <section className="relative min-h-[100svh] overflow-hidden py-32 flex flex-col gap-8 items-center justify-center bg-background">
       <div
         className="absolute inset-0 z-0 pointer-events-none before:absolute before:inset-0 before:content-[''] before:bg-[url('https://cdn.prod.website-files.com/61a6b59cc1578e2a2caf13c5/61ae57c4d73bf15eadf011b8_grain.gif')] before:bg-repeat before:[mask-image:linear-gradient(to_top,_black_0%,_black_25%,_transparent_100%)] before:opacity-0"
       />
       {/* wavy background */}
-      <div className="absolute inset-0 flex items-center justify-center pointer-events-none z-5">
+      <div className="absolute top-0 left-0 w-[100vw] h-[100svh] flex items-center justify-center pointer-events-none z-0">
         <motion.div
           className="w-full sm:mb-0"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
-          transition={{ duration: 3, delay: 1.5 }}
+          transition={{ duration: 3, delay: 1 }}
         >
           <WavyCanvas />
         </motion.div>
       </div>
       <HeroSection />
-      
-      {/* FEATURED CATEGORIES */}
-      <motion.div
-          className="relative z-10 w-full"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ duration: 1, delay: 1 }}
-        >
-        <div className="mx-auto flex flex-col items-center sm:max-w-[48rem] px-2">
-          {loading ? (
-            <div className="w-full grid grid-cols-1 sm:grid-cols-2 gap-2">
-              {Array.from({ length: 6 }).map((_, idx) => (
-                <TileSkeleton key={idx} />
-              ))}
-            </div>
-          ) : (
-            <div className="w-full grid grid-cols-1 sm:grid-cols-2 gap-2">
-              {featuredTags.map((tag) => {
-                const IconCmp =
-                  (Icons as Record<string, any>)[tag.icon ?? ""] ??
-                  Icons.SquaresFour; // fallback icon
+      <ContainerEffect preset="fade-in-blur" delay={0.6} transition={{ duration: 0.6 }}>
+        <div className="relative w-full sm:max-w-[44rem] px-4">
+          <PromptTemplate
+            className="w-full"
+            authorAvatar="http://localhost:3845/assets/059de995a4eb4d80b6dbdca8d3573ffbffc73b7a.png"
+            displayName="Andres Gonzalez"
+            username="batman"
+            title="Create specialized YouTube video scripts based on your niche"
+            likesCount={25}
+            commentsCount={5}
+            sharesCount={4}
+            savesCount={21}
+            verified={true}
+            value={`You are an award-winning YouTube scriptwriter and growth strategist.
 
-                return (
-                  <Tile variant="outline" asChild key={tag.id}>
-                    <a href="#">
-                      <TileHeader>
-                        <TileIcon>
-                          <IconCmp weight={tag.icon_weight as any} />
-                        </TileIcon>
-                        <TileIconSecondary>
-                          <Icons.ArrowUpRight className="opacity-0 transition-all group-hover:opacity-100" />
-                        </TileIconSecondary>
-                      </TileHeader>
-                      <div>
-                        <TileTitle>{tag.name}</TileTitle>
-                        <TileDescription>
-                          {tag.tagline ?? `${tag.template_count ?? 0} prompts`}
-                        </TileDescription>
-                      </div>
-                    </a>
-                  </Tile>
-                );
-              })}
-            </div>
-          )}
-        </div>
-      </motion.div>
+TASK  
+Create a complete, timestamped script for a YouTube video.
+
+VIDEO BRIEF  
+• Niche / industry: {niche}  
+• Specific topic or angle: {video_topic}  
+• Target viewer persona(s): {audience}  
+• Goal of the video (educate / sell / build authority / entertain): {video_goal}  
+• Desired video length (minutes): {video_length}  
+• Tone & style (e.g., playful, cinematic, no-fluff, storytelling): {tone_style}  
+• On-screen host’s persona or credibility blurb: {host_persona}  
+• Key points or takeaways that **must** be covered (bullet list): {key_points}  
+• Real-world examples, data, or case studies available: {supporting_material}  
+• Primary call-to-action at the end: {cta}  
+• Secondary CTAs or brand integrations (if any): {secondary_ctas}  
+
+FORMAT REQUIREMENTS  
+1. **Compelling Title**: 3 click-worthy title options (≤60 chars).  
+2. **Hook (00:00-00:20)**: 1-2 punchy sentences that grab attention and preview the transformation/value.  
+3. **Intro (00:20-00:45)**: Presenter intro + why the viewer should care, ending with a one-sentence promise.  
+4. **Body**  
+   - Break into logical chapters with timestamps (e.g., 01:15, 03:40…).  
+   - Use storytelling frameworks (problem → insight → solution) where possible.  
+   - Include dialogue, on-screen text cues, B-roll notes, and any graphics callouts.  
+5. **Recap & CTA (final 30-45 sec)**: Summarize key takeaways, deliver {cta}, and tease the next video.  
+6. **SEO Section (after the script)**:  
+   - 15 high-intent tags/keywords.  
+   - 150-word video description incorporating those keywords naturally.  
+   - 3 thumbnail headline ideas.
+
+CONSTRAINTS  
+- Write at a 6th-to-8th-grade reading level unless {tone_style} states otherwise.  
+- Keep sentences ≤20 words; use active voice.  
+- Infuse the brand voice: {brand_voice_guidelines}.  
+- Avoid filler phrases (“so yeah,” “basically”) and clichés.
+
+DELIVERABLE  
+Return everything in **markdown** with headings and bullet lists for easy pasting into Notion.
+
+BEGIN.`}
+        >
+          <PromptTemplateTextarea
+            className="w-full resize-none text-base placeholder:text-muted-foreground"
+            placeholder="Write your prompt template here..."
+          />
+
+        </PromptTemplate>
+      </div>
+      </ContainerEffect>
+
     </section>
   );
 }

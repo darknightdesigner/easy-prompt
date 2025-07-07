@@ -1,6 +1,6 @@
 "use client";
 import * as NavigationMenuPrimitive from "@radix-ui/react-navigation-menu";
-import { BookOpen, List as MenuIcon, Users, User, BookmarkSimple, HouseSimple, SignIn as SignInIcon, SignOut } from "@phosphor-icons/react";
+import { Icon } from "@/components/ui/icon";
 import React, { useRef } from "react";
 
 import { usePathname, useRouter } from "next/navigation";
@@ -71,11 +71,11 @@ const Navbar2 = ({
     title: "OptiPrompt",
   },
   menu = [
-    { title: "Home", url: "", icon: <HouseSimple size={18} className="size-4.5" />, mobileOnly: true },
-    { title: "Prompts", url: "#", icon: <BookOpen size={18} className="size-4.5" />, desktopOnly: true },
-    { title: "Creators", url: "#", icon: <Users size={18} className="size-4.5" /> },
-    { title: "Saved", url: "#", icon: <BookmarkSimple size={18} className="size-4.5" /> },
-    { title: "Profile", url: "/me", icon: <User size={18} className="size-4.5" />, mobileOnly: true },
+    { title: "Home", url: "", icon: <Icon name="house" className="size-4.5" />, mobileOnly: true },
+    { title: "Prompts", url: "#", icon: <Icon name="book" className="size-4.5" />, desktopOnly: true },
+    { title: "Creators", url: "#", icon: <Icon name="users" className="size-4.5" /> },
+    { title: "Saved", url: "#", icon: <Icon name="bookmark" className="size-4.5" /> },
+    { title: "Profile", url: "/me", icon: <Icon name="profile" className="size-4.5" />, mobileOnly: true },
   ],
   auth = {
     login: { title: "Login", url: "/login" },
@@ -140,19 +140,19 @@ const Navbar2 = ({
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                   <Button variant="outline" className="h-8 w-8 p-0 rounded-full shadow-none">
-                    <User size={18} />
+                    <Icon name="profile" className="size-4.5" />
                   </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end">
                   <DropdownMenuItem asChild className="cursor-pointer">
                     <Link href="/me" className="flex items-center gap-2">
-                      <User size={14} />
+                      <Icon name="profile" className="size-3.5" />
                       Profile
                     </Link>
                   </DropdownMenuItem>
                   <DropdownMenuSeparator />
                   <DropdownMenuItem onSelect={async () => { await supabase.auth.signOut(); router.refresh(); }} className="cursor-pointer">
-                    <SignOut size={14} />
+                    <Icon name="logout" className="size-3.5" />
                     Sign out
                   </DropdownMenuItem>
                 </DropdownMenuContent>
@@ -160,7 +160,7 @@ const Navbar2 = ({
             ) : (
               <>
                 <Button asChild variant="outline" className="h-auto rounded-full flex flex-col items-center gap-1 sm:h-8 sm:flex-row sm:gap-2 shadow-none">
-                  <Link href={auth.login.url} className="flex items-center gap-1"><SignInIcon size={16} className="sm:hidden" />{auth.login.title}</Link>
+                  <Link href={auth.login.url} className="flex items-center gap-1"><Icon name="login" className="size-4 sm:hidden" />{auth.login.title}</Link>
                 </Button>
                 <Button asChild size="sm" className="hidden sm:inline-flex">
                   <Link href={auth.signup.url}>{auth.signup.title}</Link>
