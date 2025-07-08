@@ -43,6 +43,10 @@ type PromptTemplateContextType = {
   commentsCount: number
   sharesCount: number
   savesCount: number
+  /** Event handlers for interactions */
+  onLike?: () => void
+  onSave?: () => void
+  onShare?: () => void
   totalSteps: number
   completedSteps: number
   shareUrl: string
@@ -66,6 +70,9 @@ const PromptTemplateContext = createContext<PromptTemplateContextType>({
   commentsCount: 0,
   sharesCount: 0,
   savesCount: 0,
+  onLike: undefined,
+  onSave: undefined,
+  onShare: undefined,
   totalSteps: 0,
   completedSteps: 0,
   shareUrl: '',
@@ -102,6 +109,10 @@ type PromptTemplateProps = {
   commentsCount?: number
   sharesCount?: number
   savesCount?: number
+  /** Event handlers for interactions */
+  onLike?: () => void
+  onSave?: () => void
+  onShare?: () => void
   /** Optional share URL (falls back to window.location.href) */
   shareUrl?: string
   variableQuestions?: Record<string, string> // Map of variable names to their questions
@@ -126,6 +137,9 @@ function PromptTemplate({
   commentsCount,
   sharesCount,
   savesCount,
+  onLike,
+  onSave,
+  onShare,
   shareUrl: propShareUrl,
   variableQuestions,
   children,
@@ -331,6 +345,9 @@ function PromptTemplate({
           commentsCount: commentsCount ?? 0,
           sharesCount: sharesCount ?? 0,
           savesCount: savesCount ?? 0,
+          onLike,
+          onSave,
+          onShare,
           totalSteps,
           completedSteps,
           shareUrl,
@@ -576,63 +593,110 @@ function PromptTemplateAction({
 
 function DefaultPromptFooter() {
   const {
-    likesCount: initialLikes,
-    expanded,
-    toggleExpanded,
-    commentsCount: initialComments,
-    sharesCount: initialShares,
-    savesCount: initialSaves,
-    shareUrl,
     variables,
-    startWizard,
+    variableMetadata,
     currentStep,
     setCurrentStep,
     totalSteps,
     value: promptValue,
+    onLike,
+    onSave,
+    onShare,
+    likesCount: initialLikesCount,
+    sharesCount: initialSharesCount,
+    commentsCount: initialCommentsCount,
+    savesCount: initialSavesCount,
+    shareUrl,
+    startWizard
   } = usePromptTemplate();
+  
+  // Local state for animated counts
+  const [localLikesCount, setLocalLikesCount] = useState(initialLikesCount || 0);
+  const [localSharesCount, setLocalSharesCount] = useState(initialSharesCount || 0);
+  const [localCommentsCount, setLocalCommentsCount] = useState(initialCommentsCount || 0);
+  const [localSavesCount, setLocalSavesCount] = useState(initialSavesCount || 0);
 
   const wizardActive = variables.length > 0 && currentStep >= 0 && currentStep <= totalSteps;
 
-  // Local toggled state & counts
-  const [likesCount, setLikesCount] = useState(initialLikes);
-  const [liked, setLiked] = useState(false);
-  const toggleLike = () => {
-    setLikesCount(prev => prev + (liked ? -1 : 1));
-    setLiked(!liked);
-  };
-
-  const [commentsCount, setCommentsCount] = useState(initialComments);
-  const [commented, setCommented] = useState(false);
-  const toggleComment = () => {
-    setCommentsCount(prev => prev + (commented ? -1 : 1));
-    setCommented(!commented);
-  };
-
-  const [sharesCount, setSharesCount] = useState(initialShares);
-  const [shared, setShared] = useState(false);
-  const shareUrlSafe = typeof window !== 'undefined' ? shareUrl || window.location.href : shareUrl;
+  const variableQuestion = currentStep >= 0 && currentStep < variables.length ? variableMetadata[variables[currentStep]]?.question : "";
   
+  // UI state
+  const [liked, setLiked] = useState(false);
+  const [commented, setCommented] = useState(false);
+  const [saved, setSaved] = useState(false);
   const [copied, setCopied] = useState(false);
+  const [shareUrlSafe, setShareUrlSafe] = useState("");
+  
+  useEffect(() => {
+    // Default to current URL if no share URL provided
+    setShareUrlSafe(typeof window !== 'undefined' ? (shareUrl || window.location.href) : "");
+  }, [shareUrl]);
+  
+  // Update local counts when props change
+  useEffect(() => {
+    setLocalLikesCount(initialLikesCount || 0);
+  }, [initialLikesCount]);
+  
+  useEffect(() => {
+    setLocalSharesCount(initialSharesCount || 0);
+  }, [initialSharesCount]);
+  
+  useEffect(() => {
+    setLocalCommentsCount(initialCommentsCount || 0);
+  }, [initialCommentsCount]);
+  
+  useEffect(() => {
+    setLocalSavesCount(initialSavesCount || 0);
+  }, [initialSavesCount]);
+
+  // Event handlers
+  const toggleLike = () => {
+    // Update UI state
+    setLiked(prev => !prev);
+    
+    // Update local count for immediate feedback
+    setLocalLikesCount(count => count + (liked ? -1 : 1));
+    
+    // Call the actual onLike handler for backend update
+    // but don't let it modify our local count, since we already did that
+    if (onLike) onLike();
+  };
+
+  const toggleComment = () => {
+    // Update UI state
+    setCommented(prev => !prev);
+    
+    // Update local count for immediate feedback
+    setLocalCommentsCount(count => count + (commented ? -1 : 1));
+  };
+
+  const toggleSave = () => {
+    // Update UI state
+    setSaved(prev => !prev);
+    
+    // Update local count for immediate feedback
+    setLocalSavesCount(count => count + (saved ? -1 : 1));
+    
+    // Call the actual onSave handler for backend update
+    // but don't let it modify our local count, since we already did that
+    if (onSave) onSave();
+  };
+
+  const handleShareClick = () => {
+    // Increment local share count for immediate feedback
+    setLocalSharesCount(count => count + 1);
+    
+    // Call the actual onShare handler for backend update
+    // but don't let it modify our local count, since we already did that
+    if (onShare) onShare();
+  };
+
   const handleCopyLink = () => {
     if (typeof navigator !== 'undefined') {
       navigator.clipboard.writeText(shareUrlSafe);
       setCopied(true);
       setTimeout(() => setCopied(false), 2000);
     }
-  }
-
-  const handleShareClick = () => {
-    if (!shared) {
-      setSharesCount(prev => prev + 1);
-      setShared(true);
-    }
-  };
-
-  const [savesCount, setSavesCount] = useState(initialSaves);
-  const [saved, setSaved] = useState(false);
-  const toggleSave = () => {
-    setSavesCount(prev => prev + (saved ? -1 : 1));
-    setSaved(!saved);
   };
 
 
@@ -665,21 +729,17 @@ function DefaultPromptFooter() {
           </>
         )}
         {!wizardActive && (
-          <PromptTemplateAction>
+          <PromptTemplateAction tooltip="Like">
             <Button
               variant="ghost"
               size="sm"
               type="button"
-              className={cn(
-                "gap-1",
-                liked &&
-                  "opacity-100 text-[color:var(--like-active)] hover:text-[color:var(--like-active)]"
-              )}
+              className="gap-1"
               onClick={toggleLike}
             >
               <Icon name="heart" weight={liked ? "fill" : "bold"} className="size-4.5" />
-              {likesCount > 0 && (
-                <SlidingNumber value={likesCount} className="text-sm" />
+              {localLikesCount > 0 && (
+                <SlidingNumber value={localLikesCount} className="text-sm" />
               )}
             </Button>
           </PromptTemplateAction>
@@ -694,51 +754,29 @@ function DefaultPromptFooter() {
               onClick={toggleComment}
             >
               <Icon name="chat" weight="bold" className="size-4.5" />
-              {commentsCount > 0 && (
-                <SlidingNumber value={commentsCount} className="text-sm" />
+              {localCommentsCount > 0 && (
+                <SlidingNumber value={localCommentsCount} className="text-sm" />
               )}
             </Button>
           </PromptTemplateAction>
         )}
         {!wizardActive && (
-          <PromptTemplateAction>
-            <Popover>
-              <PopoverTrigger asChild>
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  type="button"
-                  className="gap-1"
-                  onClick={handleShareClick}
-                >
-                  <Icon name="share" className="size-4.5" />
-                  {sharesCount > 0 && (
-                    <SlidingNumber value={sharesCount} className="text-sm hidden sm:block" />
-                  )}
-                </Button>
-              </PopoverTrigger>
-            <PopoverContent align="start" className="p-1 w-44">
-              <div className="flex flex-col">
-                <Button variant="ghost" size="sm" className="justify-start" onClick={handleCopyLink}>
-                  <Icon name={copied ? "check" : "link"} className="size-4.5" /> {copied ? "Copied" : "Copy link"}
-                </Button>
-                <Button asChild variant="ghost" size="sm" className="justify-start">
-                  <a href={`https://twitter.com/intent/tweet?url=${encodeURIComponent(shareUrlSafe)}`} target="_blank" rel="noopener noreferrer">
-                    <Icon name="twitter" className="size-4.5 mr-1" />X
-                  </a>
-                </Button>
-                <Button asChild variant="ghost" size="sm" className="justify-start">
-                  <a href={`https://www.threads.net/intent/post?text=${encodeURIComponent(shareUrlSafe)}`} target="_blank" rel="noopener noreferrer">
-                    <Icon name="threads" className="size-4.5 mr-1" />Threads
-                  </a>
-                </Button>
-                <Button asChild variant="ghost" size="sm" className="justify-start">
-                  <a href={`mailto:?subject=Check%20this%20prompt&body=${encodeURIComponent(shareUrlSafe)}`}>
-                      <Icon name="email" className="size-4.5 mr-1" />Email</a>
-                </Button>
-              </div>
-            </PopoverContent>
-            </Popover>
+          <PromptTemplateAction tooltip="Share">
+            <Button
+              variant="ghost"
+              size="sm"
+              type="button"
+              className="gap-1"
+              onClick={() => {
+                handleCopyLink();
+                handleShareClick();
+              }}
+            >
+              <Icon name="share" className="size-4.5" />
+              {localSharesCount > 0 && (
+                <SlidingNumber value={localSharesCount} className="text-sm" />
+              )}
+            </Button>
           </PromptTemplateAction>
         )}
         {!wizardActive && (
@@ -751,8 +789,8 @@ function DefaultPromptFooter() {
               onClick={toggleSave}
             >
               <Icon name="bookmark" weight={saved ? "fill" : "bold"} className="size-4.5" />
-              {savesCount > 0 && (
-                <SlidingNumber value={savesCount} className="text-sm hidden sm:block" />
+              {localSavesCount > 0 && (
+                <SlidingNumber value={localSavesCount} className="text-sm hidden sm:block" />
               )}
             </Button>
           </PromptTemplateAction>
