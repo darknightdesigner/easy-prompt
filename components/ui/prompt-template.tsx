@@ -6,7 +6,6 @@ import { extractVariables } from "@/lib/prompt-variables";
 import { Button } from "@/components/ui/button"
 import { Icon } from "@/components/ui/icon"
 import { SlidingNumber } from "@/components/motion-primitives/sliding-number"
-import { ShimmerButton } from "@/components/magicui/shimmer-button"
 import { Popover, PopoverTrigger, PopoverContent } from "@/components/ui/popover"
 import Link from "next/link"
 import {
@@ -758,13 +757,11 @@ function DefaultPromptFooter() {
                   "Cancel"
                 )}
               </Button>
-              {currentStep === totalSteps ? (
-                <ShimmerButton
-                  size="sm"
-                  className="gap-1 shadow-none hover:shadow-none w-[114px]"
-                  background="var(--primary)"
-                  shimmerColor="rgba(255, 255, 255, 0.4)"
-                  onClick={() => {
+              <Button 
+                size="sm" 
+                className={`gap-1 ${currentStep === totalSteps ? 'w-[114px]' : ''}`}
+                onClick={() => {
+                  if (currentStep === totalSteps) {
                     // Copy to clipboard but stay on preview step
                     // Get the prompt content from the preview div
                     const previewEl = document.querySelector('.prompt-preview-content');
@@ -777,20 +774,19 @@ function DefaultPromptFooter() {
                     } catch (error) {
                       console.error('Failed to copy:', error);
                     }
-                  }}
-                >
-                  <Icon name={copied ? "check" : "copyPrompt"} className="size-4" weight={copied ? "bold" : "regular"} /> {copied ? "Copied" : "Copy"}
-                </ShimmerButton>
-              ) : (
-                <Button 
-                  size="sm" 
-                  className="gap-1"
-                  onClick={() => setCurrentStep(s => s + 1)}
-                >
-
+                  } else {
+                    // Normal next step behavior
+                    setCurrentStep(s => s + 1);
+                  }
+                }}
+              >
                 {currentStep + 1 === totalSteps ? (
                   <>
                     Next<span className="text-[12px] bg-primary-foreground/15 px-1 py-0 rounded-xs font-semibold text-primary-foreground">enter</span> <Icon name="arrow-right" className="size-4" />
+                  </>
+                ) : currentStep === totalSteps ? (
+                  <>
+                    <Icon name={copied ? "check" : "copyPrompt"} className="size-4" weight={copied ? "bold" : "regular"} /> {copied ? "Copied" : "Copy"}
                   </>
                 ) : (
                   <>
@@ -798,7 +794,6 @@ function DefaultPromptFooter() {
                   </>
                 )}
               </Button>
-              )}
             </>
           )}
         </PromptTemplateAction>
