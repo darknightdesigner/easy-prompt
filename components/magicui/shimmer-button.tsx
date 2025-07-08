@@ -68,7 +68,7 @@ export const ShimmerButton = React.forwardRef<
           "group relative z-0 flex cursor-pointer items-center justify-center overflow-hidden whitespace-nowrap text-primary-foreground [background:var(--bg)] [border-radius:var(--radius)]",
           "transform-gpu transition-transform transition-shadow duration-300 ease-in-out active:translate-y-px \
             shadow-[0_1px_3px_rgba(0,0,0,0.3)] hover:shadow-[0_2px_8px_rgba(0,0,0,0.4)] \
-            dark:shadow-[0_0px_30px_rgba(255,255,255,0.4)] dark:hover:shadow-[0_0px_35px_rgba(255,255,255,0.6)]",
+            dark:shadow-[0_0px_30px_rgba(255,255,255,0.1)] dark:hover:shadow-[0_0px_35px_rgba(255,255,255,0.3)]",
           className,
         )}
         ref={ref}
