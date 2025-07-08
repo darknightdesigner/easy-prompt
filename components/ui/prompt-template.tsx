@@ -300,6 +300,16 @@ function PromptTemplate({
     // The user can explicitly click the Copy or Reset buttons
   }, [currentStep, totalSteps]);
 
+  // Auto-focus textarea when currentStep changes to a new variable input step
+  useEffect(() => {
+    // Only focus if we're on a variable input step (not on preview or inactive)
+    if (currentStep >= 0 && currentStep < totalSteps) {
+      setTimeout(() => {
+        variableInputRef.current?.focus();
+      }, 10);
+    }
+  }, [currentStep, totalSteps]);
+
 
   const handleChange = (newValue: string) => {
     setInternalValue(newValue)
@@ -789,6 +799,7 @@ function DefaultPromptFooter() {
                   } else {
                     // Normal next step behavior
                     setCurrentStep(s => s + 1);
+                    // Focus will be handled by the useEffect that watches currentStep
                   }
                 }}
               >
