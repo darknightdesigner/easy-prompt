@@ -32,6 +32,8 @@ const registry = {
   login: Phosphor.SignInIcon,
   logout: Phosphor.SignOutIcon,
   menu: Phosphor.ListIcon,
+  pencil: Phosphor.PencilSimpleIcon,
+  arrowcounterclockwise: Phosphor.ArrowCounterClockwiseIcon,
 } as const;
 
 

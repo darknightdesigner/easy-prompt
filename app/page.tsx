@@ -90,6 +90,20 @@ export default function Home() {
             savesCount={21}
             verified={true}
             shareUrl={"https://www.optiprompt.ai"}
+            variableQuestions={{
+              niche: "What industry or topic is your channel about?",
+              video_topic: "What specific topic will this video cover?",
+              audience: "Who is your target audience?",
+              video_goal: "What's the main goal of this video?",
+              video_length: "How long should the video be (in minutes)?",
+              tone_style: "What tone or style do you want for the video?",
+              host_persona: "Describe the on-screen host's persona",
+              key_points: "What key points must be covered?",
+              supporting_material: "What examples or data can you provide?",
+              cta: "What's your main call-to-action?",
+              secondary_ctas: "Any secondary calls-to-action?",
+              brand_voice_guidelines: "Describe your brand voice"
+            }}
             value={`You are an award-winning YouTube scriptwriter and growth strategist.
 
 TASK  
