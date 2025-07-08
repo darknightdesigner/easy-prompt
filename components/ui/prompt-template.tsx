@@ -272,7 +272,18 @@ function PromptTemplate({
     }
   };
 
-  const startWizard = () => setCurrentStep(0);
+  // Reference to the variable input textarea
+  const variableInputRef = useRef<HTMLTextAreaElement>(null);
+
+  // Start wizard and focus the input field
+  const startWizard = () => {
+    setCurrentStep(0);
+    
+    // Focus the textarea after a small delay to ensure it's rendered
+    setTimeout(() => {
+      variableInputRef.current?.focus();
+    }, 10);
+  };
 
   const generateFinalContent = React.useCallback(() => {
     let finalContent = value ?? internalValue;
@@ -385,6 +396,7 @@ function PromptTemplate({
             {/* Wizard step input */}
             {variables.length > 0 && currentStep >= 0 && currentStep < totalSteps ? (
                 <Textarea
+                  ref={variableInputRef}
                   value={variableValues[currentVar] ?? ""}
                   onChange={(e) => handleVariableChange(e.target.value)}
                   onKeyDown={handleKeyDown}
@@ -782,15 +794,15 @@ function DefaultPromptFooter() {
               >
                 {currentStep + 1 === totalSteps ? (
                   <>
-                    Next<span className="text-[12px] bg-primary-foreground/15 px-1 py-0 rounded-xs font-semibold text-primary-foreground">enter</span> <Icon name="arrow-right" className="size-4" />
+                    Next<span className="text-[12px] bg-primary-foreground/15 px-1 py-0 rounded-xs font-semibold text-primary-foreground">enter</span><Icon name="CaretRight" className="size-4" />
                   </>
                 ) : currentStep === totalSteps ? (
                   <>
-                    <Icon name={copied ? "check" : "copyPrompt"} className="size-4" weight={copied ? "bold" : "regular"} /> {copied ? "Copied" : "Copy"}
+                    <Icon name={copied ? "check" : "copyPrompt"} className="size-4.5" weight={copied ? "bold" : "regular"} /> {copied ? "Copied" : "Copy"}
                   </>
                 ) : (
                   <>
-                    Next<span className="text-[12px] bg-primary-foreground/15 px-1 py-0 rounded-xs font-semibold text-primary-foreground">enter</span> <Icon name="arrow-right" className="size-4" />
+                    Next<span className="text-[12px] bg-primary-foreground/15 px-1 py-0 rounded-xs font-semibold text-primary-foreground">enter</span><Icon name="CaretRight" className="size-4" />
                   </>
                 )}
               </Button>
@@ -813,6 +825,7 @@ function DefaultPromptFooter() {
           >
             <Icon name="copyPrompt" className="size-4.5" />
             Copy
+            <Icon name="CaretRight" className="size-4" />
           </Button>
         </PromptTemplateAction>
         )}
