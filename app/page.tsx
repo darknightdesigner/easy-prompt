@@ -78,8 +78,10 @@ export default function Home() {
       </div>
       <HeroSection />
       <ContainerEffect className="flex justify-center" preset="fade-in-blur" delay={0.6} transition={{ duration: 0.6 }}>
-        <div className="relative w-full flex-1 sm:max-w-[44rem] px-4">
-          <PromptTemplate
+        <div className="relative w-full flex-1 sm:max-w-[44rem] px-2 sm:px-4">
+          <div className="border bg-secondary rounded-[28px]">
+            <PromptTemplate
+            initialExpanded={true}
             authorAvatar="https://ci3.googleusercontent.com/mail-sig/AIorK4yctzAmNSeWRCuUGwYHYlqVFpxrb40OIXsdWX-IOdVDk9b3GmtZUcGmrRLYDjMQnbTCcv9qFLpnpEEt"
             displayName="Andres Gonzalez"
             username="batman"
@@ -153,7 +155,8 @@ BEGIN.`}
           />
 
         </PromptTemplate>
-      </div>
+          </div>
+        </div>
       </ContainerEffect>
 
     </section>

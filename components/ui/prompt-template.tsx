@@ -6,6 +6,7 @@ import { extractVariables } from "@/lib/prompt-variables";
 import { Button } from "@/components/ui/button"
 import { Icon } from "@/components/ui/icon"
 import { SlidingNumber } from "@/components/motion-primitives/sliding-number"
+import { motion, AnimatePresence } from "framer-motion";
 import { Popover, PopoverTrigger, PopoverContent } from "@/components/ui/popover"
 import Link from "next/link"
 import {
@@ -35,14 +36,34 @@ type PromptTemplateContextType = {
   value: string
   setValue: (value: string) => void
   expanded: boolean
+  showPrompt: boolean
+  setShowPrompt: (show: boolean) => void
   toggleExpanded: () => void
   maxHeight: number | string
   onSubmit?: () => void
-  /** Interaction counts */
+  /** Initial interaction counts from props */
   likesCount: number
   commentsCount: number
   sharesCount: number
   savesCount: number
+  /** Shared local counter states for UI */
+  localLikesCount: number
+  setLocalLikesCount: (count: number | ((prevCount: number) => number)) => void
+  localCommentsCount: number
+  setLocalCommentsCount: (count: number | ((prevCount: number) => number)) => void
+  localSharesCount: number
+  setLocalSharesCount: (count: number | ((prevCount: number) => number)) => void
+  localSavesCount: number
+  setLocalSavesCount: (count: number | ((prevCount: number) => number)) => void
+  /** Shared social action states */
+  liked: boolean
+  setLiked: (liked: boolean) => void
+  commented: boolean
+  setCommented: (commented: boolean) => void
+  saved: boolean
+  setSaved: (saved: boolean) => void
+  shared: boolean
+  setShared: (shared: boolean) => void
   /** Event handlers for interactions */
   onLike?: () => void
   onSave?: () => void
@@ -63,6 +84,8 @@ const PromptTemplateContext = createContext<PromptTemplateContextType>({
   value: "",
   setValue: () => {},
   expanded: false,
+  showPrompt: false,
+  setShowPrompt: () => {},
   toggleExpanded: () => {},
   maxHeight: 240,
   onSubmit: undefined,
@@ -70,6 +93,25 @@ const PromptTemplateContext = createContext<PromptTemplateContextType>({
   commentsCount: 0,
   sharesCount: 0,
   savesCount: 0,
+  // Shared local counter states
+  localLikesCount: 0,
+  setLocalLikesCount: () => {},
+  localCommentsCount: 0,
+  setLocalCommentsCount: () => {},
+  localSharesCount: 0,
+  setLocalSharesCount: () => {},
+  localSavesCount: 0,
+  setLocalSavesCount: () => {},
+  // Shared social action states
+  liked: false,
+  setLiked: () => {},
+  commented: false,
+  setCommented: () => {},
+  saved: false,
+  setSaved: () => {},
+  shared: false,
+  setShared: () => {},
+  // Event handlers
   onLike: undefined,
   onSave: undefined,
   onShare: undefined,
@@ -118,6 +160,8 @@ type PromptTemplateProps = {
   variableQuestions?: Record<string, string> // Map of variable names to their questions
   children: React.ReactNode
   className?: string
+  /** Whether the container is initially expanded */
+  initialExpanded?: boolean
 }
 
 function PromptTemplate({
@@ -128,6 +172,7 @@ function PromptTemplate({
   title,
   verified = false,
   isLoading = false,
+  initialExpanded = false,
   maxHeight = 240,
   value,
   onValueChange,
@@ -145,6 +190,9 @@ function PromptTemplate({
   children,
 }: PromptTemplateProps) {
   const [internalValue, setInternalValue] = useState(value || "");
+  // State for showing/hiding the prompt container via motion animation
+  const [showPrompt, setShowPrompt] = useState(initialExpanded || false);
+  // State for expanding/collapsing the text area (original functionality)
   const [expanded, setExpanded] = useState(false);
   const [currentStep, setCurrentStep] = useState(-1); // -1 means wizard inactive
   const [variableValues, setVariableValues] = useState<Record<string, string>>({});
@@ -154,7 +202,10 @@ function PromptTemplate({
   const contentRef = useRef<HTMLDivElement>(null)
   const clientUrl = typeof window !== 'undefined' ? window.location.href : '';
   const shareUrl = propShareUrl || clientUrl;
-  const effectiveMaxHeight = expanded ? 10000 : maxHeight;
+  // Default height for collapsed text area
+  const defaultHeight = typeof maxHeight === 'number' ? maxHeight : 240;
+  // Calculate effective max height based on expanded state (for text area)
+  const effectiveMaxHeight = expanded ? 10000 : defaultHeight;
 
   // Extract unique template variables once per value change.
   const variables = React.useMemo(
@@ -181,7 +232,7 @@ function PromptTemplate({
 
   // Add scroll listener to update button opacity based on scroll position
   useEffect(() => {
-    if (!contentRef.current || currentStep >= 0) return;
+    if (!contentRef.current || currentStep >= 0 || !showPrompt) return;
     
     const handleScroll = () => {
       // Only apply scroll-based opacity on non-mobile devices
@@ -194,39 +245,51 @@ function PromptTemplate({
         if (scrollableElements.length === 0) return;
         
         const scrollable = scrollableElements[0] as HTMLElement;
-        const scrollPercentage = scrollable.scrollTop / (scrollable.scrollHeight - scrollable.clientHeight) * 100;
         
-        // Set opacity based on scroll percentage
-        if (scrollPercentage <= 2) {
-          setButtonOpacity(0); // Top 2% - hidden
-        } else if (scrollPercentage >= 98) {
-          setButtonOpacity(0); // Bottom 2% - hidden
-        } else {
-          setButtonOpacity(1); // Anywhere in between - fully visible
+        // Calculate opacity based on scroll position
+        const scrollPosition = scrollable.scrollTop;
+        const maxScroll = scrollable.scrollHeight - scrollable.clientHeight;
+        
+        // Hide button when scroll is at 0%
+        if (scrollPosition === 0) {
+          setButtonOpacity(0);
         }
-      } else {
-        // On mobile, always set to 100% opacity
-        setButtonOpacity(1);
+        // Show button when scroll is at 1% or more, but less than 98%
+        else if (scrollPosition > 0 && scrollPosition < maxScroll * 0.98) {
+          // Calculate opacity - full opacity after 1% scroll
+          const minScrollForFullOpacity = maxScroll * 0.01;
+          const opacity = Math.min(1, scrollPosition / minScrollForFullOpacity);
+          setButtonOpacity(opacity);
+        }
+        // Hide button when scroll is at 98-100%
+        else if (scrollPosition >= maxScroll * 0.98) {
+          const fadeRange = maxScroll * 0.02; // 2% range for fading out
+          const opacity = 1 - Math.min(1, (scrollPosition - maxScroll * 0.98) / fadeRange);
+          setButtonOpacity(opacity);
+        }
       }
     };
     
-    // Find all scrollable elements and add listeners
-    const scrollableElements = contentRef.current.querySelectorAll('textarea, [class*="overflow-auto"], [class*="overflow-y-auto"]');
-    scrollableElements.forEach(el => {
-      el.addEventListener('scroll', handleScroll);
-    });
-    
-    // Initial check
-    handleScroll();
-    
-    return () => {
-      if (!contentRef.current) return;
-      const scrollableElements = contentRef.current.querySelectorAll('textarea, [class*="overflow-auto"], [class*="overflow-y-auto"]');
+    // Find and add scroll listeners to all scrollable elements
+    const container = contentRef.current;
+    if (container) {
+      const scrollableElements = container.querySelectorAll('textarea, [class*="overflow-auto"], [class*="overflow-y-auto"]');
       scrollableElements.forEach(el => {
-        el.removeEventListener('scroll', handleScroll);
+        el.addEventListener('scroll', handleScroll);
       });
-    };
-  }, [currentStep, contentRef.current]);
+      
+      // Initial check
+      handleScroll();
+      
+      // Clean up
+      return () => {
+        scrollableElements.forEach(el => {
+          el.removeEventListener('scroll', handleScroll);
+        });
+      };
+    }
+  }, [contentRef.current, isMobile, currentStep, showPrompt]);
+
   const totalSteps = variables.length;
 
   // Keep variableValues and currentStep in sync when variables list changes
@@ -269,9 +332,15 @@ function PromptTemplate({
 
   // Helpers
   const currentVar = currentStep >= 0 ? variables[currentStep] ?? "" : "";
-  const handleVariableChange = (val: string) =>
-    setVariableValues((prev) => ({ ...prev, [currentVar]: val }));
+  const handleVariableChange = (value: string) => {
+    setVariableValues(prev => ({
+      ...prev,
+      [currentVar]: value
+    }));
     
+    // Auto-resize the textarea after value change
+    setTimeout(() => autoResizeTextarea(variableInputRef.current), 0);
+  };  
   // Helper to truncate text with ellipsis
   const truncateText = (text: string, maxLength: number) => {
     if (!text) return "";
@@ -288,15 +357,31 @@ function PromptTemplate({
 
   // Reference to the variable input textarea
   const variableInputRef = useRef<HTMLTextAreaElement>(null);
+  const previewTextareaRef = useRef<HTMLTextAreaElement>(null);
+  
+  // Auto-resize textarea function is now disabled since we're using fixed height
+  const autoResizeTextarea = (textarea: HTMLTextAreaElement | null) => {
+    // Fixed height of 240px is now set directly on the textarea elements
+    // This function is kept for compatibility but doesn't change the height
+    return;
+  };
 
   // Start wizard and focus the input field
   const startWizard = () => {
     setCurrentStep(0);
     
-    // Focus the textarea after a small delay to ensure it's rendered
+    // Reset expanded state to default when starting the wizard
+    setExpanded(false);
+    
+    // Focus and select the textarea content after a longer delay to ensure it's rendered
+    // and any animations have completed
     setTimeout(() => {
-      variableInputRef.current?.focus();
-    }, 10);
+      if (variableInputRef.current) {
+        variableInputRef.current.focus();
+        // Select all text in the textarea
+        variableInputRef.current.select();
+      }
+    }, 50); // Increased delay to ensure animations complete
   };
 
   const generateFinalContent = React.useCallback(() => {
@@ -314,15 +399,42 @@ function PromptTemplate({
     // The user can explicitly click the Copy or Reset buttons
   }, [currentStep, totalSteps]);
 
-  // Auto-focus textarea when currentStep changes to a new variable input step
+  // Auto-focus textarea when currentStep changes to a new variable input step or preview
   useEffect(() => {
-    // Only focus if we're on a variable input step (not on preview or inactive)
+    // Only focus if we're on a variable input step (not inactive)
     if (currentStep >= 0 && currentStep < totalSteps) {
       setTimeout(() => {
-        variableInputRef.current?.focus();
-      }, 10);
+        if (variableInputRef.current) {
+          variableInputRef.current.focus();
+          // Select all text in the textarea for easy replacement
+          variableInputRef.current.select();
+        }
+      }, 50); // Increased delay to ensure animations complete
+    } else if (currentStep === totalSteps) {
+      // Focus on preview textarea when reaching the final step
+      // but don't select the text to avoid unwanted highlighting
+      setTimeout(() => {
+        if (previewTextareaRef.current) {
+          previewTextareaRef.current.focus();
+          // No text selection for preview - just focus
+        }
+      }, 50); // Increased delay to ensure animations complete
     }
-  }, [currentStep, totalSteps]);
+  }, [currentStep, totalSteps, expanded]);
+  
+  // Auto-resize variable input textarea when its value changes
+  useEffect(() => {
+    if (currentStep >= 0 && currentStep < totalSteps) {
+      autoResizeTextarea(variableInputRef.current);
+    }
+  }, [variableValues, currentVar, currentStep, expanded]);
+  
+  // Auto-resize preview textarea when content changes
+  useEffect(() => {
+    if (currentStep === totalSteps) {
+      autoResizeTextarea(previewTextareaRef.current);
+    }
+  }, [generateFinalContent, currentStep, expanded]);
 
 
   const handleChange = (newValue: string) => {
@@ -330,10 +442,30 @@ function PromptTemplate({
     onValueChange?.(newValue)
   }
 
+  // Shared social action states
+  const [liked, setLiked] = useState(false);
+  const [commented, setCommented] = useState(false);
+  const [saved, setSaved] = useState(false);
+  const [shared, setShared] = useState(false);
+  
+  // Shared counter states
+  const [localLikesCount, setLocalLikesCount] = useState(likesCount || 0);
+  const [localCommentsCount, setLocalCommentsCount] = useState(commentsCount || 0);
+  const [localSharesCount, setLocalSharesCount] = useState(sharesCount || 0);
+  const [localSavesCount, setLocalSavesCount] = useState(savesCount || 0);
+  
+  // Update local counts when props change
+  useEffect(() => { setLocalLikesCount(likesCount || 0); }, [likesCount]);
+  useEffect(() => { setLocalCommentsCount(commentsCount || 0); }, [commentsCount]);
+  useEffect(() => { setLocalSharesCount(sharesCount || 0); }, [sharesCount]);
+  useEffect(() => { setLocalSavesCount(savesCount || 0); }, [savesCount]);
+
   return (
     <TooltipProvider>
       <PromptTemplateContext.Provider
                 value={{
+          showPrompt,
+          setShowPrompt,
           isLoading,
           expanded,
           toggleExpanded: () => setExpanded((p) => !p),
@@ -345,6 +477,25 @@ function PromptTemplate({
           commentsCount: commentsCount ?? 0,
           sharesCount: sharesCount ?? 0,
           savesCount: savesCount ?? 0,
+          // Shared counter states
+          localLikesCount,
+          setLocalLikesCount,
+          localCommentsCount,
+          setLocalCommentsCount,
+          localSharesCount,
+          setLocalSharesCount,
+          localSavesCount,
+          setLocalSavesCount,
+          // Shared social action states
+          liked,
+          setLiked,
+          commented,
+          setCommented,
+          saved,
+          setSaved,
+          shared,
+          setShared,
+          // Event handlers
           onLike,
           onSave,
           onShare,
@@ -358,7 +509,7 @@ function PromptTemplate({
           setCurrentStep,
         }}
       >
-        <div className={cn("flex flex-col w-full min-w-full flex-shrink-0 border bg-secondary rounded-[28px] p-1 gap-1", className)}>
+        <div className={cn("flex flex-col w-full min-w-full flex-shrink-0 pr-1 pl-1 pt-1 gap-1", className)}>
           {(displayName || title) && (
             <div className="flex items-start gap-2 p-2">
               {currentStep >= 0 ? (
@@ -380,7 +531,7 @@ function PromptTemplate({
                   </Link>
                 )
               )}
-              <div className="flex flex-col">
+              <div className="flex flex-col gap-0.5 pr-3 sm:pr-4">
                 {currentStep >= 0 && currentStep < totalSteps && currentVar ? (
                   <div className="flex items-center gap-0 font-semibold text-foreground">
                     {variableMetadata[currentVar]?.question || `Enter ${currentVar.replace(/_/g, " ")}`}
@@ -405,7 +556,7 @@ function PromptTemplate({
                   </Link>
                 )}
                 {title && (
-                  <p className={cn("leading-none", currentStep >= 0 && "text-muted-foreground")}>
+                  <p className={cn("leading-normal", currentStep >= 0 && "text-muted-foreground")}>
                     {currentStep >= 0 && currentStep < totalSteps && currentVar ? 
                       `{${truncateText(variableValues[currentVar] ? variableValues[currentVar] : currentVar, 30)}}` : 
                       currentStep === totalSteps ?
@@ -416,39 +567,100 @@ function PromptTemplate({
               </div>
             </div>
           )}
-          <div 
-            className="w-full flex-1 border-input bg-card rounded-[24px] border shadow-[0px_2px_6px_0px_rgba(0,0,0,0.05)] relative" 
-            ref={contentRef}
-          >
-            {/* Wizard step input */}
-            {variables.length > 0 && currentStep >= 0 && currentStep < totalSteps ? (
-                <Textarea
-                  ref={variableInputRef}
-                  value={variableValues[currentVar] ?? ""}
-                  onChange={(e) => handleVariableChange(e.target.value)}
-                  onKeyDown={handleKeyDown}
-                  placeholder={`Enter {${currentVar}}`}
-                  className="text-base md:text-base text-card-foreground min-h-[240px] w-full p-4 resize-none overflow-hidden md:overflow-auto border-none !bg-transparent dark:!bg-transparent shadow-none outline-none focus-visible:ring-0 focus-visible:ring-offset-0"
-                  rows={1}
-                />
-            ) : variables.length > 0 && currentStep === totalSteps ? (
-              // Preview step - show filled template with fixed dimensions
-              <div 
-                className="text-base md:text-base text-card-foreground h-[240px] w-full p-4 overflow-hidden md:overflow-auto whitespace-pre-wrap prompt-preview-content"
-                style={{ maxHeight: '240px' }}
-              >
-                {generateFinalContent()}
-              </div>
-            ) : (
-              children
-            )}
-            {currentStep === -1 && (
+          <div className="w-full flex-1 relative">
+            {/* Social action bar that mirrors the footer - includes toggle button */}
+            <TopSocialActionBar />
+            
+            <motion.div 
+              className="w-full border-input bg-card rounded-[24px] border shadow-[0px_2px_6px_0px_rgba(0,0,0,0.05)] relative overflow-hidden mb-1" 
+              ref={contentRef}
+              initial={{ height: initialExpanded ? "auto" : 0, opacity: initialExpanded ? 1 : 0 }}
+              animate={{ 
+                height: showPrompt ? "auto" : 0, 
+                opacity: showPrompt ? 1 : 0,
+                scale: showPrompt ? 1 : 0.98,
+                transformOrigin: "top"
+              }}
+              transition={{ 
+                type: "spring", 
+                stiffness: 300, 
+                damping: 30,
+                opacity: { duration: 0.2 },
+                scale: { duration: 0.2 }
+              }}
+              layout="position"
+              layoutDependency={[showPrompt, expanded]}
+            >
+            {/* Wizard step input without animations */}
+            <div className="w-full">
+              {variables.length > 0 && currentStep >= 0 && currentStep < totalSteps ? (
+                <div
+                  key={`step-${currentStep}`}
+                  className="relative overflow-hidden"
+                  style={{ minHeight: `${defaultHeight}px` }}
+                >
+                  <Textarea
+                    ref={variableInputRef}
+                    value={variableValues[currentVar] ?? ""}
+                    onChange={(e) => handleVariableChange(e.target.value)}
+                    onKeyDown={handleKeyDown}
+                    placeholder={`Enter {${currentVar}}`}
+                    className="text-base md:text-base text-card-foreground w-full p-4 resize-none overflow-hidden md:overflow-auto border-none !bg-transparent dark:!bg-transparent shadow-none outline-none focus-visible:ring-0 focus-visible:ring-offset-0"
+                    style={{ height: '240px' }}
+                    rows={1}
+                  />
+                </div>
+              ) : variables.length > 0 && currentStep === totalSteps ? (
+                // Preview step - show filled template with fixed dimensions
+                <div
+                  key="preview-step"
+                  className="relative overflow-hidden"
+                  style={{ minHeight: `${defaultHeight}px` }}
+                >
+                  <Textarea
+                    ref={previewTextareaRef}
+                    value={generateFinalContent()}
+                    readOnly
+                    className="text-base md:text-base text-card-foreground w-full p-4 resize-none overflow-hidden md:overflow-auto border-none !bg-transparent dark:!bg-transparent shadow-none outline-none focus-visible:ring-0 focus-visible:ring-offset-0 whitespace-pre-wrap prompt-preview-content"
+                    style={{ height: '240px' }}
+                    rows={expanded ? 8 : 1}
+                    onFocus={() => autoResizeTextarea(previewTextareaRef.current)}
+                    onClick={() => autoResizeTextarea(previewTextareaRef.current)}
+                    onKeyDown={(e) => {
+                      // Handle keyboard shortcuts for copy (Ctrl+C is handled by browser)
+                      if (e.key === 'Escape') {
+                        previewTextareaRef.current?.blur();
+                      }
+                    }}
+                  />
+                </div>
+              ) : (
+                <div
+                  key="default-content"
+                  className="relative overflow-hidden"
+                  style={{ minHeight: `${defaultHeight}px` }}
+                >
+                  <div className="w-full">
+                    {children}
+                  </div>
+                </div>
+              )}
+            </div>
+            {/* This is the internal caret button that expands/collapses the text area */}
+            {currentStep === -1 && showPrompt && (
               <div className={cn(
                 "absolute bottom-16 right-3 z-10 transition-opacity duration-200", 
-                isMobile ? "opacity-100" : ""
-              )} style={{ opacity: isMobile ? 1 : buttonOpacity }}>
+                isMobile || expanded ? "opacity-100" : ""
+              )} style={{ opacity: isMobile || expanded ? 1 : buttonOpacity }}>
                 <PromptTemplateAction>
-                  <Button size="icon" type="button" variant="outline" className="gap-1 shadow-none size-8 bg-card/80 backdrop-blur-sm" onClick={() => setExpanded(prev => !prev)}>
+                  <Button 
+                    size="icon" 
+                    type="button" 
+                    variant="outline" 
+                    className="gap-1 shadow-none size-8 bg-card/80 backdrop-blur-sm" 
+                    onClick={() => setExpanded(prev => !prev)}
+                    aria-label={expanded ? "Collapse text area" : "Expand text area"}
+                  >
                     <Icon name={expanded ? "caret-up" : "caret-down"} className="size-4.5" />
                   </Button>
                 </PromptTemplateAction>
@@ -461,6 +673,7 @@ function PromptTemplate({
               />
             )}
             {footer ?? (<div className="p-2 sm:p-3"><DefaultPromptFooter /></div>)}
+            </motion.div>
           </div>
         </div>
       </PromptTemplateContext.Provider>
@@ -591,6 +804,241 @@ function PromptTemplateAction({
   )
 }
 
+// Top social action bar component that mirrors the footer buttons
+function TopSocialActionBar() {
+  // Track screen size for responsive height
+  const [footerHeight, setFooterHeight] = useState('3rem');
+  
+  useEffect(() => {
+    // Set initial height based on screen size
+    const updateHeight = () => {
+      setFooterHeight(window.innerWidth >= 640 ? '3.5rem' : '3rem');
+    };
+    
+    // Set initial value
+    updateHeight();
+    
+    // Update on resize
+    window.addEventListener('resize', updateHeight);
+    return () => window.removeEventListener('resize', updateHeight);
+  }, []);
+  const {
+    variables,
+    currentStep,
+    totalSteps,
+    onLike,
+    onSave,
+    onShare,
+    shareUrl,
+    showPrompt,
+    setShowPrompt,
+    // Use shared state from context
+    liked,
+    setLiked,
+    commented,
+    setCommented,
+    saved,
+    setSaved,
+    shared,
+    setShared,
+    // Use shared counter states
+    localLikesCount,
+    setLocalLikesCount,
+    localCommentsCount,
+    setLocalCommentsCount,
+    localSharesCount,
+    setLocalSharesCount,
+    localSavesCount,
+    setLocalSavesCount
+  } = usePromptTemplate();
+  
+  const [copied, setCopied] = useState(false);
+  const [shareUrlSafe, setShareUrlSafe] = useState("");
+  
+  const wizardActive = variables.length > 0 && currentStep >= 0 && currentStep <= totalSteps;
+
+  useEffect(() => {
+    // Default to current URL if no share URL provided
+    setShareUrlSafe(typeof window !== 'undefined' ? (shareUrl || window.location.href) : "");
+  }, [shareUrl]);
+
+  // Event handlers
+  const toggleLike = () => {
+    setLiked(!liked);
+    setLocalLikesCount(count => count + (liked ? -1 : 1));
+    if (onLike) onLike();
+  };
+
+  const toggleComment = () => {
+    setCommented(!commented);
+    setLocalCommentsCount(count => count + (commented ? -1 : 1));
+  };
+
+  const toggleSave = () => {
+    setSaved(!saved);
+    setLocalSavesCount(count => count + (saved ? -1 : 1));
+    if (onSave) onSave();
+  };
+
+  const handleShareClick = () => {
+    if (!shared) {
+      setLocalSharesCount(count => count + 1);
+      if (onShare) onShare();
+      setShared(true);
+    }
+  };
+
+  const handleCopyLink = () => {
+    if (typeof navigator !== 'undefined') {
+      navigator.clipboard.writeText(shareUrlSafe);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    }
+  };
+
+  return (
+
+    <motion.div 
+      className="flex justify-between pr-2 sm:pr-3 items-center relative before:content-[''] before:absolute before:top-0 before:left-0 before:right-0 before:h-px before:bg-[linear-gradient(to_right,transparent_0%,var(--border)_25%,var(--border)_75%,transparent_100%)]"
+      animate={{
+        height: showPrompt ? 0 : footerHeight,
+        opacity: showPrompt ? 0 : 1,
+        marginBottom: showPrompt ? 0 : '0rem'
+      }}
+      transition={{ 
+        type: "spring", 
+        stiffness: 300, 
+        damping: 30,
+        opacity: { duration: 0.2 }
+      }}
+    >
+      <div className="flex items-center gap-0">
+        {/* Spacer element that matches avatar width */}
+        <div className="shrink-0 w-[38px] mr-2 sm:block"></div>
+        {!wizardActive && (
+          <PromptTemplateAction>
+            <Button
+              variant="ghost"
+              size="sm"
+              type="button"
+              className={`gap-1 ${liked ? "opacity-100" : ""}`}
+              onClick={toggleLike}
+            >
+              <Icon name="heart" weight={liked ? "fill" : "bold"} className={`size-4.5 ${liked ? "text-[#FF0034]" : ""}`} />
+              {localLikesCount > 0 && (
+                <SlidingNumber value={localLikesCount} className={`text-sm ${liked ? "text-[#FF0034]" : ""}`} />
+              )}
+            </Button>
+          </PromptTemplateAction>
+        )}
+        {!wizardActive && (
+          <PromptTemplateAction>
+            <Button
+              variant="ghost"
+              size="sm"
+              type="button"
+              className="gap-1"
+              onClick={toggleComment}
+            >
+              <Icon name="chat" weight="bold" className="size-4.5" />
+              {localCommentsCount > 0 && (
+                <SlidingNumber value={localCommentsCount} className="text-sm" />
+              )}
+            </Button>
+          </PromptTemplateAction>
+        )}
+        {!wizardActive && (
+          <PromptTemplateAction>
+            <Popover>
+              <PopoverTrigger asChild>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  type="button"
+                  className="gap-1"
+                  onClick={handleShareClick}
+                >
+                  <Icon name="share" className="size-4.5" />
+                  {localSharesCount > 0 && (
+                    <SlidingNumber value={localSharesCount} className="text-sm hidden sm:inline-block" />
+                  )}
+                </Button>
+              </PopoverTrigger>
+              <PopoverContent className="w-56 p-1" align="start">
+                <div className="flex flex-col">
+                  <Button 
+                    variant="ghost" 
+                    size="sm" 
+                    className="justify-start gap-2 px-2 py-1.5"
+                    onClick={handleCopyLink}
+                  >
+                    <Icon name={copied ? "check" : "linksimple"} className="size-4" />
+                    {copied ? "Copied!" : "Copy link"}
+                  </Button>
+                  <Button 
+                    variant="ghost" 
+                    size="sm" 
+                    className="justify-start gap-2 px-2 py-1.5"
+                    onClick={() => window.open(`https://twitter.com/intent/tweet?url=${encodeURIComponent(shareUrlSafe)}`, '_blank')}
+                  >
+                    <Icon name="twitter" className="size-4" />
+                    Twitter
+                  </Button>
+                  <Button 
+                    variant="ghost" 
+                    size="sm" 
+                    className="justify-start gap-2 px-2 py-1.5"
+                    onClick={() => window.open(`https://threads.net/intent/post?text=${encodeURIComponent(shareUrlSafe)}`, '_blank')}
+                  >
+                    <Icon name="threads" className="size-4" />
+                    Threads
+                  </Button>
+                  <Button 
+                    variant="ghost" 
+                    size="sm" 
+                    className="justify-start gap-2 px-2 py-1.5"
+                    onClick={() => window.open(`mailto:?subject=Check out this prompt&body=${encodeURIComponent(shareUrlSafe)}`, '_blank')}
+                  >
+                    <Icon name="email" className="size-4" />
+                    Email
+                  </Button>
+                </div>
+              </PopoverContent>
+            </Popover>
+          </PromptTemplateAction>
+        )}
+        {!wizardActive && (
+          <PromptTemplateAction>
+            <Button
+              variant="ghost"
+              size="sm"
+              type="button"
+              className={cn("gap-1", saved && "opacity-100")}
+              onClick={toggleSave}
+            >
+              <Icon name="bookmark" weight={saved ? "fill" : "bold"} className="size-4.5" />
+              {localSavesCount > 0 && (
+                <SlidingNumber value={localSavesCount} className="text-sm hidden sm:block" />
+              )}
+            </Button>
+          </PromptTemplateAction>
+        )}
+      </div>
+      <div>
+        <Button 
+          size="sm" 
+          variant="outline" 
+          className="gap-2 text-muted-foreground hover:text-foreground shadow-none" 
+          onClick={() => setShowPrompt(!showPrompt)}
+        >
+          <Icon name={showPrompt ? "EyeClosed" : "Eye"} className="size-4" />
+          <span>{showPrompt ? "Hide prompt" : "Show prompt"}</span>
+        </Button>
+      </div>
+    </motion.div>
+  );
+}
+
 function DefaultPromptFooter() {
   const {
     variables,
@@ -602,57 +1050,53 @@ function DefaultPromptFooter() {
     onLike,
     onSave,
     onShare,
-    likesCount: initialLikesCount,
-    sharesCount: initialSharesCount,
-    commentsCount: initialCommentsCount,
-    savesCount: initialSavesCount,
     shareUrl,
-    startWizard
+    startWizard,
+    showPrompt,
+    setShowPrompt,
+    // Use shared state from context
+    liked,
+    setLiked,
+    commented,
+    setCommented,
+    saved,
+    setSaved,
+    shared,
+    setShared,
+    // Use shared counter states
+    localLikesCount,
+    setLocalLikesCount,
+    localCommentsCount,
+    setLocalCommentsCount,
+    localSharesCount,
+    setLocalSharesCount,
+    localSavesCount,
+    setLocalSavesCount
   } = usePromptTemplate();
   
-  // Local state for animated counts
-  const [localLikesCount, setLocalLikesCount] = useState(initialLikesCount || 0);
-  const [localSharesCount, setLocalSharesCount] = useState(initialSharesCount || 0);
-  const [localCommentsCount, setLocalCommentsCount] = useState(initialCommentsCount || 0);
-  const [localSavesCount, setLocalSavesCount] = useState(initialSavesCount || 0);
+  const [copied, setCopied] = useState(false);
+  const [shareUrlSafe, setShareUrlSafe] = useState("");
 
   const wizardActive = variables.length > 0 && currentStep >= 0 && currentStep <= totalSteps;
 
   const variableQuestion = currentStep >= 0 && currentStep < variables.length ? variableMetadata[variables[currentStep]]?.question : "";
   
-  // UI state
-  const [liked, setLiked] = useState(false);
-  const [commented, setCommented] = useState(false);
-  const [saved, setSaved] = useState(false);
-  const [copied, setCopied] = useState(false);
-  const [shareUrlSafe, setShareUrlSafe] = useState("");
+  // We use separate states for showing/hiding the prompt and expanding/collapsing the text area
   
   useEffect(() => {
     // Default to current URL if no share URL provided
     setShareUrlSafe(typeof window !== 'undefined' ? (shareUrl || window.location.href) : "");
   }, [shareUrl]);
   
-  // Update local counts when props change
+  // Reset shared state when a new prompt is loaded
   useEffect(() => {
-    setLocalLikesCount(initialLikesCount || 0);
-  }, [initialLikesCount]);
-  
-  useEffect(() => {
-    setLocalSharesCount(initialSharesCount || 0);
-  }, [initialSharesCount]);
-  
-  useEffect(() => {
-    setLocalCommentsCount(initialCommentsCount || 0);
-  }, [initialCommentsCount]);
-  
-  useEffect(() => {
-    setLocalSavesCount(initialSavesCount || 0);
-  }, [initialSavesCount]);
+    setShared(false);
+  }, [shareUrl]);
 
   // Event handlers
   const toggleLike = () => {
     // Update UI state
-    setLiked(prev => !prev);
+    setLiked(!liked);
     
     // Update local count for immediate feedback
     setLocalLikesCount(count => count + (liked ? -1 : 1));
@@ -664,7 +1108,7 @@ function DefaultPromptFooter() {
 
   const toggleComment = () => {
     // Update UI state
-    setCommented(prev => !prev);
+    setCommented(!commented);
     
     // Update local count for immediate feedback
     setLocalCommentsCount(count => count + (commented ? -1 : 1));
@@ -672,7 +1116,7 @@ function DefaultPromptFooter() {
 
   const toggleSave = () => {
     // Update UI state
-    setSaved(prev => !prev);
+    setSaved(!saved);
     
     // Update local count for immediate feedback
     setLocalSavesCount(count => count + (saved ? -1 : 1));
@@ -683,12 +1127,17 @@ function DefaultPromptFooter() {
   };
 
   const handleShareClick = () => {
-    // Increment local share count for immediate feedback
-    setLocalSharesCount(count => count + 1);
-    
-    // Call the actual onShare handler for backend update
-    // but don't let it modify our local count, since we already did that
-    if (onShare) onShare();
+    // Only increment if not already shared
+    if (!shared) {
+      // Increment local share count for immediate feedback
+      setLocalSharesCount(count => count + 1);
+      
+      // Call the actual onShare handler for backend update
+      if (onShare) onShare();
+      
+      // Mark as shared
+      setShared(true);
+    }
   };
 
   const handleCopyLink = () => {
@@ -729,17 +1178,17 @@ function DefaultPromptFooter() {
           </>
         )}
         {!wizardActive && (
-          <PromptTemplateAction tooltip="Like">
+          <PromptTemplateAction>
             <Button
               variant="ghost"
               size="sm"
               type="button"
-              className="gap-1"
+              className={`gap-0 sm:gap-1 ${liked ? "opacity-100" : ""}`}
               onClick={toggleLike}
             >
-              <Icon name="heart" weight={liked ? "fill" : "bold"} className="size-4.5" />
+              <Icon name="heart" weight={liked ? "fill" : "bold"} className={`size-4.5 ${liked ? "text-[#FF0034]" : ""}`} />
               {localLikesCount > 0 && (
-                <SlidingNumber value={localLikesCount} className="text-sm" />
+                <SlidingNumber value={localLikesCount} className={`text-sm ${liked ? "text-[#FF0034]" : ""}`} />
               )}
             </Button>
           </PromptTemplateAction>
@@ -761,22 +1210,63 @@ function DefaultPromptFooter() {
           </PromptTemplateAction>
         )}
         {!wizardActive && (
-          <PromptTemplateAction tooltip="Share">
-            <Button
-              variant="ghost"
-              size="sm"
-              type="button"
-              className="gap-1"
-              onClick={() => {
-                handleCopyLink();
-                handleShareClick();
-              }}
-            >
-              <Icon name="share" className="size-4.5" />
-              {localSharesCount > 0 && (
-                <SlidingNumber value={localSharesCount} className="text-sm" />
-              )}
-            </Button>
+          <PromptTemplateAction>
+            <Popover>
+              <PopoverTrigger asChild>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  type="button"
+                  className="gap-1"
+                  onClick={handleShareClick}
+                >
+                  <Icon name="share" className="size-4.5" />
+                  {localSharesCount > 0 && (
+                    <SlidingNumber value={localSharesCount} className="text-sm hidden sm:inline-block" />
+                  )}
+                </Button>
+              </PopoverTrigger>
+              <PopoverContent className="w-56 p-1" align="start">
+                <div className="flex flex-col">
+                  <Button 
+                    variant="ghost" 
+                    size="sm" 
+                    className="justify-start gap-2 px-2 py-1.5"
+                    onClick={handleCopyLink}
+                  >
+                    <Icon name={copied ? "check" : "linksimple"} className="size-4" />
+                    {copied ? "Copied!" : "Copy link"}
+                  </Button>
+                  <Button 
+                    variant="ghost" 
+                    size="sm" 
+                    className="justify-start gap-2 px-2 py-1.5"
+                    onClick={() => window.open(`https://twitter.com/intent/tweet?url=${encodeURIComponent(shareUrlSafe)}`, '_blank')}
+                  >
+                    <Icon name="twitter" className="size-4" />
+                    Twitter
+                  </Button>
+                  <Button 
+                    variant="ghost" 
+                    size="sm" 
+                    className="justify-start gap-2 px-2 py-1.5"
+                    onClick={() => window.open(`https://threads.net/intent/post?text=${encodeURIComponent(shareUrlSafe)}`, '_blank')}
+                  >
+                    <Icon name="threads" className="size-4" />
+                    Threads
+                  </Button>
+                  <Button 
+                    variant="ghost" 
+                    size="sm" 
+                    className="justify-start gap-2 px-2 py-1.5"
+                    onClick={() => window.open(`mailto:?subject=Check out this prompt&body=${encodeURIComponent(shareUrlSafe)}`, '_blank')}
+                  >
+                    <Icon name="email" className="size-4" />
+                    Email
+                  </Button>
+                </div>
+              </PopoverContent>
+            </Popover>
           </PromptTemplateAction>
         )}
         {!wizardActive && (
@@ -798,11 +1288,24 @@ function DefaultPromptFooter() {
       </div>
       <div className="flex items-center gap-1">
         {!wizardActive && (
-          <PromptTemplateAction tooltip="Edit prompt">
-            <Button size="icon" type="button" variant="outline" className="gap-1 shadow-none size-8">
-              <Icon name="pencil" className="size-4.5" />
-            </Button>
-          </PromptTemplateAction>
+          <>
+            <PromptTemplateAction tooltip="Edit prompt">
+              <Button size="icon" type="button" variant="outline" className="gap-1 shadow-none size-8">
+                <Icon name="pencil" className="size-4.5" />
+              </Button>
+            </PromptTemplateAction>
+            <PromptTemplateAction tooltip="Hide prompt">
+              <Button 
+                size="icon" 
+                type="button" 
+                variant="outline" 
+                className="gap-1 shadow-none size-8 ml-1" 
+                onClick={() => setShowPrompt(false)}
+              >
+                <Icon name="EyeClosed" className="size-4.5" />
+              </Button>
+            </PromptTemplateAction>
+          </>
         )}
         <PromptTemplateAction>
           {variables.length > 0 && currentStep >= 0 && currentStep <= totalSteps && (
@@ -874,7 +1377,7 @@ function DefaultPromptFooter() {
           >
             <Icon name="copyPrompt" className="size-4.5" />
             Copy
-            <Icon name="CaretRight" className="size-4" />
+            <Icon name="CaretRight" className="size-4 hidden sm:inline-block" />
           </Button>
         </PromptTemplateAction>
         )}

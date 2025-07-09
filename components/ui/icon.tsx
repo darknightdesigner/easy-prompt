@@ -16,7 +16,7 @@ const registry = {
   heart: Phosphor.HeartIcon,
   chat: Phosphor.ChatCircleIcon,
   share: Phosphor.PaperPlaneTiltIcon,
-  link: Phosphor.LinkSimpleIcon,
+  linksimple: Phosphor.LinkSimpleIcon,
   twitter: Phosphor.XLogoIcon,
   "arrow-left": Phosphor.ArrowLeftIcon,
   "arrow-right": Phosphor.ArrowRightIcon,
@@ -36,6 +36,9 @@ const registry = {
   arrowcounterclockwise: Phosphor.ArrowCounterClockwiseIcon,
   CaretRight: Phosphor.CaretRightIcon,
   ChatCircleText: Phosphor.ChatCircleTextIcon,
+  EyeSlash: Phosphor.EyeSlashIcon,
+  EyeClosed: Phosphor.EyeClosedIcon,
+  Eye: Phosphor.EyeIcon,
 } as const;
 
 
