@@ -4,6 +4,13 @@ import { useEffect, useState } from 'react';
 import { getPromptTemplateFeed, likeTemplate, saveTemplate, shareTemplate } from '@/utils/supabase';
 import { PromptTemplate, PromptTemplateTextarea } from '@/components/ui/prompt-template';
 import { Button } from '@/components/ui/button';
+
+// Customize PromptTemplate container styles here
+const promptContainerStyles = {
+  borderClass: "border-b-1", // e.g. "border-2 border-primary"
+  backgroundClass: "bg-transparent", // e.g. "bg-card"
+  roundedClass: "rounded-none" // e.g. "rounded-lg"
+} as const;
 import { Skeleton } from '@/components/ui/skeleton';
 
 interface Template {
@@ -237,7 +244,8 @@ export default function HomePage() {
   };
   
   return (
-    <div className="container mx-auto py-8">
+    <div className="container mx-auto sm:max-w-[44rem]">
+      <div className="flex flex-col gap-6 pt-32 border-l-1 border-r-1">
       <div className="flex justify-between items-center mb-6">
         <h1 className="text-2xl font-bold">Prompt Templates</h1>
         <div className="flex gap-2">
@@ -303,9 +311,10 @@ export default function HomePage() {
           <p className="text-muted-foreground">No templates found</p>
         </div>
       ) : (
-        <div className="space-y-6">
+        <div className="space-y-0">
           {templates.map(template => (
             <PromptTemplate
+              {...promptContainerStyles}
               key={template.id}
               authorAvatar={template.profiles?.avatar_url || ""}
               displayName={template.profiles?.display_name || ""}
@@ -344,5 +353,6 @@ export default function HomePage() {
         </div>
       )}
     </div>
-  );
+  </div>
+);
 }

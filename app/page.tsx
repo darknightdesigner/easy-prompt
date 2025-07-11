@@ -7,6 +7,7 @@ import { ContainerEffect } from "@/components/motion-primitives/container-effect
 import { CopyIcon } from "@/components/animated-icons/optiprompt";
 import React from "react";
 import { Button } from "@/components/ui/button";
+import Link from "next/link";
 import WavyCanvas from "@/components/graphics/WavyCanvas";
 import {
   PromptTemplate,
@@ -45,9 +46,11 @@ const HeroSection = React.memo(function HeroSection() {
                 <Icon name="plus" weight="bold" className="size-4.5" />
                 Create Template
               </Button>
-              <Button variant="outline">
-                <Icon name="ChatCircleText" weight="bold" className="size-4.5" />
-                Explore Prompts
+              <Button asChild variant="outline">
+                <Link href="/home" className="flex items-center gap-1">
+                  <Icon name="ChatCircleText" weight="bold" className="size-4.5" />
+                  Explore Prompts
+                </Link>
               </Button>
             </div>
           </ContainerEffect>
@@ -79,8 +82,7 @@ export default function Home() {
       <HeroSection />
       <ContainerEffect className="flex justify-center" preset="fade-in-blur" delay={0.6} transition={{ duration: 0.6 }}>
         <div className="relative w-full flex-1 sm:max-w-[44rem] px-2 sm:px-4">
-          <div className="border bg-secondary rounded-[28px]">
-            <PromptTemplate
+          <PromptTemplate
             initialExpanded={true}
             authorAvatar="https://ci3.googleusercontent.com/mail-sig/AIorK4yctzAmNSeWRCuUGwYHYlqVFpxrb40OIXsdWX-IOdVDk9b3GmtZUcGmrRLYDjMQnbTCcv9qFLpnpEEt"
             displayName="Andres Gonzalez"
@@ -155,7 +157,6 @@ BEGIN.`}
           />
 
         </PromptTemplate>
-          </div>
         </div>
       </ContainerEffect>
 

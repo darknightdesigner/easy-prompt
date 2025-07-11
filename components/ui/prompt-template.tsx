@@ -135,6 +135,10 @@ function usePromptTemplate() {
 }
 
 type PromptTemplateProps = {
+  /** Container style overrides */
+  borderClass?: string;
+  backgroundClass?: string;
+  roundedClass?: string;
   authorAvatar?: string;
   displayName?: string;
   username?: string;
@@ -188,6 +192,9 @@ function PromptTemplate({
   shareUrl: propShareUrl,
   variableQuestions,
   children,
+  borderClass = "border",
+  backgroundClass = "bg-secondary",
+  roundedClass = "rounded-[28px]",
 }: PromptTemplateProps) {
   const [internalValue, setInternalValue] = useState(value || "");
   // State for showing/hiding the prompt container via motion animation
@@ -509,7 +516,7 @@ function PromptTemplate({
           setCurrentStep,
         }}
       >
-        <div className={cn("flex flex-col w-full min-w-full flex-shrink-0 pr-1 pl-1 pt-1 gap-1", className)}>
+        <div className={cn(`flex flex-col w-full min-w-full flex-shrink-0 pr-1 pl-1 pt-1 gap-1 ${borderClass} ${backgroundClass} ${roundedClass}`, className)}>
           {(displayName || title) && (
             <div className="flex items-start gap-2 p-2">
               {currentStep >= 0 ? (
@@ -521,17 +528,23 @@ function PromptTemplate({
                   )}
                 </div>
               ) : (
-                authorAvatar && (
+                (
                   <Link href={username ? `/user/${username}` : "#"} className="shrink-0" prefetch={false}>
-                    <img
-                      src={authorAvatar}
-                      alt={displayName ?? username}
-                      className="w-[38px] h-[38px] rounded-full object-cover"
-                    />
+                    {authorAvatar ? (
+                      <img
+                        src={authorAvatar}
+                        alt={displayName ?? username}
+                        className="w-[38px] h-[38px] rounded-full object-cover"
+                      />
+                    ) : (
+                      <div className="w-[38px] h-[38px] rounded-full bg-muted flex items-center justify-center">
+                        <Icon name="profile" className="size-5 text-muted-foreground" />
+                      </div>
+                    )}
                   </Link>
                 )
               )}
-              <div className="flex flex-col gap-0.5 pr-3 sm:pr-4">
+              <div className="flex flex-col pr-3 sm:pr-4">
                 {currentStep >= 0 && currentStep < totalSteps && currentVar ? (
                   <div className="flex items-center gap-0 font-semibold text-foreground">
                     {variableMetadata[currentVar]?.question || `Enter ${currentVar.replace(/_/g, " ")}`}
@@ -567,12 +580,15 @@ function PromptTemplate({
               </div>
             </div>
           )}
-          <div className="w-full flex-1 relative">
+          <div className="flex flex-col w-full relative">
             {/* Social action bar that mirrors the footer - includes toggle button */}
             <TopSocialActionBar />
             
             <motion.div 
-              className="w-full border-input bg-card rounded-[24px] border shadow-[0px_2px_6px_0px_rgba(0,0,0,0.05)] relative overflow-hidden mb-1" 
+              className={cn(
+                "w-full bg-card rounded-[24px] shadow-[0px_2px_6px_0px_rgba(0,0,0,0.05)] relative overflow-hidden",
+                showPrompt ? "border border-input mb-1" : "border-0 mb-0"
+              )}
               ref={contentRef}
               initial={{ height: initialExpanded ? "auto" : 0, opacity: initialExpanded ? 1 : 0 }}
               animate={{ 
@@ -899,7 +915,7 @@ function TopSocialActionBar() {
   return (
 
     <motion.div 
-      className="flex justify-between pr-2 sm:pr-3 items-center relative before:content-[''] before:absolute before:top-0 before:left-0 before:right-0 before:h-px before:bg-[linear-gradient(to_right,transparent_0%,var(--border)_25%,var(--border)_75%,transparent_100%)]"
+      className="flex w-full justify-between pr-2 sm:pr-3 items-center relative before:content-[''] before:absolute before:top-0 before:left-0 before:right-0 before:h-px before:bg-[linear-gradient(to_right,transparent_0%,var(--border)_25%,var(--border)_75%,transparent_100%)]"
       animate={{
         height: showPrompt ? 0 : footerHeight,
         opacity: showPrompt ? 0 : 1,
@@ -1170,9 +1186,10 @@ function DefaultPromptFooter() {
                 variant="ghost"
                 size="sm"
                 type="button"
-                onClick={() => setCurrentStep((s) => s + 1)}
+                disabled={currentStep === totalSteps}
+                onClick={() => currentStep < totalSteps && setCurrentStep((s) => s + 1)}
               >
-                  <Icon name="arrow-right" className="size-4.5" />
+                <Icon name="arrow-right" className="size-4.5" />
               </Button>
             </PromptTemplateAction>
           </>

@@ -71,8 +71,8 @@ const Navbar2 = ({
     title: "OptiPrompt",
   },
   menu = [
-    { title: "Home", url: "", icon: <Icon name="house" className="size-4.5" />, mobileOnly: true },
-    { title: "Prompts", url: "#", icon: <Icon name="book" className="size-4.5" />, desktopOnly: true },
+    { title: "Home", url: "/home", icon: <Icon name="house" className="size-4.5" />, mobileOnly: true },
+    { title: "Prompts", url: "/home", icon: <Icon name="book" className="size-4.5" />, desktopOnly: true },
     { title: "Creators", url: "#", icon: <Icon name="users" className="size-4.5" /> },
     { title: "Saved", url: "#", icon: <Icon name="bookmark" className="size-4.5" /> },
     { title: "Profile", url: "/me", icon: <Icon name="profile" className="size-4.5" />, mobileOnly: true },
