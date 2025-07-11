@@ -9,7 +9,8 @@ import { Button } from '@/components/ui/button';
 const promptContainerStyles = {
   borderClass: "border-b-1", // e.g. "border-2 border-primary"
   backgroundClass: "bg-transparent", // e.g. "bg-card"
-  roundedClass: "rounded-none" // e.g. "rounded-lg"
+  roundedClass: "rounded-none", // e.g. "rounded-lg"
+  paddingClass: "pr-4 pl-4 pt-4" // customize padding
 } as const;
 import { Skeleton } from '@/components/ui/skeleton';
 

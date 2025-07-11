@@ -139,6 +139,7 @@ type PromptTemplateProps = {
   borderClass?: string;
   backgroundClass?: string;
   roundedClass?: string;
+  paddingClass?: string;
   authorAvatar?: string;
   displayName?: string;
   username?: string;
@@ -195,6 +196,7 @@ function PromptTemplate({
   borderClass = "border",
   backgroundClass = "bg-secondary",
   roundedClass = "rounded-[28px]",
+  paddingClass = "pr-1 pl-1 pt-1",
 }: PromptTemplateProps) {
   const [internalValue, setInternalValue] = useState(value || "");
   // State for showing/hiding the prompt container via motion animation
@@ -516,7 +518,7 @@ function PromptTemplate({
           setCurrentStep,
         }}
       >
-        <div className={cn(`flex flex-col w-full min-w-full flex-shrink-0 pr-1 pl-1 pt-1 gap-1 ${borderClass} ${backgroundClass} ${roundedClass}`, className)}>
+        <div className={cn(`flex flex-col w-full min-w-full flex-shrink-0 ${paddingClass} gap-1 ${borderClass} ${backgroundClass} ${roundedClass}`, className)}>
           {(displayName || title) && (
             <div className="flex items-start gap-2 p-2">
               {currentStep >= 0 ? (
