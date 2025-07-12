@@ -166,6 +166,13 @@ type PromptTemplateProps = {
   children: React.ReactNode
   className?: string
   /** Whether the container is initially expanded */
+  /** Whether this prompt requires the multi-step wizard (pre-derived flag).
+   *  If omitted, the component falls back to `variables.length > 0` so that
+   *  older callers remain compatible while we gradually roll the flag out
+   *  through the data layer.
+   */
+  requiresWizard?: boolean;
+  /** Whether the container is initially expanded */
   initialExpanded?: boolean
 }
 
@@ -178,6 +185,7 @@ function PromptTemplate({
   verified = false,
   isLoading = false,
   initialExpanded = false,
+  requiresWizard: requiresWizardProp,
   maxHeight = 240,
   value,
   onValueChange,
@@ -300,6 +308,12 @@ function PromptTemplate({
   }, [contentRef.current, isMobile, currentStep, showPrompt]);
 
   const totalSteps = variables.length;
+  // Ensure progress bar has at least one step so the initial border is visible even when no wizard is needed
+  const displayTotalSteps = Math.max(1, totalSteps);
+  // Final authoritative flag – either supplied by the data layer or derived locally
+  const requiresWizard = typeof requiresWizardProp === 'boolean'
+    ? requiresWizardProp
+    : variables.length > 0;
 
   // Keep variableValues and currentStep in sync when variables list changes
   useEffect(() => {
@@ -684,12 +698,10 @@ function PromptTemplate({
                 </PromptTemplateAction>
               </div>
             )}
-            {totalSteps > 0 && (
-              <PromptProgressBar
-                totalSteps={totalSteps}
-                completedSteps={completedSteps}
-              />
-            )}
+                        <PromptProgressBar
+              totalSteps={displayTotalSteps}
+              completedSteps={completedSteps}
+            />
             {footer ?? (<div className="p-2 sm:p-3"><DefaultPromptFooter /></div>)}
             </motion.div>
           </div>
@@ -1390,13 +1402,21 @@ function DefaultPromptFooter() {
                 if (variables.length > 0) {
                   startWizard();
                 } else {
-                  navigator.clipboard.writeText(promptValue).catch(() => {});
+                  try {
+                    navigator.clipboard.writeText(promptValue);
+                    setCopied(true);
+                    setTimeout(() => setCopied(false), 2000);
+                  } catch (err) {
+                    console.error('Failed to copy prompt', err);
+                  }
                 }
               }}
           >
-            <Icon name="copyPrompt" className="size-4.5" />
-            Copy
-            <Icon name="CaretRight" className="size-4 hidden sm:inline-block" />
+            <Icon name={copied ? "check" : "copyPrompt"} className="size-4.5" weight={copied ? "bold" : "regular"} />
+            {copied ? "Copied" : "Copy"}
+            {variables.length > 0 && (
+              <Icon name="CaretRight" className="size-4 hidden sm:inline-block" />
+            )}
           </Button>
         </PromptTemplateAction>
         )}
