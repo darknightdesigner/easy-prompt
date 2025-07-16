@@ -18,7 +18,7 @@ const HeroSection = React.memo(function HeroSection() {
   return (
     <div className="relative z-10 w-full">
       <div className="mx-auto w-full flex flex-col items-stretch px-4">
-        <div className="flex flex-col items-center gap-2 text-center mt-16 relative z-10">
+        <div className="flex flex-col items-center gap-2 text-center mt-0 sm:mt-16 relative z-10">
           <h1 className="mb-2 text-4xl font-semibold tracking-tight text-pretty sm:text-5xl">
             <TextEffect
               preset="fade-in-blur"
@@ -64,7 +64,7 @@ HeroSection.displayName = "HeroSection";
 
 export default function Home() {
   return (
-    <section className="relative min-h-[100svh] overflow-hidden py-32 flex flex-col gap-8 justify-center bg-background">
+    <section className="relative min-h-[100svh] overflow-hidden py-16 sm:py-32 flex flex-col gap-8 justify-center bg-background">
       <div
         className="absolute inset-0 z-0 pointer-events-none before:absolute before:inset-0 before:content-[''] before:bg-[url('https://cdn.prod.website-files.com/61a6b59cc1578e2a2caf13c5/61ae57c4d73bf15eadf011b8_grain.gif')] before:bg-repeat before:[mask-image:linear-gradient(to_top,_black_0%,_black_25%,_transparent_100%)] before:opacity-0"
       />

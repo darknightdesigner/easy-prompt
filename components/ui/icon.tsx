@@ -3,6 +3,8 @@
 import * as Phosphor from "@phosphor-icons/react";
 import React from "react";
 import { CopyPromptIcon } from "@/components/ui/icons/copy-prompt-icon";
+import { RiChatSmile2Line } from "react-icons/ri";
+import { ChatSmileRoundedCustomIcon } from "@/components/ui/icons/chat-smile-rounded-custom-icon";
 
 const registry = {
   copy: Phosphor.CopyIcon,
@@ -24,6 +26,7 @@ const registry = {
   threads: Phosphor.ThreadsLogoIcon,
   check: Phosphor.CheckIcon,
   sliders: Phosphor.SlidersHorizontalIcon,
+  search: Phosphor.MagnifyingGlassIcon,
   copyPrompt: CopyPromptIcon,
   "caret-down": Phosphor.CaretDownIcon,
   "caret-up": Phosphor.CaretUpIcon,
@@ -39,6 +42,10 @@ const registry = {
   EyeSlash: Phosphor.EyeSlashIcon,
   EyeClosed: Phosphor.EyeClosedIcon,
   Eye: Phosphor.EyeIcon,
+  PlusSquare: Phosphor.PlusSquareIcon,
+  ChatTeardropText: Phosphor.ChatTeardropTextIcon,
+  chatSmile2Line: RiChatSmile2Line,
+  chatSmileRoundedCustom: ChatSmileRoundedCustomIcon,
 } as const;
 
 

@@ -34,6 +34,7 @@ import {
 } from "@/components/ui/sheet";
 
 interface MenuItem {
+  active?: boolean;
   title: string;
   url: string;
   description?: string;
@@ -72,8 +73,9 @@ const Navbar2 = ({
   },
   menu = [
     { title: "Home", url: "/home", icon: <Icon name="house" className="size-4.5" />, mobileOnly: true },
-    { title: "Prompts", url: "/home", icon: <Icon name="book" className="size-4.5" />, desktopOnly: true },
-    { title: "Creators", url: "#", icon: <Icon name="users" className="size-4.5" /> },
+    { title: "Prompts", url: "/home", icon: <Icon name="chatSmileRoundedCustom" className="size-4.5" />, desktopOnly: true },
+    { title: "Search", url: "#", icon: <Icon name="search" className="size-4.5" /> },
+    { title: "Create", url: "/#", icon: <Icon name="PlusSquare" className="size-4.5" /> },
     { title: "Saved", url: "#", icon: <Icon name="bookmark" className="size-4.5" /> },
     { title: "Profile", url: "/me", icon: <Icon name="profile" className="size-4.5" />, mobileOnly: true },
   ],
@@ -123,14 +125,20 @@ const Navbar2 = ({
           <div className="flex w-full items-center justify-center sm:absolute sm:left-1/2 sm:-translate-x-1/2 sm:w-auto">
             <div className="flex w-full sm:w-auto items-center">
               <NavigationMenuWithoutViewport className="flex-1 basis-0 grow min-w-0 sm:flex-none sm:grow-0 w-full sm:w-auto max-w-none">
-                <NavigationMenuList className="relative w-full sm:w-auto gap-0 sm:gap-1">
+                <NavigationMenuList className="relative w-full sm:w-auto gap-0">
                   {menu
                       .map((item) =>
                         item.title === "Profile"
                           ? { ...item, url: session ? "/me" : auth.login.url }
                           : item
                       )
-                      .map((item) => renderMenuItem(item))}
+                      .map((item) => {
+                        const isActive = pathname === item.url;
+                        const iconElement = item.icon && React.isValidElement(item.icon)
+                          ? React.cloneElement(item.icon as React.ReactElement<any>, { weight: isActive ? "fill" : "bold" })
+                          : item.icon;
+                        return renderMenuItem({ ...item, icon: iconElement, active: isActive });
+                      })}
                 </NavigationMenuList>
               </NavigationMenuWithoutViewport>
             </div>
@@ -215,8 +223,8 @@ const renderMenuItem = (item: MenuItem) => {
 
   return (
     <NavigationMenuItem key={item.title} className={`flex-1 basis-0 grow min-w-0 sm:flex-none sm:grow-0 w-full sm:w-auto ${item.desktopOnly ? 'hidden sm:flex' : ''}`}>
-      <Button variant="ghost" asChild className={`w-full sm:w-auto min-w-0 h-auto rounded-full flex flex-col items-center gap-1 sm:h-8 sm:flex-row sm:gap-2 ${item.mobileOnly ? 'sm:hidden' : ''}`}>
-        <Link href={item.url} className="flex-1 flex w-full sm:w-auto flex-col items-center gap-1 sm:flex-row sm:gap-2 px-0 sm:px-3">
+      <Button variant="ghost" asChild className={`w-full sm:w-auto min-w-0 h-auto rounded-full flex flex-col items-center gap-1 sm:h-8 sm:flex-row sm:gap-1.5 ${item.mobileOnly ? 'sm:hidden' : ''} ${item.active ? 'opacity-100 text-accent-foreground dark:text-accent-foreground dark:opacity-100' : ''}`}>
+        <Link href={item.url} className={`flex-1 flex w-full sm:w-auto flex-col items-center gap-1 sm:flex-row px-0 sm:px-3 ${item.mobileOnly ? 'text-sm' : ''}`}>
           {item.icon && <span className="text-current">{item.icon}</span>}
           <span>{item.title}</span>
         </Link>

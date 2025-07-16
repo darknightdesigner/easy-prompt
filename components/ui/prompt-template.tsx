@@ -349,9 +349,8 @@ function PromptTemplate({
   // When on first question, we'll pass a fractional value to ensure 5% progress
   const completedSteps = 
     currentStep === -1 ? 0 : // inactive wizard
-    currentStep === 0 ? 0.05 * totalSteps : // first question shows 5%
     currentStep === totalSteps ? totalSteps : // preview step shows 100%
-    Math.min(currentStep, totalSteps - 1); // other steps show proportional progress
+    0.25 * totalSteps + 0.75 * currentStep; // proportional progress starting at 25%
 
   // Helpers
   const currentVar = currentStep >= 0 ? variables[currentStep] ?? "" : "";
@@ -532,9 +531,9 @@ function PromptTemplate({
           setCurrentStep,
         }}
       >
-        <div className={cn(`flex flex-col w-full min-w-full flex-shrink-0 ${paddingClass} gap-1 ${borderClass} ${backgroundClass} ${roundedClass}`, className)}>
+        <div className={cn(`flex flex-col w-full min-w-full flex-shrink-0 ${paddingClass} gap-0 ${borderClass} ${backgroundClass} ${roundedClass}`, className)}>
           {(displayName || title) && (
-            <div className="flex items-start gap-2 p-2">
+            <div className="flex items-start gap-2 pt-2 pl-2 pr-2">
               {currentStep >= 0 ? (
                 <div className="shrink-0 w-[38px] h-[38px] rounded-full bg-primary/10 flex items-center justify-center text-primary text-lg font-semibold">
                   {currentStep === totalSteps ? (
@@ -570,7 +569,7 @@ function PromptTemplate({
                     Preview your completed prompt
                   </div>
                 ) : (
-                  <Link href={username ? `/user/${username}` : "#"} className="flex items-center gap-0 font-semibold text-foreground hover:underline">
+                  <Link href={username ? `/user/${username}` : "#"} className="flex items-center gap-1 font-semibold text-foreground hover:underline">
                     {displayName}
                     {verified && (
                       <Icon
@@ -603,7 +602,7 @@ function PromptTemplate({
             <motion.div 
               className={cn(
                 "w-full bg-card rounded-[24px] shadow-[0px_2px_6px_0px_rgba(0,0,0,0.05)] relative overflow-hidden",
-                showPrompt ? "border border-input mb-1" : "border-0 mb-0"
+                showPrompt ? (currentStep === totalSteps ? "border border-input mb-1 mt-1" : "border border-input mb-1 mt-1") : "border-0 mb-0"
               )}
               ref={contentRef}
               initial={{ height: initialExpanded ? "auto" : 0, opacity: initialExpanded ? 1 : 0 }}
@@ -929,7 +928,7 @@ function TopSocialActionBar() {
   return (
 
     <motion.div 
-      className="flex w-full justify-between pr-2 sm:pr-3 items-center relative before:content-[''] before:absolute before:top-0 before:left-0 before:right-0 before:h-px before:bg-[linear-gradient(to_right,transparent_0%,var(--border)_25%,var(--border)_75%,transparent_100%)]"
+      className="flex w-full justify-between pr-2 sm:pr-3 items-center"
       animate={{
         height: showPrompt ? 0 : footerHeight,
         opacity: showPrompt ? 0 : 1,
@@ -951,7 +950,7 @@ function TopSocialActionBar() {
               variant="ghost"
               size="sm"
               type="button"
-              className={`gap-1 ${liked ? "opacity-100" : ""}`}
+              className={`gap-0 sm:gap-1 ${liked ? "opacity-100 dark:opacity-100" : ""}`}
               onClick={toggleLike}
             >
               <Icon name="heart" weight={liked ? "fill" : "bold"} className={`size-4.5 ${liked ? "text-[#FF0034]" : ""}`} />
@@ -967,7 +966,7 @@ function TopSocialActionBar() {
               variant="ghost"
               size="sm"
               type="button"
-              className="gap-1"
+              className="gap-0 sm:gap-1"
               onClick={toggleComment}
             >
               <Icon name="chat" weight="bold" className="size-4.5" />
@@ -985,7 +984,7 @@ function TopSocialActionBar() {
                   variant="ghost"
                   size="sm"
                   type="button"
-                  className="gap-1"
+                  className="gap-0 sm:gap-1"
                   onClick={handleShareClick}
                 >
                   <Icon name="share" className="size-4.5" />
@@ -1043,12 +1042,12 @@ function TopSocialActionBar() {
               variant="ghost"
               size="sm"
               type="button"
-              className={cn("gap-1", saved && "opacity-100")}
+              className={cn("gap-0 sm:gap-1", saved && "opacity-100 dark:opacity-100")}
               onClick={toggleSave}
             >
               <Icon name="bookmark" weight={saved ? "fill" : "bold"} className="size-4.5" />
               {localSavesCount > 0 && (
-                <SlidingNumber value={localSavesCount} className="text-sm hidden sm:block" />
+                <SlidingNumber value={localSavesCount} className="text-sm hidden sm:inline-block" />
               )}
             </Button>
           </PromptTemplateAction>
@@ -1062,7 +1061,17 @@ function TopSocialActionBar() {
           onClick={() => setShowPrompt(!showPrompt)}
         >
           <Icon name={showPrompt ? "EyeClosed" : "Eye"} className="size-4" />
-          <span>{showPrompt ? "Hide prompt" : "Show prompt"}</span>
+          {showPrompt ? (
+            <>
+            <span className="sm:hidden">Prompt</span>
+            <span className="hidden sm:inline">Show prompt</span>
+          </>
+          ) : (
+            <>
+              <span className="sm:hidden">Prompt</span>
+              <span className="hidden sm:inline">Show prompt</span>
+            </>
+          )}
         </Button>
       </div>
     </motion.div>
@@ -1214,7 +1223,7 @@ function DefaultPromptFooter() {
               variant="ghost"
               size="sm"
               type="button"
-              className={`gap-0 sm:gap-1 ${liked ? "opacity-100" : ""}`}
+              className={`gap-0 sm:gap-1 ${liked ? "opacity-100 dark:opacity-100" : ""}`}
               onClick={toggleLike}
             >
               <Icon name="heart" weight={liked ? "fill" : "bold"} className={`size-4.5 ${liked ? "text-[#FF0034]" : ""}`} />
@@ -1230,7 +1239,7 @@ function DefaultPromptFooter() {
               variant="ghost"
               size="sm"
               type="button"
-              className="gap-1"
+              className="gap-0 sm:gap-1"
               onClick={toggleComment}
             >
               <Icon name="chat" weight="bold" className="size-4.5" />
@@ -1248,7 +1257,7 @@ function DefaultPromptFooter() {
                   variant="ghost"
                   size="sm"
                   type="button"
-                  className="gap-1"
+                  className="gap-0 sm:gap-1"
                   onClick={handleShareClick}
                 >
                   <Icon name="share" className="size-4.5" />
@@ -1306,12 +1315,12 @@ function DefaultPromptFooter() {
               variant="ghost"
               size="sm"
               type="button"
-              className={cn("gap-1", saved && "opacity-100")}
+              className={cn("gap-0 sm:gap-1", saved && "opacity-100 dark:opacity-100")}
               onClick={toggleSave}
             >
               <Icon name="bookmark" weight={saved ? "fill" : "bold"} className="size-4.5" />
               {localSavesCount > 0 && (
-                <SlidingNumber value={localSavesCount} className="text-sm hidden sm:block" />
+                <SlidingNumber value={localSavesCount} className="text-sm hidden sm:inline-block" />
               )}
             </Button>
           </PromptTemplateAction>
