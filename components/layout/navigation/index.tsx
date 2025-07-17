@@ -68,7 +68,7 @@ const Navbar2 = ({
   logo = {
     url: "/",
     src: "/optiprompt-logo.svg",
-    alt: "Easy Prompt logo",
+    alt: "Easy Prompt Logo",
     title: "Easy Prompt",
   },
   menu = [
