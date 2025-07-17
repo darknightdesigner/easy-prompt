@@ -29,7 +29,7 @@ const HeroSection = React.memo(function HeroSection() {
               Powerful prompts made simple
             </TextEffect>
           </h1>
-          <p className="mx-auto text-muted-foreground">
+          <p className="mx-auto text-foreground/70">
             <TextEffect
               as="span"
               preset="fade-in-blur"
