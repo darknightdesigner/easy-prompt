@@ -246,9 +246,9 @@ export default function HomePage() {
   };
   
   return (
-    <div className="bg-background pt-16 sm:pt-32">
+    <div className="bg-background pt-0 px-0 sm:px-6 sm:pt-32">
       <div className="container mx-auto sm:max-w-[40rem]">
-      <div className="flex flex-col gap-0 border-l-1 border-r-1 border-t-1 border-primary/8 rounded-t-4xl bg-card shadow-xl/5">
+      <div className="flex flex-col gap-0 sm:border-l-1 sm:border-r-1 sm:border-t-1 border-0 sm:border-primary/8 rounded-none sm:rounded-t-4xl bg-card shadow-none sm:shadow-xl/5">
       <div className="flex justify-between items-center p-2">
         <PostInput className="rounded-3xl" />
       </div>

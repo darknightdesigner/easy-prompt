@@ -94,7 +94,7 @@ const Navbar2 = ({
   const navAnimation = isHome ? "animate-slide-fade-down" : "";
   const shadowAnimation = isHome ? "animate-fade-in" : "";
   // Use gradient border only on ≥sm
-  const borderImage = typeof window !== 'undefined' && window.innerWidth >= 640
+  const borderImage = typeof window !== 'undefined' && window.innerWidth >= 716
     ? 'linear-gradient(to right, transparent 10%, var(--border) 50%, transparent 90%) 1'
     : undefined;
   return (
@@ -185,12 +185,12 @@ const Navbar2 = ({
         .navbar-border {
           border-image: none;
         }
-        @media (max-width: 639px) {
+        @media (max-width: 715px) {
           :global([data-slot="navigation-menu"] > div) {
             width: 100%;
           }
         }
-        @media (min-width: 640px) {
+        @media (min-width: 716px) {
           .navbar-border {
             border-image: linear-gradient(to right, transparent 10%, var(--border) 50%, transparent 90%) 1;
           }

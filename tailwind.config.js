@@ -6,6 +6,15 @@ module.exports = {
     "./components/**/*.{js,ts,jsx,tsx,mdx}",
   ],
   theme: {
+    screens: {
+      // Custom extra-small breakpoint for small devices
+      'xs': '390px',
+      'sm': '716px',
+      'md': '768px',
+      'lg': '1024px',
+      'xl': '1280px',
+      '2xl': '1536px',
+    },
     extend: {
       keyframes: {
         'fade-in': {
@@ -32,9 +41,6 @@ module.exports = {
         "color-3": "hsl(var(--color-3))",
         "color-4": "hsl(var(--color-4))",
         "color-5": "hsl(var(--color-5))",
-      },
-      screens: {
-        'sm': '390px',
       },
     },
   },
