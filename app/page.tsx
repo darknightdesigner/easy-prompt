@@ -42,13 +42,13 @@ const HeroSection = React.memo(function HeroSection() {
           </p>
           <ContainerEffect preset="fade-in-blur" delay={0.6} transition={{ duration: 0.6 }}>
             <div className="mt-3 flex flex-wrap justify-center gap-3">
-              <Button variant="outline">
+              <Button variant="outline" className="shadow-none">
                 <Icon name="plus" weight="bold" className="size-4.5" />
                 Create Template
               </Button>
-              <Button asChild variant="outline">
+              <Button asChild variant="outline" className="shadow-none">
                 <Link href="/home" className="flex items-center gap-1">
-                  <Icon name="ChatCircleText" weight="bold" className="size-4.5" />
+                  <Icon name="chatSmileRoundedCustom" weight="bold" className="size-4.5" />
                   Explore Prompts
                 </Link>
               </Button>

@@ -6,6 +6,7 @@ import { ThemeProvider } from "@/components/ui/theme-provider";
 import { SupabaseProvider } from "@/components/supabase-provider"
 import { IconProvider } from "@/components/icon-provider";
 import { TopNavConditional } from "@/components/layout/top-nav-conditional";
+import { AuthRequiredDialogProvider } from "@/components/ui/auth-required-dialog";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -44,7 +45,8 @@ export default async function RootLayout({
           
 
           <SupabaseProvider initialSession={session}>
-          <IconProvider>
+          <AuthRequiredDialogProvider>
+            <IconProvider>
             <ThemeProvider
               attribute="class"
               defaultTheme="system"
@@ -55,6 +57,7 @@ export default async function RootLayout({
               {children}
             </ThemeProvider>
           </IconProvider>
+            </AuthRequiredDialogProvider>
         </SupabaseProvider>
         </body>
       </html>

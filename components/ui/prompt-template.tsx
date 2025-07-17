@@ -6,6 +6,7 @@ import { extractVariables } from "@/lib/prompt-variables";
 import { Button } from "@/components/ui/button"
 import { Icon } from "@/components/ui/icon"
 import { SlidingNumber } from "@/components/motion-primitives/sliding-number"
+import { useRequireAuth } from "@/lib/use-require-auth"
 import { motion, AnimatePresence } from "framer-motion";
 import { Popover, PopoverTrigger, PopoverContent } from "@/components/ui/popover"
 import Link from "next/link"
@@ -569,8 +570,8 @@ function PromptTemplate({
                     Preview your completed prompt
                   </div>
                 ) : (
-                  <Link href={username ? `/user/${username}` : "#"} className="flex items-center gap-1 font-semibold text-foreground hover:underline">
-                    {displayName}
+                  <Link href={username ? `/user/${username}` : "#"} className="flex items-center gap-1 font-semibold text-foreground group">
+                    <span className="group-hover:underline">{displayName}</span>
                     {verified && (
                       <Icon
                         name="verified"
@@ -884,6 +885,7 @@ function TopSocialActionBar() {
   const [copied, setCopied] = useState(false);
   const [shareUrlSafe, setShareUrlSafe] = useState("");
   
+  const { requireAuth } = useRequireAuth();
   const wizardActive = variables.length > 0 && currentStep >= 0 && currentStep <= totalSteps;
 
   useEffect(() => {
@@ -893,20 +895,29 @@ function TopSocialActionBar() {
 
   // Event handlers
   const toggleLike = () => {
+    if (!requireAuth("Like this? Sign up first.")) return;
     setLiked(!liked);
     setLocalLikesCount(count => count + (liked ? -1 : 1));
     if (onLike) onLike();
   };
 
+  // Clicking comment icon just toggles UI state; counter updates after successful comment submission
   const toggleComment = () => {
+    if (!requireAuth("Want to comment? Sign up first.")) return;
     setCommented(!commented);
-    setLocalCommentsCount(count => count + (commented ? -1 : 1));
+    // No immediate counter change; will increment after comment is actually submitted
   };
 
   const toggleSave = () => {
+    if (!requireAuth("Like this? Sign up first.")) return;
     setSaved(!saved);
     setLocalSavesCount(count => count + (saved ? -1 : 1));
     if (onSave) onSave();
+  };
+
+  const handleEditClick = () => {
+    if (!requireAuth("Want to edit? Sign up first.")) return;
+    // TODO: redirect to edit page or open editor
   };
 
   const handleShareClick = () => {
@@ -1116,6 +1127,7 @@ function DefaultPromptFooter() {
   const [copied, setCopied] = useState(false);
   const [shareUrlSafe, setShareUrlSafe] = useState("");
 
+  const { requireAuth } = useRequireAuth();
   const wizardActive = variables.length > 0 && currentStep >= 0 && currentStep <= totalSteps;
 
   const variableQuestion = currentStep >= 0 && currentStep < variables.length ? variableMetadata[variables[currentStep]]?.question : "";
@@ -1134,6 +1146,7 @@ function DefaultPromptFooter() {
 
   // Event handlers
   const toggleLike = () => {
+    if (!requireAuth("Like this? Sign up first.")) return;
     // Update UI state
     setLiked(!liked);
     
@@ -1145,15 +1158,15 @@ function DefaultPromptFooter() {
     if (onLike) onLike();
   };
 
+  // Clicking comment icon while prompt is visible – no counter change yet
   const toggleComment = () => {
-    // Update UI state
+    if (!requireAuth("Want to comment? Sign up first.")) return;
     setCommented(!commented);
-    
-    // Update local count for immediate feedback
-    setLocalCommentsCount(count => count + (commented ? -1 : 1));
+    // Counter will update after comments feature posts successfully
   };
 
   const toggleSave = () => {
+    if (!requireAuth("Like this? Sign up first.")) return;
     // Update UI state
     setSaved(!saved);
     
@@ -1163,6 +1176,11 @@ function DefaultPromptFooter() {
     // Call the actual onSave handler for backend update
     // but don't let it modify our local count, since we already did that
     if (onSave) onSave();
+  };
+
+  const handleEditClick = () => {
+    if (!requireAuth("Want to edit? Sign up first.")) return;
+    // TODO: redirect to edit page or open editor
   };
 
   const handleShareClick = () => {
@@ -1330,7 +1348,7 @@ function DefaultPromptFooter() {
         {!wizardActive && (
           <>
             <PromptTemplateAction tooltip="Edit prompt">
-              <Button size="icon" type="button" variant="outline" className="gap-1 shadow-none size-8">
+              <Button size="icon" type="button" variant="outline" className="gap-1 shadow-none size-8" onClick={handleEditClick}>
                 <Icon name="pencil" className="size-4.5" />
               </Button>
             </PromptTemplateAction>

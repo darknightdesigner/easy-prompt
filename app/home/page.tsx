@@ -7,7 +7,7 @@ import { Button } from '@/components/ui/button';
 
 // Customize PromptTemplate container styles here
 const promptContainerStyles = {
-  borderClass: "border-b-1", // e.g. "border-2 border-primary"
+  borderClass: "border-b-1 border-primary/8", // e.g. "border-2 border-primary"
   backgroundClass: "bg-transparent", // e.g. "bg-card"
   roundedClass: "rounded-none", // e.g. "rounded-lg"
   paddingClass: "pr-4 pl-4 pt-4" // customize padding
@@ -246,63 +246,31 @@ export default function HomePage() {
   
   return (
     <div className="container mx-auto sm:max-w-[44rem]">
-      <div className="flex flex-col gap-6 pt-32 border-l-1 border-r-1">
-      <div className="flex justify-between items-center mb-6">
+      <div className="flex flex-col gap-0 mt-32 pt-8 border-l-1 border-r-1 border-t-1 border-primary/8 rounded-t-4xl bg-secondary/50">
+      <div className="flex justify-between items-center p-6">
         <h1 className="text-2xl font-bold">Prompt Templates</h1>
-        <div className="flex gap-2">
-          <Button 
-            variant={sortBy === 'created_at' ? 'default' : 'outline'} 
-            onClick={() => {
-              setSortBy('created_at');
-              setPage(1);
-            }}
-            size="sm"
-          >
-            Latest
-          </Button>
-          <Button 
-            variant={sortBy === 'likes_count' ? 'default' : 'outline'} 
-            onClick={() => {
-              setSortBy('likes_count');
-              setPage(1);
-            }}
-            size="sm"
-          >
-            Popular
-          </Button>
-          <Button 
-            variant={sortBy === 'views_count' ? 'default' : 'outline'} 
-            onClick={() => {
-              setSortBy('views_count');
-              setPage(1);
-            }}
-            size="sm"
-          >
-            Most Viewed
-          </Button>
-        </div>
       </div>
       
       {loading && page === 1 ? (
         <div className="space-y-6">
           {[...Array(3)].map((_, i) => (
-            <div key={i} className="border rounded-lg p-4">
-              <div className="flex items-center gap-2 mb-4">
-                <Skeleton className="h-10 w-10 rounded-full" />
-                <div className="space-y-2">
-                  <Skeleton className="h-4 w-24" />
-                  <Skeleton className="h-3 w-16" />
+            <div key={i} className="px-6 sm:px-6 pt-4 pb-2 border-b-1 border-primary/8">
+              <div className="flex items-start gap-2">
+                <Skeleton className="h-[38px] w-[38px] rounded-full" />
+                <div className="flex flex-col pt-1">
+                  <Skeleton className="h-4 w-28" />
+                  <Skeleton className="h-3 w-20 mt-1" />
                 </div>
               </div>
-              <Skeleton className="h-5 w-3/4 mb-3" />
-              <Skeleton className="h-24 w-full mb-4" />
-              <div className="flex justify-between">
-                <Skeleton className="h-8 w-20" />
-                <div className="flex gap-2">
-                  <Skeleton className="h-8 w-8" />
-                  <Skeleton className="h-8 w-8" />
-                  <Skeleton className="h-8 w-8" />
-                </div>
+              <div className="space-y-2 mt-3">
+                <Skeleton className="h-4 w-full" />
+                <Skeleton className="h-4 w-11/12" />
+              </div>
+              <div className="flex gap-4 mt-3 pb-2">
+                <Skeleton className="h-6 w-10" />
+                <Skeleton className="h-6 w-10" />
+                <Skeleton className="h-6 w-10" />
+                <Skeleton className="h-6 w-10" />
               </div>
             </div>
           ))}
