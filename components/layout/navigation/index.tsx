@@ -117,7 +117,7 @@ const Navbar2 = ({
             onMouseEnter={() => copyIconRef.current?.startAnimation()}
             onMouseLeave={() => copyIconRef.current?.stopAnimation()}
           >
-            <CopyIcon ref={copyIconRef} size={"22"} />
+            <CopyIcon ref={copyIconRef} size={22} />
             <span className="text-md font-semibold tracking-tight">
               {logo.title}
             </span>
