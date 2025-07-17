@@ -2,7 +2,7 @@ import { supabaseServer } from "@/lib/supabaseServer";
 import { redirect } from "next/navigation";
 import { ProfileCard } from "@/components/profile/profile-card";
 
-export default async function PublicProfilePage({ params }: { params: Promise<{ username: string }>; searchParams?: { [key: string]: string | string[] | undefined } }) {
+export default async function PublicProfilePage({ params }: { params: Promise<{ username: string }>; searchParams?: Promise<{ [key: string]: string | string[] | undefined }> }) {
   const { username } = await params;
 
   const supabase = await supabaseServer();
