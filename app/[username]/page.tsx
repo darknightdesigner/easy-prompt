@@ -2,11 +2,7 @@ import { supabaseServer } from "@/lib/supabaseServer";
 import { redirect } from "next/navigation";
 import { ProfileCard } from "@/components/profile/profile-card";
 
-interface PublicProfilePageProps {
-  params: { username: string }
-}
-
-export default async function PublicProfilePage({ params }: PublicProfilePageProps) {
+export default async function PublicProfilePage({ params }: { params: { username: string } }) {
   const supabase = await supabaseServer();
   const { data: profile } = await supabase
     .from("profiles")
