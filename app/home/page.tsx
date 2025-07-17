@@ -4,6 +4,9 @@ import { useEffect, useState } from 'react';
 import { getPromptTemplateFeed, likeTemplate, saveTemplate, shareTemplate } from '@/utils/supabase';
 import { PromptTemplate, PromptTemplateTextarea } from '@/components/ui/prompt-template';
 import { Button } from '@/components/ui/button';
+import { Skeleton } from '@/components/ui/skeleton';
+import { PostInput } from '@/components/ui/post-input';
+import { PageContainer } from '@/components/layout/page-container';
 
 // Customize PromptTemplate container styles here
 const promptContainerStyles = {
@@ -12,8 +15,6 @@ const promptContainerStyles = {
   roundedClass: "rounded-none", // e.g. "rounded-lg"
   paddingClass: "pr-1 pl-1 pt-1 sm:pr-4 sm:pl-4 sm:pt-4" // customize padding
 } as const;
-import { Skeleton } from '@/components/ui/skeleton';
-import { PostInput } from '@/components/ui/post-input';
 
 interface Template {
   id: string;
@@ -246,12 +247,21 @@ export default function HomePage() {
   };
   
   return (
-    <div className="bg-background pt-0 px-0 sm:px-6 sm:pt-32">
-      <div className="w-full sm:container sm:mx-auto sm:max-w-160">
-      <div className="flex flex-col gap-0 sm:border-l sm:border-r sm:border-t border-0 sm:border-primary/8 rounded-none sm:rounded-t-4xl bg-card shadow-none sm:shadow-xl/5">
-      <div className="flex justify-between items-center pt-16 pb-2 px-2 sm:px-2 sm:py-2">
+    <PageContainer
+      background={{
+        wavy: true,
+        animation: {
+          initial: { opacity: 0 },
+          animate: { opacity: 1 },
+          transition: { duration: 3, delay: 1 }
+        }
+      }}
+    >
+      <PageContainer.Header>
         <PostInput className="rounded-3xl" />
-      </div>
+      </PageContainer.Header>
+      
+      <PageContainer.Content>
       
       {loading && page === 1 ? (
         <div className="space-y-6">
@@ -296,7 +306,7 @@ export default function HomePage() {
               sharesCount={template.engagements?.[0]?.shares_count || 0}
               savesCount={template.engagements?.[0]?.saves_count || 0}
               verified={false} // Add this field to your database if needed
-              shareUrl={`/templates/${template.slug}`}
+              shareUrl={`/${template.profiles?.username}/templates/${template.slug}`}
               value={template.content}
               onLike={() => handleLike(template.id)}
               onSave={() => handleSave(template.id)}
@@ -323,8 +333,7 @@ export default function HomePage() {
           )}
         </div>
       )}
-      </div>
-    </div>
-  </div>
+      </PageContainer.Content>
+    </PageContainer>
   );
 }

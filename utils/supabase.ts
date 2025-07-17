@@ -125,6 +125,50 @@ export async function getPromptTemplate(id: string) {
 }
 
 // Function to extract variables from template content
+export async function getPromptTemplateBySlug(slug: string) {
+  const { data: template, error: templateError } = await supabase
+    .from('prompt_templates')
+    .select(`
+      id, title, content, slug, visibility,
+      profiles:author_id (id, display_name, username, avatar_url),
+      engagements (likes_count, saves_count, shares_count, views_count)
+    `)
+    .eq('slug', slug)
+    .single();
+
+  if (templateError) throw templateError;
+
+  // variables
+  const { data: variables, error: variablesError } = await supabase
+    .from('template_variables')
+    .select('name, question, default_value')
+    .eq('template_id', template.id);
+  if (variablesError) throw variablesError;
+
+  // engagement data is already joined; but fallback
+  const engagementData = template.engagements?.[0] || {
+    likes_count: 0,
+    saves_count: 0,
+    shares_count: 0,
+    views_count: 0,
+  };
+
+  const variableQuestions = variables?.reduce((acc, v) => {
+    acc[v.name] = v.question || `Enter ${v.name.replace(/_/g, ' ')}`;
+    return acc;
+  }, {} as Record<string, string>);
+
+  // increment views
+  await supabase.rpc('increment_template_view', { template_id: template.id });
+
+  return {
+    ...template,
+    variables,
+    variableQuestions,
+    engagement: engagementData,
+  };
+}
+
 export function extractVariables(content: string): string[] {
   const variableRegex = /\{([^{}]+)\}/g;
   const matches = content.match(variableRegex) || [];

@@ -42,7 +42,7 @@ export function PostInput({ avatarUrl, className, onClick }: PostInputProps) {
       </span>
 
       {/* Post button */}
-      <Button variant="outline" onClick={onClick} className="pointer-events-none shadow-none text-foreground sm:pointer-events-auto group-hover:border-foreground group-hover:text-accent-foreground flex items-center gap-1">
+      <Button variant="outline" onClick={onClick} className="pointer-events-none shadow-none sm:pointer-events-auto group-hover:border-foreground group-hover:text-accent-foreground flex items-center gap-1">
         <Icon name="plus" className="h-4 w-4" />
         Create
       </Button>

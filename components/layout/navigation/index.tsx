@@ -74,7 +74,7 @@ const Navbar2 = ({
   menu = [
     { title: "Home", url: "/home", icon: <Icon name="house" className="size-4.5" />, mobileOnly: true },
     { title: "Prompts", url: "/home", icon: <Icon name="chatSmileRoundedCustom" className="size-4.5" />, desktopOnly: true },
-    { title: "Search", url: "#", icon: <Icon name="search" className="size-4.5" /> },
+    { title: "Search", url: "/search", icon: <Icon name="search" className="size-4.5" /> },
     { title: "Create", url: "/#", icon: <Icon name="PlusSquare" className="size-4.5" /> },
     { title: "Saved", url: "#", icon: <Icon name="bookmark" className="size-4.5" /> },
     { title: "Profile", url: "/me", icon: <Icon name="profile" className="size-4.5" />, mobileOnly: true },

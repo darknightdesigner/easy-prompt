@@ -552,7 +552,7 @@ function PromptTemplate({
             router.push(shareUrl);
           }}
           data-stop-nav-container
-          className={cn(`flex flex-col w-full min-w-full shrink-0 ${paddingClass} gap-0 ${borderClass} ${backgroundClass} ${roundedClass} cursor-pointer`, className)}
+          className={cn(`group flex flex-col w-full min-w-full shrink-0 ${paddingClass} gap-0 ${borderClass} ${backgroundClass} ${roundedClass} cursor-pointer`, className)}
         >
           {(displayName || title) && (
             <div className="flex items-start gap-2 pt-2 pl-2 pr-2">
@@ -591,8 +591,8 @@ function PromptTemplate({
                     Preview your completed prompt
                   </div>
                 ) : (
-                  <Link href={username ? `/${username}` : "#"} className="flex items-center gap-1 font-semibold text-foreground group">
-                    <span className="group-hover:underline">{displayName}</span>
+                  <Link href={username ? `/${username}` : "#"} className="flex items-center gap-1 font-semibold text-foreground group/name">
+                    <span className="group-hover/name:underline">{displayName}</span>
                     {verified && (
                       <Icon
                         name="verified"
@@ -979,7 +979,10 @@ function TopSocialActionBar() {
         type: "spring", 
         stiffness: 300, 
         damping: 30,
-        opacity: { duration: 0.2 }
+        opacity: { 
+          duration: showPrompt ? 0.2 : 0.6,
+          delay: showPrompt ? 0 : 0.3  // Delay opacity when hiding (showPrompt = true)
+        }
       }}
     >
       <div className="flex items-center gap-0">
@@ -1098,7 +1101,7 @@ function TopSocialActionBar() {
         <Button data-stop-nav 
           size="sm" 
           variant="outline" 
-          className="gap-2 text-muted-foreground hover:text-foreground shadow-none" 
+          className="gap-2 text-foreground/90 hover:text-foreground shadow-none opacity-0 group-hover:opacity-100 transition-opacity duration-200" 
           onClick={(e)=>{e.stopPropagation(); setShowPrompt(!showPrompt);}}
         >
           <Icon name={showPrompt ? "EyeClosed" : "Eye"} className="size-4" />
