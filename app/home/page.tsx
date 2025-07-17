@@ -13,6 +13,7 @@ const promptContainerStyles = {
   paddingClass: "pr-1 pl-1 pt-1 sm:pr-4 sm:pl-4 sm:pt-4" // customize padding
 } as const;
 import { Skeleton } from '@/components/ui/skeleton';
+import { PostInput } from '@/components/ui/post-input';
 
 interface Template {
   id: string;
@@ -247,9 +248,9 @@ export default function HomePage() {
   return (
     <div className="bg-background pt-16 sm:pt-32">
       <div className="container mx-auto sm:max-w-[40rem]">
-      <div className="flex flex-col gap-0 pt-8 border-l-1 border-r-1 border-t-1 border-primary/8 rounded-t-4xl bg-card/50 shadow-xl/5">
-      <div className="flex justify-between items-center p-6">
-        <h1 className="text-2xl font-bold">Prompt Templates</h1>
+      <div className="flex flex-col gap-0 border-l-1 border-r-1 border-t-1 border-primary/8 rounded-t-4xl bg-card shadow-xl/5">
+      <div className="flex justify-between items-center p-2">
+        <PostInput className="rounded-3xl" />
       </div>
       
       {loading && page === 1 ? (

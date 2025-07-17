@@ -68,7 +68,7 @@ const Navbar2 = ({
   logo = {
     url: "/",
     src: "/optiprompt-logo.svg",
-    alt: "OptiPrompt logo",
+    alt: "Easy Prompt logo",
     title: "Easy Prompt",
   },
   menu = [
@@ -117,8 +117,8 @@ const Navbar2 = ({
             onMouseEnter={() => copyIconRef.current?.startAnimation()}
             onMouseLeave={() => copyIconRef.current?.stopAnimation()}
           >
-            <CopyIcon ref={copyIconRef} size={24} />
-            <span className="text-base font-semibold tracking-tight">
+            <CopyIcon ref={copyIconRef} size={"22"} />
+            <span className="text-md font-semibold tracking-tight">
               {logo.title}
             </span>
           </Link>

@@ -2,14 +2,13 @@ import { supabaseServer } from "@/lib/supabaseServer";
 import { redirect } from "next/navigation";
 import { ProfileCard } from "@/components/profile/profile-card";
 
-type Params = { username: string };
 
-export default async function PublicProfilePage({ params }: { params: Promise<Params> }) {
+export default async function PublicProfilePage({ params }: { params: { username: string } }) {
   const supabase = await supabaseServer();
   const { data: profile } = await supabase
     .from("profiles")
     .select("display_name, username, bio, avatar_url")
-    .eq("username", (await params).username)
+    .eq("username", params.username)
     .single();
 
   if (!profile) {

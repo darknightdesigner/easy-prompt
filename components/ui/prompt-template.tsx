@@ -10,6 +10,7 @@ import { useRequireAuth } from "@/lib/use-require-auth"
 import { motion, AnimatePresence } from "framer-motion";
 import { Popover, PopoverTrigger, PopoverContent } from "@/components/ui/popover"
 import Link from "next/link"
+import { useRouter } from "next/navigation";
 import {
   Tooltip,
   TooltipContent,
@@ -220,6 +221,7 @@ function PromptTemplate({
   const contentRef = useRef<HTMLDivElement>(null)
   const clientUrl = typeof window !== 'undefined' ? window.location.href : '';
   const shareUrl = propShareUrl || clientUrl;
+  const router = useRouter();
   // Default height for collapsed text area
   const defaultHeight = typeof maxHeight === 'number' ? maxHeight : 240;
   // Calculate effective max height based on expanded state (for text area)
@@ -532,7 +534,17 @@ function PromptTemplate({
           setCurrentStep,
         }}
       >
-        <div className={cn(`flex flex-col w-full min-w-full flex-shrink-0 ${paddingClass} gap-0 ${borderClass} ${backgroundClass} ${roundedClass}`, className)}>
+        <div
+          role="link"
+          tabIndex={0}
+          onClick={(e)=>{
+            const target = e.target as HTMLElement;
+            if (target.closest('button,svg,input,a,[data-stop-nav]')) return;
+            router.push(shareUrl);
+          }}
+          data-stop-nav-container
+          className={cn(`flex flex-col w-full min-w-full flex-shrink-0 ${paddingClass} gap-0 ${borderClass} ${backgroundClass} ${roundedClass} cursor-pointer`, className)}
+        >
           {(displayName || title) && (
             <div className="flex items-start gap-2 pt-2 pl-2 pr-2">
               {currentStep >= 0 ? (
@@ -545,7 +557,7 @@ function PromptTemplate({
                 </div>
               ) : (
                 (
-                  <Link href={username ? `/user/${username}` : "#"} className="shrink-0" prefetch={false}>
+                  <Link href={username ? `/@${username}` : "#"} className="shrink-0" prefetch={false}>
                     {authorAvatar ? (
                       <img
                         src={authorAvatar}
@@ -570,7 +582,7 @@ function PromptTemplate({
                     Preview your completed prompt
                   </div>
                 ) : (
-                  <Link href={username ? `/user/${username}` : "#"} className="flex items-center gap-1 font-semibold text-foreground group">
+                  <Link href={username ? `/@${username}` : "#"} className="flex items-center gap-1 font-semibold text-foreground group">
                     <span className="group-hover:underline">{displayName}</span>
                     {verified && (
                       <Icon
@@ -600,9 +612,9 @@ function PromptTemplate({
             {/* Social action bar that mirrors the footer - includes toggle button */}
             <TopSocialActionBar />
             
-            <motion.div 
+            <motion.div data-stop-nav 
               className={cn(
-                "w-full bg-card rounded-[24px] shadow-[0px_2px_6px_0px_rgba(0,0,0,0.05)] relative overflow-hidden",
+                "w-full bg-card rounded-[24px] shadow-[0px_2px_6px_0px_rgba(0,0,0,0.05)] relative overflow-hidden cursor-auto",
                 showPrompt ? (currentStep === totalSteps ? "border border-input mb-1 mt-1" : "border border-input mb-1 mt-1") : "border-0 mb-0"
               )}
               ref={contentRef}
@@ -685,7 +697,7 @@ function PromptTemplate({
                 isMobile || expanded ? "opacity-100" : ""
               )} style={{ opacity: isMobile || expanded ? 1 : buttonOpacity }}>
                 <PromptTemplateAction>
-                  <Button 
+                  <Button data-stop-nav 
                     size="icon" 
                     type="button" 
                     variant="outline" 
@@ -957,12 +969,12 @@ function TopSocialActionBar() {
         <div className="shrink-0 w-[38px] mr-2 sm:block"></div>
         {!wizardActive && (
           <PromptTemplateAction>
-            <Button
+            <Button data-stop-nav
               variant="ghost"
               size="sm"
               type="button"
               className={`gap-0 sm:gap-1 ${liked ? "opacity-100 dark:opacity-100" : ""}`}
-              onClick={toggleLike}
+              onClick={(e)=>{e.stopPropagation(); toggleLike();}}
             >
               <Icon name="heart" weight={liked ? "fill" : "bold"} className={`size-4.5 ${liked ? "text-[#FF0034]" : ""}`} />
               {localLikesCount > 0 && (
@@ -973,12 +985,12 @@ function TopSocialActionBar() {
         )}
         {!wizardActive && (
           <PromptTemplateAction>
-            <Button
+            <Button data-stop-nav
               variant="ghost"
               size="sm"
               type="button"
               className="gap-0 sm:gap-1"
-              onClick={toggleComment}
+              onClick={(e)=>{e.stopPropagation(); toggleComment();}}
             >
               <Icon name="chat" weight="bold" className="size-4.5" />
               {localCommentsCount > 0 && (
@@ -991,12 +1003,12 @@ function TopSocialActionBar() {
           <PromptTemplateAction>
             <Popover>
               <PopoverTrigger asChild>
-                <Button
+                <Button data-stop-nav
                   variant="ghost"
                   size="sm"
                   type="button"
                   className="gap-0 sm:gap-1"
-                  onClick={handleShareClick}
+                  onClick={(e)=>{e.stopPropagation(); handleShareClick();}}
                 >
                   <Icon name="share" className="size-4.5" />
                   {localSharesCount > 0 && (
@@ -1004,40 +1016,40 @@ function TopSocialActionBar() {
                   )}
                 </Button>
               </PopoverTrigger>
-              <PopoverContent className="w-56 p-1" align="start">
+              <PopoverContent className="w-56 p-1" align="start" onClick={(e)=>e.stopPropagation()}>
                 <div className="flex flex-col">
-                  <Button 
+                  <Button data-stop-nav 
                     variant="ghost" 
                     size="sm" 
                     className="justify-start gap-2 px-2 py-1.5"
-                    onClick={handleCopyLink}
+                    onClick={(e)=>{e.stopPropagation(); handleCopyLink();}}
                   >
                     <Icon name={copied ? "check" : "linksimple"} className="size-4" />
                     {copied ? "Copied!" : "Copy link"}
                   </Button>
-                  <Button 
+                  <Button data-stop-nav 
                     variant="ghost" 
                     size="sm" 
                     className="justify-start gap-2 px-2 py-1.5"
-                    onClick={() => window.open(`https://twitter.com/intent/tweet?url=${encodeURIComponent(shareUrlSafe)}`, '_blank')}
+                    onClick={(e)=>{e.stopPropagation(); window.open(`https://twitter.com/intent/tweet?url=${encodeURIComponent(shareUrlSafe)}`, '_blank');}}
                   >
                     <Icon name="twitter" className="size-4" />
                     Twitter
                   </Button>
-                  <Button 
+                  <Button data-stop-nav 
                     variant="ghost" 
                     size="sm" 
                     className="justify-start gap-2 px-2 py-1.5"
-                    onClick={() => window.open(`https://threads.net/intent/post?text=${encodeURIComponent(shareUrlSafe)}`, '_blank')}
+                    onClick={(e)=>{e.stopPropagation(); window.open(`https://threads.net/intent/post?text=${encodeURIComponent(shareUrlSafe)}`, '_blank');}}
                   >
                     <Icon name="threads" className="size-4" />
                     Threads
                   </Button>
-                  <Button 
+                  <Button data-stop-nav 
                     variant="ghost" 
                     size="sm" 
                     className="justify-start gap-2 px-2 py-1.5"
-                    onClick={() => window.open(`mailto:?subject=Check out this prompt&body=${encodeURIComponent(shareUrlSafe)}`, '_blank')}
+                    onClick={(e)=>{e.stopPropagation(); window.open(`mailto:?subject=Check out this prompt&body=${encodeURIComponent(shareUrlSafe)}`, '_blank');}}
                   >
                     <Icon name="email" className="size-4" />
                     Email
@@ -1049,12 +1061,12 @@ function TopSocialActionBar() {
         )}
         {!wizardActive && (
           <PromptTemplateAction>
-            <Button
+            <Button data-stop-nav
               variant="ghost"
               size="sm"
               type="button"
               className={cn("gap-0 sm:gap-1", saved && "opacity-100 dark:opacity-100")}
-              onClick={toggleSave}
+              onClick={(e)=>{e.stopPropagation(); toggleSave();}}
             >
               <Icon name="bookmark" weight={saved ? "fill" : "bold"} className="size-4.5" />
               {localSavesCount > 0 && (
@@ -1065,11 +1077,11 @@ function TopSocialActionBar() {
         )}
       </div>
       <div>
-        <Button 
+        <Button data-stop-nav 
           size="sm" 
           variant="outline" 
           className="gap-2 text-muted-foreground hover:text-foreground shadow-none" 
-          onClick={() => setShowPrompt(!showPrompt)}
+          onClick={(e)=>{e.stopPropagation(); setShowPrompt(!showPrompt);}}
         >
           <Icon name={showPrompt ? "EyeClosed" : "Eye"} className="size-4" />
           {showPrompt ? (
@@ -1212,7 +1224,7 @@ function DefaultPromptFooter() {
         {wizardActive && (
           <>
             <PromptTemplateAction>
-              <Button
+              <Button data-stop-nav
                 variant="ghost"
                 size="sm"
                 type="button"
@@ -1223,7 +1235,7 @@ function DefaultPromptFooter() {
               </Button>
             </PromptTemplateAction>
             <PromptTemplateAction>
-              <Button
+              <Button data-stop-nav
                 variant="ghost"
                 size="sm"
                 type="button"
@@ -1237,12 +1249,12 @@ function DefaultPromptFooter() {
         )}
         {!wizardActive && (
           <PromptTemplateAction>
-            <Button
+            <Button data-stop-nav
               variant="ghost"
               size="sm"
               type="button"
               className={`gap-0 sm:gap-1 ${liked ? "opacity-100 dark:opacity-100" : ""}`}
-              onClick={toggleLike}
+              onClick={(e)=>{e.stopPropagation(); toggleLike();}}
             >
               <Icon name="heart" weight={liked ? "fill" : "bold"} className={`size-4.5 ${liked ? "text-[#FF0034]" : ""}`} />
               {localLikesCount > 0 && (
@@ -1253,12 +1265,12 @@ function DefaultPromptFooter() {
         )}
         {!wizardActive && (
           <PromptTemplateAction>
-            <Button
+            <Button data-stop-nav
               variant="ghost"
               size="sm"
               type="button"
               className="gap-0 sm:gap-1"
-              onClick={toggleComment}
+              onClick={(e)=>{e.stopPropagation(); toggleComment();}}
             >
               <Icon name="chat" weight="bold" className="size-4.5" />
               {localCommentsCount > 0 && (
@@ -1271,12 +1283,12 @@ function DefaultPromptFooter() {
           <PromptTemplateAction>
             <Popover>
               <PopoverTrigger asChild>
-                <Button
+                <Button data-stop-nav
                   variant="ghost"
                   size="sm"
                   type="button"
                   className="gap-0 sm:gap-1"
-                  onClick={handleShareClick}
+                  onClick={(e)=>{e.stopPropagation(); handleShareClick();}}
                 >
                   <Icon name="share" className="size-4.5" />
                   {localSharesCount > 0 && (
@@ -1284,40 +1296,40 @@ function DefaultPromptFooter() {
                   )}
                 </Button>
               </PopoverTrigger>
-              <PopoverContent className="w-56 p-1" align="start">
+              <PopoverContent className="w-56 p-1" align="start" onClick={(e)=>e.stopPropagation()}>
                 <div className="flex flex-col">
-                  <Button 
+                  <Button data-stop-nav 
                     variant="ghost" 
                     size="sm" 
                     className="justify-start gap-2 px-2 py-1.5"
-                    onClick={handleCopyLink}
+                    onClick={(e)=>{e.stopPropagation(); handleCopyLink();}}
                   >
                     <Icon name={copied ? "check" : "linksimple"} className="size-4" />
                     {copied ? "Copied!" : "Copy link"}
                   </Button>
-                  <Button 
+                  <Button data-stop-nav 
                     variant="ghost" 
                     size="sm" 
                     className="justify-start gap-2 px-2 py-1.5"
-                    onClick={() => window.open(`https://twitter.com/intent/tweet?url=${encodeURIComponent(shareUrlSafe)}`, '_blank')}
+                    onClick={(e)=>{e.stopPropagation(); window.open(`https://twitter.com/intent/tweet?url=${encodeURIComponent(shareUrlSafe)}`, '_blank');}}
                   >
                     <Icon name="twitter" className="size-4" />
                     Twitter
                   </Button>
-                  <Button 
+                  <Button data-stop-nav 
                     variant="ghost" 
                     size="sm" 
                     className="justify-start gap-2 px-2 py-1.5"
-                    onClick={() => window.open(`https://threads.net/intent/post?text=${encodeURIComponent(shareUrlSafe)}`, '_blank')}
+                    onClick={(e)=>{e.stopPropagation(); window.open(`https://threads.net/intent/post?text=${encodeURIComponent(shareUrlSafe)}`, '_blank');}}
                   >
                     <Icon name="threads" className="size-4" />
                     Threads
                   </Button>
-                  <Button 
+                  <Button data-stop-nav 
                     variant="ghost" 
                     size="sm" 
                     className="justify-start gap-2 px-2 py-1.5"
-                    onClick={() => window.open(`mailto:?subject=Check out this prompt&body=${encodeURIComponent(shareUrlSafe)}`, '_blank')}
+                    onClick={(e)=>{e.stopPropagation(); window.open(`mailto:?subject=Check out this prompt&body=${encodeURIComponent(shareUrlSafe)}`, '_blank');}}
                   >
                     <Icon name="email" className="size-4" />
                     Email
@@ -1329,12 +1341,12 @@ function DefaultPromptFooter() {
         )}
         {!wizardActive && (
           <PromptTemplateAction>
-            <Button
+            <Button data-stop-nav
               variant="ghost"
               size="sm"
               type="button"
               className={cn("gap-0 sm:gap-1", saved && "opacity-100 dark:opacity-100")}
-              onClick={toggleSave}
+              onClick={(e)=>{e.stopPropagation(); toggleSave();}}
             >
               <Icon name="bookmark" weight={saved ? "fill" : "bold"} className="size-4.5" />
               {localSavesCount > 0 && (
@@ -1348,12 +1360,12 @@ function DefaultPromptFooter() {
         {!wizardActive && (
           <>
             <PromptTemplateAction tooltip="Edit prompt">
-              <Button size="icon" type="button" variant="outline" className="gap-1 shadow-none size-8" onClick={handleEditClick}>
+              <Button data-stop-nav size="icon" type="button" variant="outline" className="gap-1 shadow-none size-8" onClick={(e)=>{e.stopPropagation(); handleEditClick();}}>
                 <Icon name="pencil" className="size-4.5" />
               </Button>
             </PromptTemplateAction>
             <PromptTemplateAction tooltip="Hide prompt">
-              <Button 
+              <Button data-stop-nav 
                 size="icon" 
                 type="button" 
                 variant="outline" 
@@ -1368,7 +1380,7 @@ function DefaultPromptFooter() {
         <PromptTemplateAction>
           {variables.length > 0 && currentStep >= 0 && currentStep <= totalSteps && (
             <>
-              <Button variant="outline" size="sm" className="gap-1 shadow-none mr-1 leading-none" onClick={() => setCurrentStep(-1)}>
+              <Button data-stop-nav variant="outline" size="sm" className="gap-1 shadow-none mr-1 leading-none" onClick={() => setCurrentStep(-1)}>
                 {currentStep === totalSteps ? (
                   <>
                     <Icon name="arrowcounterclockwise" className="size-4 mr-1" />
@@ -1378,7 +1390,7 @@ function DefaultPromptFooter() {
                   "Cancel"
                 )}
               </Button>
-              <Button 
+              <Button data-stop-nav 
                 size="sm" 
                 className={`gap-1 ${currentStep === totalSteps ? 'w-[114px]' : ''}`}
                 onClick={() => {
@@ -1421,7 +1433,7 @@ function DefaultPromptFooter() {
         </PromptTemplateAction>
         {!wizardActive && (
           <PromptTemplateAction>
-            <Button
+            <Button data-stop-nav
               size="sm"
               type="button"
               className="gap-1"
