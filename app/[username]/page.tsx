@@ -3,11 +3,13 @@ import { redirect } from "next/navigation";
 import { ProfileCard } from "@/components/profile/profile-card";
 
 export default async function PublicProfilePage({ params }: { params: { username: string } }) {
+  const { username } = params;
+
   const supabase = await supabaseServer();
   const { data: profile } = await supabase
     .from("profiles")
     .select("display_name, username, bio, avatar_url")
-    .eq("username", params.username)
+    .eq("username", username)
     .single();
 
   if (!profile) {
