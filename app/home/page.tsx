@@ -10,7 +10,7 @@ const promptContainerStyles = {
   borderClass: "border-b-1 border-primary/8", // e.g. "border-2 border-primary"
   backgroundClass: "bg-transparent", // e.g. "bg-card"
   roundedClass: "rounded-none", // e.g. "rounded-lg"
-  paddingClass: "pr-4 pl-4 pt-4" // customize padding
+  paddingClass: "pr-1 pl-1 pt-1 sm:pr-4 sm:pl-4 sm:pt-4" // customize padding
 } as const;
 import { Skeleton } from '@/components/ui/skeleton';
 
@@ -245,15 +245,16 @@ export default function HomePage() {
   };
   
   return (
-    <div className="container mx-auto sm:max-w-[44rem]">
-      <div className="flex flex-col gap-0 mt-32 pt-8 border-l-1 border-r-1 border-t-1 border-primary/8 rounded-t-4xl bg-secondary/50">
+    <div className="bg-background pt-16 sm:pt-32">
+      <div className="container mx-auto sm:max-w-[40rem]">
+      <div className="flex flex-col gap-0 pt-8 border-l-1 border-r-1 border-t-1 border-primary/8 rounded-t-4xl bg-card/50 shadow-xl/5">
       <div className="flex justify-between items-center p-6">
         <h1 className="text-2xl font-bold">Prompt Templates</h1>
       </div>
       
       {loading && page === 1 ? (
         <div className="space-y-6">
-          {[...Array(3)].map((_, i) => (
+          {[...Array(6)].map((_, i) => (
             <div key={i} className="px-6 sm:px-6 pt-4 pb-2 border-b-1 border-primary/8">
               <div className="flex items-start gap-2">
                 <Skeleton className="h-[38px] w-[38px] rounded-full" />
@@ -321,7 +322,8 @@ export default function HomePage() {
           )}
         </div>
       )}
+      </div>
     </div>
   </div>
-);
+  );
 }

@@ -69,7 +69,7 @@ const Navbar2 = ({
     url: "/",
     src: "/optiprompt-logo.svg",
     alt: "OptiPrompt logo",
-    title: "OptiPrompt",
+    title: "Easy Prompt",
   },
   menu = [
     { title: "Home", url: "/home", icon: <Icon name="house" className="size-4.5" />, mobileOnly: true },
@@ -104,7 +104,7 @@ const Navbar2 = ({
         
       >
       <section
-        className="navbar-border py-0 sm:py-2 border-t border-border sm:border-t-0 sm:border-b h-full w-full bg-card sm:bg-transparent sm:bg-[linear-gradient(to_right,transparent_0%,var(--background)_25%,var(--background)_75%,transparent_100%)]"
+        className="navbar-border py-0 sm:py-2 border-t border-border sm:border-t-0 sm:border-b h-full w-full bg-card sm:bg-transparent sm:bg-[linear-gradient(to_right,transparent_0%,var(--card)_25%,var(--card)_75%,transparent_100%)]"
         
       >
       <div className="mx-auto w-full h-full max-w-none sm:max-w-screen-lg relative z-10 px-0 sm:px-6" >
