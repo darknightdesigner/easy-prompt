@@ -235,9 +235,18 @@ function PromptTemplate({
   
   // Check if we're on mobile
   useEffect(() => {
-    // Function to check if we're on mobile (less than 640px, Tailwind's sm breakpoint)
+    // Function to get the actual sm breakpoint value from CSS
+    const getSmBreakpointValue = () => {
+      const style = getComputedStyle(document.documentElement);
+      const smBreakpoint = style.getPropertyValue('--breakpoint-sm');
+      // Convert rem to px (assuming 1rem = 16px)
+      return parseFloat(smBreakpoint) * 16;
+    };
+    
+    // Function to check if we're on mobile (less than sm breakpoint)
     const checkIfMobile = () => {
-      setIsMobile(window.innerWidth < 640);
+      const smBreakpointPx = getSmBreakpointValue();
+      setIsMobile(window.innerWidth < smBreakpointPx);
     };
     
     // Check initially
@@ -543,7 +552,7 @@ function PromptTemplate({
             router.push(shareUrl);
           }}
           data-stop-nav-container
-          className={cn(`flex flex-col w-full min-w-full flex-shrink-0 ${paddingClass} gap-0 ${borderClass} ${backgroundClass} ${roundedClass} cursor-pointer`, className)}
+          className={cn(`flex flex-col w-full min-w-full shrink-0 ${paddingClass} gap-0 ${borderClass} ${backgroundClass} ${roundedClass} cursor-pointer`, className)}
         >
           {(displayName || title) && (
             <div className="flex items-start gap-2 pt-2 pl-2 pr-2">
@@ -649,7 +658,7 @@ function PromptTemplate({
                     onChange={(e) => handleVariableChange(e.target.value)}
                     onKeyDown={handleKeyDown}
                     placeholder={`Enter {${currentVar}}`}
-                    className="text-base md:text-base text-card-foreground w-full p-4 resize-none overflow-hidden md:overflow-auto border-none !bg-transparent dark:!bg-transparent shadow-none outline-none focus-visible:ring-0 focus-visible:ring-offset-0"
+                    className="text-base md:text-base text-card-foreground w-full p-4 resize-none overflow-hidden md:overflow-auto border-none bg-transparent! dark:bg-transparent! shadow-none outline-none focus-visible:ring-0 focus-visible:ring-offset-0"
                     style={{ height: '240px' }}
                     rows={1}
                   />
@@ -665,7 +674,7 @@ function PromptTemplate({
                     ref={previewTextareaRef}
                     value={generateFinalContent()}
                     readOnly
-                    className="text-base md:text-base text-card-foreground w-full p-4 resize-none overflow-hidden md:overflow-auto border-none !bg-transparent dark:!bg-transparent shadow-none outline-none focus-visible:ring-0 focus-visible:ring-offset-0 whitespace-pre-wrap prompt-preview-content"
+                    className="text-base md:text-base text-card-foreground w-full p-4 resize-none overflow-hidden md:overflow-auto border-none bg-transparent! dark:bg-transparent! shadow-none outline-none focus-visible:ring-0 focus-visible:ring-offset-0 whitespace-pre-wrap prompt-preview-content"
                     style={{ height: '240px' }}
                     rows={expanded ? 8 : 1}
                     onFocus={() => autoResizeTextarea(previewTextareaRef.current)}
@@ -785,7 +794,7 @@ function PromptTemplateTextarea({
       onChange={(e) => setValue(e.target.value)}
       onKeyDown={handleKeyDown}
       className={cn(
-        "text-base md:text-base text-card-foreground/80 min-h-[240px] w-full p-4 resize-none overflow-hidden md:overflow-auto border-none !bg-transparent dark:!bg-transparent shadow-none outline-none focus-visible:ring-0 focus-visible:ring-offset-0",
+        "text-base md:text-base text-card-foreground/80 min-h-[240px] w-full p-4 resize-none overflow-hidden md:overflow-auto border-none bg-transparent! dark:bg-transparent! shadow-none outline-none focus-visible:ring-0 focus-visible:ring-offset-0",
         className
       )}
       rows={1}
@@ -852,9 +861,18 @@ function TopSocialActionBar() {
   const [footerHeight, setFooterHeight] = useState('3rem');
   
   useEffect(() => {
+    // Function to get the actual sm breakpoint value from CSS
+    const getSmBreakpointValue = () => {
+      const style = getComputedStyle(document.documentElement);
+      const smBreakpoint = style.getPropertyValue('--breakpoint-sm');
+      // Convert rem to px (assuming 1rem = 16px)
+      return parseFloat(smBreakpoint) * 16;
+    };
+    
     // Set initial height based on screen size
     const updateHeight = () => {
-      setFooterHeight(window.innerWidth >= 640 ? '3.5rem' : '3rem');
+      const smBreakpointPx = getSmBreakpointValue();
+      setFooterHeight(window.innerWidth >= smBreakpointPx ? '3.5rem' : '3rem');
     };
     
     // Set initial value

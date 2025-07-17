@@ -81,7 +81,7 @@ const TileIcon = React.forwardRef<HTMLSpanElement, React.HTMLAttributes<HTMLSpan
       <span
         ref={ref}
         className={cn(
-          "flex h-9 w-9 items-center justify-center text-foreground transition-transform duration-200 group-hover:rotate-[-6deg]",
+          "flex h-9 w-9 items-center justify-center text-foreground transition-transform duration-200 group-hover:-rotate-6",
           className
         )}
         {...props}

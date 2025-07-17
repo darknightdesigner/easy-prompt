@@ -30,7 +30,7 @@ export function PromptProgressBar({
     <div className={cn("relative h-px w-full bg-border/50 dark:bg-border/40", className)}>
       {/* Filled portion */}
       <div
-        className="absolute left-0 top-0 h-full rounded-r-full bg-gradient-to-r from-violet-400 via-blue-500 to-blue-600 transition-[width] duration-300"
+        className="absolute left-0 top-0 h-full rounded-r-full bg-linear-to-r from-violet-400 via-blue-500 to-blue-600 transition-[width] duration-300"
         style={{ width: `${percentage}%` }}
       />
     </div>

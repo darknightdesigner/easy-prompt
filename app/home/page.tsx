@@ -7,7 +7,7 @@ import { Button } from '@/components/ui/button';
 
 // Customize PromptTemplate container styles here
 const promptContainerStyles = {
-  borderClass: "border-b-1 border-primary/8", // e.g. "border-2 border-primary"
+  borderClass: "border-b border-primary/8", // e.g. "border-2 border-primary"
   backgroundClass: "bg-transparent", // e.g. "bg-card"
   roundedClass: "rounded-none", // e.g. "rounded-lg"
   paddingClass: "pr-1 pl-1 pt-1 sm:pr-4 sm:pl-4 sm:pt-4" // customize padding
@@ -247,16 +247,16 @@ export default function HomePage() {
   
   return (
     <div className="bg-background pt-0 px-0 sm:px-6 sm:pt-32">
-      <div className="container mx-auto sm:max-w-[40rem]">
-      <div className="flex flex-col gap-0 sm:border-l-1 sm:border-r-1 sm:border-t-1 border-0 sm:border-primary/8 rounded-none sm:rounded-t-4xl bg-card shadow-none sm:shadow-xl/5">
-      <div className="flex justify-between items-center p-2">
+      <div className="w-full sm:container sm:mx-auto sm:max-w-160">
+      <div className="flex flex-col gap-0 sm:border-l sm:border-r sm:border-t border-0 sm:border-primary/8 rounded-none sm:rounded-t-4xl bg-card shadow-none sm:shadow-xl/5">
+      <div className="flex justify-between items-center pt-16 pb-2 px-2 sm:px-2 sm:py-2">
         <PostInput className="rounded-3xl" />
       </div>
       
       {loading && page === 1 ? (
         <div className="space-y-6">
           {[...Array(6)].map((_, i) => (
-            <div key={i} className="px-6 sm:px-6 pt-4 pb-2 border-b-1 border-primary/8">
+            <div key={i} className="px-6 sm:px-6 pt-4 pb-2 border-b border-primary/8">
               <div className="flex items-start gap-2">
                 <Skeleton className="h-[38px] w-[38px] rounded-full" />
                 <div className="flex flex-col pt-1">

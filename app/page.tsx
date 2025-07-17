@@ -64,12 +64,12 @@ HeroSection.displayName = "HeroSection";
 
 export default function Home() {
   return (
-    <section className="relative min-h-[100svh] overflow-hidden py-16 sm:py-32 flex flex-col gap-8 justify-center bg-background">
+    <section className="relative min-h-svh overflow-hidden py-16 sm:py-32 flex flex-col gap-8 justify-center bg-background">
       <div
-        className="absolute inset-0 z-0 pointer-events-none before:absolute before:inset-0 before:content-[''] before:bg-[url('https://cdn.prod.website-files.com/61a6b59cc1578e2a2caf13c5/61ae57c4d73bf15eadf011b8_grain.gif')] before:bg-repeat before:[mask-image:linear-gradient(to_top,_black_0%,_black_25%,_transparent_100%)] before:opacity-0"
+        className="absolute inset-0 z-0 pointer-events-none before:absolute before:inset-0 before:content-[''] before:bg-[url('https://cdn.prod.website-files.com/61a6b59cc1578e2a2caf13c5/61ae57c4d73bf15eadf011b8_grain.gif')] before:bg-repeat before:mask-[linear-gradient(to_top,black_0%,black_25%,transparent_100%)] before:opacity-0"
       />
       {/* wavy background */}
-      <div className="absolute top-0 left-0 w-[100vw] h-[100svh] flex items-center justify-center pointer-events-none z-0">
+      <div className="absolute top-0 left-0 w-screen h-svh flex items-center justify-center pointer-events-none z-0">
         <motion.div
           className="w-full sm:mb-0"
           initial={{ opacity: 0 }}
@@ -81,7 +81,7 @@ export default function Home() {
       </div>
       <HeroSection />
       <ContainerEffect className="flex justify-center" preset="fade-in-blur" delay={0.6} transition={{ duration: 0.6 }}>
-        <div className="relative w-full flex-1 sm:max-w-[44rem] px-2 sm:px-4">
+        <div className="relative w-full flex-1 sm:max-w-176 px-2 sm:px-4">
           <PromptTemplate
             initialExpanded={true}
             authorAvatar="https://ci3.googleusercontent.com/mail-sig/AIorK4yctzAmNSeWRCuUGwYHYlqVFpxrb40OIXsdWX-IOdVDk9b3GmtZUcGmrRLYDjMQnbTCcv9qFLpnpEEt"
