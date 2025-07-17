@@ -557,7 +557,7 @@ function PromptTemplate({
                 </div>
               ) : (
                 (
-                  <Link href={username ? `/@${username}` : "#"} className="shrink-0" prefetch={false}>
+                  <Link href={username ? `/${username}` : "#"} className="shrink-0" prefetch={false}>
                     {authorAvatar ? (
                       <img
                         src={authorAvatar}
@@ -582,7 +582,7 @@ function PromptTemplate({
                     Preview your completed prompt
                   </div>
                 ) : (
-                  <Link href={username ? `/@${username}` : "#"} className="flex items-center gap-1 font-semibold text-foreground group">
+                  <Link href={username ? `/${username}` : "#"} className="flex items-center gap-1 font-semibold text-foreground group">
                     <span className="group-hover:underline">{displayName}</span>
                     {verified && (
                       <Icon

@@ -1,14 +1,7 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  async rewrites() {
-    return [
-      {
-        source: '/@:username',
-        destination: '/users/:username',
-      },
-    ];
-  },
+  // no custom rewrites needed
 
   env: {
     NEXT_PUBLIC_SUPABASE_URL: process.env.SUPABASE_URL,
