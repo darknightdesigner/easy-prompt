@@ -1101,7 +1101,7 @@ function TopSocialActionBar() {
         <Button data-stop-nav 
           size="sm" 
           variant="outline" 
-          className="gap-2 text-foreground/90 hover:text-foreground shadow-none opacity-0 group-hover:opacity-100 transition-opacity duration-200" 
+          className="gap-2 text-foreground/90 hover:text-foreground shadow-none opacity-100 sm:opacity-0 sm:group-hover:opacity-100 transition-opacity duration-200" 
           onClick={(e)=>{e.stopPropagation(); setShowPrompt(!showPrompt);}}
         >
           <Icon name={showPrompt ? "EyeClosed" : "Eye"} className="size-4" />
