@@ -1,6 +1,6 @@
 import { Metadata } from "next";
 import { AuthForm } from "@/components/auth/auth-form";
-import { CopyIcon } from "@/components/animated-icons/optiprompt";
+import { CopyIcon } from "@/components/animated-icons/easyprompt";
 import Link from "next/link";
 import { Tooltip, TooltipContent, TooltipTrigger, TooltipProvider } from "@/components/ui/tooltip";
 

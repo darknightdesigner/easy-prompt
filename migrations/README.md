@@ -1,6 +1,6 @@
 # Database Migrations
 
-This directory contains SQL migration scripts for the OptiPrompt database schema.
+This directory contains SQL migration scripts for the Easyprompt database schema.
 
 ## Directory Structure
 
@@ -12,7 +12,7 @@ This directory contains SQL migration scripts for the OptiPrompt database schema
 
 ### 2025-07-08 Initial Schema
 
-These migrations create the core database schema for the OptiPrompt application:
+These migrations create the core database schema for the Easyprompt application:
 
 1. `create_template_variables.sql`: Stores variables extracted from templates with questions and defaults
 2. `create_user_variable_values.sql`: Stores user-specific default values for personalized autofill

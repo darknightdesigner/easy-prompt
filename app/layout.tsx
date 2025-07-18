@@ -19,7 +19,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Easy Prompt",
+  title: "Easyprompt",
   description: "Discover world-class prompts and copy them simply, using {variables}",
 };
 

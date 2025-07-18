@@ -17,7 +17,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuItem } from "@/components/ui/dropdown-menu";
 import { useSessionContext, useSupabaseClient } from "@supabase/auth-helpers-react";
-import { CopyIcon, type CopyIconHandle } from "@/components/animated-icons/optiprompt";
+import { CopyIcon, type CopyIconHandle } from "@/components/animated-icons/easyprompt";
 import {
   NavigationMenuContent,
   NavigationMenuItem,
@@ -67,7 +67,7 @@ interface Navbar2Props {
 const Navbar2 = ({
   logo = {
     url: "/",
-    src: "/optiprompt-logo.svg",
+    src: "/easyprompt-logo.svg",
     alt: "Easy Prompt Logo",
     title: "Easyprompt",
   },

@@ -4,7 +4,7 @@ import { Icon } from "@/components/ui/icon";
 import { motion } from "motion/react";
 import { TextEffect } from "@/components/motion-primitives/text-effect";
 import { ContainerEffect } from "@/components/motion-primitives/container-effect";
-import { CopyIcon } from "@/components/animated-icons/optiprompt";
+import { CopyIcon } from "@/components/animated-icons/easyprompt";
 import React from "react";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
@@ -93,7 +93,7 @@ export default function Home() {
             sharesCount={4}
             savesCount={21}
             verified={true}
-            shareUrl={"https://www.optiprompt.ai"}
+            shareUrl={"https://www.easyprompt.ai"}
             variableQuestions={{
               niche: "What industry or topic is your channel about?",
               video_topic: "What specific topic will this video cover?",
