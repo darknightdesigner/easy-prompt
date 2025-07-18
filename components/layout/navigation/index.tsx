@@ -158,6 +158,12 @@ const Navbar2 = ({
                       Profile
                     </Link>
                   </DropdownMenuItem>
+                  <DropdownMenuItem asChild>
+                    <Link href="/feedback" className="flex items-center gap-2">
+                      <Icon name="chatSmileRoundedCustom" className="size-3.5" />
+                      Feedback
+                    </Link>
+                  </DropdownMenuItem>
                   <DropdownMenuSeparator />
                   <DropdownMenuItem onSelect={async () => { await supabase.auth.signOut(); router.refresh(); }} className="cursor-pointer">
                     <Icon name="logout" className="size-3.5" />
