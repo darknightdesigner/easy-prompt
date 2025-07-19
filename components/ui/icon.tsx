@@ -46,6 +46,8 @@ const registry = {
   ChatTeardropText: Phosphor.ChatTeardropTextIcon,
   chatSmile2Line: RiChatSmile2Line,
   chatSmileRoundedCustom: ChatSmileRoundedCustomIcon,
+  envelope: Phosphor.EnvelopeSimpleIcon,
+  smiley: Phosphor.SmileyIcon,
 } as const;
 
 

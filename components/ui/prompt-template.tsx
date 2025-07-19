@@ -210,7 +210,9 @@ function PromptTemplate({
 }: PromptTemplateProps) {
   const [internalValue, setInternalValue] = useState(value || "");
   // State for showing/hiding the prompt container via motion animation
-  const [showPrompt, setShowPrompt] = useState(initialExpanded || false);
+  // Initialize as false to prevent hydration mismatch, then update in useEffect
+  const [showPrompt, setShowPrompt] = useState(false);
+  const [isHydrated, setIsHydrated] = useState(false);
   // State for expanding/collapsing the text area (original functionality)
   const [expanded, setExpanded] = useState(false);
   const [currentStep, setCurrentStep] = useState(-1); // -1 means wizard inactive
@@ -258,6 +260,16 @@ function PromptTemplate({
     // Clean up
     return () => window.removeEventListener('resize', checkIfMobile);
   }, []);
+
+  // Handle hydration and initial state
+  useEffect(() => {
+    setIsHydrated(true);
+    // Set the initial showPrompt state after hydration to prevent mismatch
+    if (initialExpanded) {
+      // Use setTimeout to ensure the animation runs after hydration
+      setTimeout(() => setShowPrompt(true), 0);
+    }
+  }, [initialExpanded]);
 
   // Add scroll listener to update button opacity based on scroll position
   useEffect(() => {
@@ -591,7 +603,7 @@ function PromptTemplate({
                     Preview your completed prompt
                   </div>
                 ) : (
-                  <Link href={username ? `/${username}` : "#"} className="flex items-center gap-1 font-semibold text-foreground group/name">
+                  <Link href={username ? `/${username}` : "#"} className="inline-flex items-center gap-1 font-semibold text-foreground group/name w-fit">
                     <span className="group-hover/name:underline">{displayName}</span>
                     {verified && (
                       <Icon
@@ -624,10 +636,10 @@ function PromptTemplate({
             <motion.div data-stop-nav 
               className={cn(
                 "w-full bg-card rounded-[24px] shadow-[0px_2px_6px_0px_rgba(0,0,0,0.05)] relative overflow-hidden cursor-auto",
-                showPrompt ? (currentStep === totalSteps ? "border border-input mb-1 mt-1" : "border border-input mb-1 mt-1") : "border-0 mb-0"
+                showPrompt ? (currentStep === totalSteps ? "border border-input mb-2 mt-2" : "border border-input mb-2 mt-2") : "border-0 mb-0"
               )}
               ref={contentRef}
-              initial={{ height: initialExpanded ? "auto" : 0, opacity: initialExpanded ? 1 : 0 }}
+              initial={{ height: 0, opacity: 0 }}
               animate={{ 
                 height: showPrompt ? "auto" : 0, 
                 opacity: showPrompt ? 1 : 0,

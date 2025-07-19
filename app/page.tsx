@@ -80,8 +80,8 @@ export default function Home() {
         </motion.div>
       </div>
       <HeroSection />
-      <ContainerEffect className="flex justify-center" preset="fade-in-blur" delay={0.6} transition={{ duration: 0.6 }}>
-        <div className="relative w-full flex-1 sm:max-w-176 px-2 sm:px-4">
+      <ContainerEffect className="flex justify-center" preset="fade-in-blur" delay={0.7} transition={{ duration: 0.6 }}>
+        <div className="relative w-full flex-1 sm:max-w-176 px-2 sm:px-4" style={{ minHeight: '393px' }}>
           <PromptTemplate
             initialExpanded={true}
             authorAvatar="https://ci3.googleusercontent.com/mail-sig/AIorK4yctzAmNSeWRCuUGwYHYlqVFpxrb40OIXsdWX-IOdVDk9b3GmtZUcGmrRLYDjMQnbTCcv9qFLpnpEEt"

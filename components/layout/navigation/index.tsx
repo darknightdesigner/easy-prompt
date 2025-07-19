@@ -75,7 +75,7 @@ const Navbar2 = ({
     { title: "Home", url: "/home", icon: <Icon name="house" className="size-4.5" />, mobileOnly: true },
     { title: "Prompts", url: "/home", icon: <Icon name="chatSmileRoundedCustom" className="size-4.5" />, desktopOnly: true },
     { title: "Search", url: "/search", icon: <Icon name="search" className="size-4.5" /> },
-    { title: "Create", url: "/#", icon: <Icon name="PlusSquare" className="size-4.5" /> },
+    { title: "Create", url: "#", icon: <Icon name="PlusSquare" className="size-4.5" /> },
     { title: "Saved", url: "#", icon: <Icon name="bookmark" className="size-4.5" /> },
     { title: "Profile", url: "/me", icon: <Icon name="profile" className="size-4.5" />, mobileOnly: true },
   ],
@@ -154,19 +154,25 @@ const Navbar2 = ({
                 <DropdownMenuContent align="end">
                   <DropdownMenuItem asChild className="cursor-pointer">
                     <Link href="/me" className="flex items-center gap-2">
-                      <Icon name="profile" className="size-3.5" />
+                      <Icon name="profile" className="size-3.5 text-foreground" />
                       Profile
                     </Link>
                   </DropdownMenuItem>
                   <DropdownMenuItem asChild>
+                    <Link href="#" className="flex items-center gap-2">
+                      <Icon name="smiley" className="size-3.5 text-foreground" />
+                      Feedback
+                    </Link>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem asChild>
                     <Link href="/feedback" className="flex items-center gap-2">
-                      <Icon name="chatSmileRoundedCustom" className="size-3.5" />
+                      <Icon name="smiley" className="size-3.5 text-foreground" />
                       Feedback
                     </Link>
                   </DropdownMenuItem>
                   <DropdownMenuSeparator />
                   <DropdownMenuItem onSelect={async () => { await supabase.auth.signOut(); router.refresh(); }} className="cursor-pointer">
-                    <Icon name="logout" className="size-3.5" />
+                    <Icon name="logout" className="size-3.5 text-foreground" />
                     Sign out
                   </DropdownMenuItem>
                 </DropdownMenuContent>
