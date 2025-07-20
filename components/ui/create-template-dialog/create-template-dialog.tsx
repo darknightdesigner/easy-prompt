@@ -13,8 +13,11 @@ import {
 } from "@/components/ui/dialog"
 import { VisuallyHidden } from "@radix-ui/react-visually-hidden"
 import { Icon } from "@/components/ui/icon"
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
+import { RichTextDisplay } from "@/components/ui/rich-text-display"
 import { useCreateTemplate } from "./create-template-context"
 import { TEMPLATE_STEPS } from "@/lib/types/template"
+import { useSessionContext } from "@supabase/auth-helpers-react"
 
 import { StepDescription } from "./steps/step-description"
 import { StepTemplate } from "./steps/step-template" 
@@ -23,6 +26,7 @@ import { StepNavigation } from "./components/step-navigation"
 
 export function CreateTemplateDialog() {
   const { state, closeDialog, resetForm } = useCreateTemplate()
+  const { session } = useSessionContext()
   
   const handleOpenChange = (open: boolean) => {
     if (!open) {
@@ -41,7 +45,11 @@ export function CreateTemplateDialog() {
       case TEMPLATE_STEPS.TEMPLATE:
         return "Enter Template"
       case TEMPLATE_STEPS.PREVIEW:
-        return "Preview Template"
+        // Use user's display name or fallback to "Display Name"
+        return session?.user?.user_metadata?.display_name || 
+               session?.user?.user_metadata?.username || 
+               (session?.user?.email ? session.user.email.split('@')[0] : null) || 
+               "Display Name"
       default:
         return "Create Template"
     }
@@ -54,7 +62,7 @@ export function CreateTemplateDialog() {
       case TEMPLATE_STEPS.TEMPLATE:
         return "Use curly braces like {variable_name} to create fillable variables"
       case TEMPLATE_STEPS.PREVIEW:
-        return "Review your template before creating"
+        return state.data.description || "Review your template before creating"
       default:
         return ""
     }
@@ -76,7 +84,18 @@ export function CreateTemplateDialog() {
         {/* Step number badge */}
         <div className="shrink-0 w-[40px] h-[40px] mt-1 rounded-full bg-primary/10 flex items-center justify-center text-primary text-lg font-semibold">
           {state.currentStep === TEMPLATE_STEPS.PREVIEW ? (
-            <Icon name="check" weight="bold" className="size-5" />
+            <Avatar className="size-[40px]">
+              {session?.user?.user_metadata?.avatar_url ? (
+                <AvatarImage 
+                  src={session.user.user_metadata.avatar_url} 
+                  alt={session?.user?.user_metadata?.display_name || 'User'} 
+                />
+              ) : (
+                <AvatarFallback className="bg-primary/05 text-primary">
+                  <Icon name="profile" className="size-5" />
+                </AvatarFallback>
+              )}
+            </Avatar>
           ) : (
             state.currentStep + 1
           )}
@@ -87,8 +106,19 @@ export function CreateTemplateDialog() {
           <div className="flex items-center gap-0 font-semibold text-foreground">
             {getStepTitle()}
           </div>
-          <div className="text-sm text-muted-foreground mt-0.5">
-            {getStepDescription()}
+          <div className={`mt-0.5 ${
+            state.currentStep === TEMPLATE_STEPS.PREVIEW 
+              ? "text-base text-foreground" 
+              : "text-sm text-muted-foreground"
+          }`}>
+            {state.currentStep === TEMPLATE_STEPS.PREVIEW ? (
+              <RichTextDisplay 
+                content={getStepDescription()}
+                linkClassName="text-primary hover:underline"
+              />
+            ) : (
+              getStepDescription()
+            )}
           </div>
         </div>
       </div>

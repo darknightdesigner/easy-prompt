@@ -17,6 +17,7 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip"
+import { RichTextDisplay } from "@/components/ui/rich-text-display"
 import { cn } from "@/lib/utils"
 import React, {
   createContext,
@@ -618,13 +619,19 @@ function PromptTemplate({
                   </Link>
                 )}
                 {title && (
-                  <p className={cn("leading-normal", currentStep >= 0 && "text-muted-foreground")}>
-                    {currentStep >= 0 && currentStep < totalSteps && currentVar ? 
-                      `{${truncateText(variableValues[currentVar] ? variableValues[currentVar] : currentVar, 30)}}` : 
-                      currentStep === totalSteps ?
-                      "Final prompt with all variables filled" :
-                      title}
-                  </p>
+                  <div className={cn("leading-normal", currentStep >= 0 && "text-muted-foreground")}>
+                    {currentStep >= 0 && currentStep < totalSteps && currentVar ? (
+                      <span>{`{${truncateText(variableValues[currentVar] ? variableValues[currentVar] : currentVar, 30)}}`}</span>
+                    ) : currentStep === totalSteps ? (
+                      <span>Final prompt with all variables filled</span>
+                    ) : (
+                      <RichTextDisplay 
+                        content={title} 
+                        className="leading-normal"
+                        linkClassName="text-primary hover:underline"
+                      />
+                    )}
+                  </div>
                 )}
               </div>
             </div>

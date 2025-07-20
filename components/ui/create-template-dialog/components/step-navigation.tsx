@@ -107,61 +107,65 @@ export function StepNavigation() {
           </TemplateAction>
         )}
         
-        {/* Template creation toolbar icons */}
-        <TemplateAction tooltip="Add image">
-          <Button
-            variant="ghost"
-            size="sm"
-            type="button"
-            disabled={state.isLoading}
-          >
-            <Icon name="paperclip" className="size-4.5" />
-          </Button>
-        </TemplateAction>
-        
-        <TemplateAction tooltip="Add tags">
-          <Button
-            variant="ghost"
-            size="sm"
-            type="button"
-            disabled={state.isLoading}
-          >
-            <Icon name="bookmark" className="size-4.5" />
-          </Button>
-        </TemplateAction>
-        
-        <TemplateAction tooltip="Schedule">
-          <Button
-            variant="ghost"
-            size="sm"
-            type="button"
-            disabled={state.isLoading}
-          >
-            <Icon name="sliders" className="size-4.5" />
-          </Button>
-        </TemplateAction>
-        
-        <TemplateAction tooltip="Monetization">
-          <Button
-            variant="ghost"
-            size="sm"
-            type="button"
-            disabled={state.isLoading}
-          >
-            <Icon name="plus" className="size-4.5" />
-          </Button>
-        </TemplateAction>
-        
-        <TemplateAction tooltip="Visibility">
-          <Button
-            variant="ghost"
-            size="sm"
-            type="button"
-            disabled={state.isLoading}
-          >
-            <Icon name="Eye" className="size-4.5" />
-          </Button>
-        </TemplateAction>
+        {/* Template creation toolbar icons - hide on template step */}
+        {state.currentStep !== TEMPLATE_STEPS.TEMPLATE && (
+          <>
+            <TemplateAction tooltip="Add media">
+              <Button
+                variant="ghost"
+                size="sm"
+                type="button"
+                disabled={state.isLoading}
+              >
+                <Icon name="imageSquare" className="size-4.5" />
+              </Button>
+            </TemplateAction>
+            
+            <TemplateAction tooltip="Add tags">
+              <Button
+                variant="ghost"
+                size="sm"
+                type="button"
+                disabled={state.isLoading}
+              >
+                <Icon name="Tag" className="size-4.5" />
+              </Button>
+            </TemplateAction>
+            
+            <TemplateAction tooltip="Any Model">
+              <Button
+                variant="ghost"
+                size="sm"
+                type="button"
+                disabled={state.isLoading}
+              >
+                <Icon name="Robot" className="size-4.5" />
+              </Button>
+            </TemplateAction>
+            
+            <TemplateAction tooltip="Free">
+              <Button
+                variant="ghost"
+                size="sm"
+                type="button"
+                disabled={state.isLoading}
+              >
+                <Icon name="CurrencyDollar" className="size-4.5" />
+              </Button>
+            </TemplateAction>
+            
+            <TemplateAction tooltip="Public">
+              <Button
+                variant="ghost"
+                size="sm"
+                type="button"
+                disabled={state.isLoading}
+              >
+                <Icon name="GlobeSimple" className="size-4.5" />
+              </Button>
+            </TemplateAction>
+          </>
+        )}
       </div>
 
       {/* Right side - Navigation */}
@@ -174,7 +178,7 @@ export function StepNavigation() {
               size="sm"
               onClick={handleSaveDraft}
               disabled={state.isLoading || !canProceed}
-              className="gap-1.5"
+              className="gap-1.5 shadow-none"
             >
               {state.isLoading && <Icon name="arrowcounterclockwise" className="size-4 animate-spin" />}
               {TEMPLATE_CONFIG.SAVE_DRAFT_LABEL}
@@ -192,15 +196,52 @@ export function StepNavigation() {
           </>
         ) : (
           // Regular next button with enter hint
-          <Button
-            size="sm"
-            onClick={handleNext}
-            disabled={state.isLoading || !canProceed}
-            className="gap-1.5"
-          >
-            {TEMPLATE_CONFIG.NEXT_LABEL}
-            <Icon name="arrow-right" className="size-4" />
-          </Button>
+          <>
+            {/* Show outline buttons on template step (step 2) */}
+            {state.currentStep === TEMPLATE_STEPS.TEMPLATE && (
+              <>
+                {/* Only show variable counter when there are variables */}
+                {state.variables.length > 0 && (
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => {
+                      // Add your custom action here
+                      console.log('Variable counter clicked:', state.variables.length)
+                    }}
+                    disabled={state.isLoading}
+                    className="gap-1.5 shadow-none"
+                  >
+                    {state.variables.length}
+                  </Button>
+                )}
+                
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => {
+                    // Add your custom action here
+                    console.log('Add Variable button clicked on template step')
+                  }}
+                  disabled={state.isLoading}
+                  className="gap-1.5 shadow-none"
+                >
+                  <Icon name="plus" className="size-4" />
+                  Add Variable
+                </Button>
+              </>
+            )}
+            
+            <Button
+              size="sm"
+              onClick={handleNext}
+              disabled={state.isLoading || !canProceed}
+              className="gap-1.5"
+            >
+              {TEMPLATE_CONFIG.NEXT_LABEL}
+              <Icon name="arrow-right" className="size-4" />
+            </Button>
+          </>
         )}
       </div>
     </div>

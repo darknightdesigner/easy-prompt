@@ -13,7 +13,7 @@ export const TEMPLATE_CONFIG = {
   
   // UI constants
   DESCRIPTION_PLACEHOLDER: "Describe your prompt template",
-  TEMPLATE_PLACEHOLDER: "Enter your prompt template here. Use {variable_name} to create fillable variables...",
+  TEMPLATE_PLACEHOLDER: "Enter your template here",
   
   // Button labels
   SAVE_DRAFT_LABEL: "Save Draft",
@@ -34,7 +34,6 @@ export const TEMPLATE_CONFIG = {
     TEMPLATE_REQUIRED: "Template is required", 
     TEMPLATE_TOO_SHORT: `Template must be at least 10 characters`,
     TEMPLATE_TOO_LONG: `Template cannot exceed 5000 characters`,
-    NO_VARIABLES: "Template must contain at least one variable like {variable_name}",
     TOO_MANY_VARIABLES: `Template cannot have more than 20 variables`,
     PROFILE_NOT_FOUND: "User profile not found. Please refresh and try again.",
     NETWORK_ERROR: "Network error. Please check your connection and try again.",
@@ -48,7 +47,7 @@ export const TEMPLATE_CONFIG = {
   
   // Icon button tooltips for preview step
   PREVIEW_TOOLTIPS: {
-    ImageSquare: "Add image",
+    ImageSquare: "Add media",
     Tag: "Add tags", 
     Robot: "AI assistance",
     CurrencyDollar: "Pricing",

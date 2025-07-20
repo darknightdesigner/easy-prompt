@@ -76,9 +76,7 @@ export function useStepValidation(data: CreateTemplateFormData, step: number) {
           errors.template = TEMPLATE_CONFIG.VALIDATION_MESSAGES.TEMPLATE_TOO_LONG
         } else {
           const variables = extractVariables(data.template)
-          if (variables.length === 0) {
-            errors.template = TEMPLATE_CONFIG.VALIDATION_MESSAGES.NO_VARIABLES
-          } else if (variables.length > TEMPLATE_CONFIG.MAX_VARIABLES) {
+          if (variables.length > TEMPLATE_CONFIG.MAX_VARIABLES) {
             errors.template = TEMPLATE_CONFIG.VALIDATION_MESSAGES.TOO_MANY_VARIABLES
           }
         }

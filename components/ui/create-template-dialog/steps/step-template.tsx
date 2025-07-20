@@ -47,12 +47,6 @@ export function StepTemplate() {
             </span>
           )}
           
-          {/* Variable count */}
-          {state.variables.length > 0 && !(state.showErrors && state.errors.template) && (
-            <span className="text-primary font-medium text-xs">
-              {state.variables.length} variable{state.variables.length !== 1 ? 's' : ''}
-            </span>
-          )}
           
           {/* Character count */}
           <span className={`text-muted-foreground text-xs ${isNearLimit ? 'text-warning' : ''}`}>

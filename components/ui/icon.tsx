@@ -48,6 +48,11 @@ const registry = {
   chatSmileRoundedCustom: ChatSmileRoundedCustomIcon,
   envelope: Phosphor.EnvelopeSimpleIcon,
   smiley: Phosphor.SmileyIcon,
+  imageSquare: Phosphor.ImageSquareIcon,
+  GlobeSimple: Phosphor.GlobeSimpleIcon,
+  Robot: Phosphor.RobotIcon,
+  CurrencyDollar: Phosphor.CurrencyDollarIcon,
+  Tag: Phosphor.TagIcon,
 } as const;
 
 
