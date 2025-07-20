@@ -18,6 +18,7 @@ import { Button } from "@/components/ui/button";
 import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuItem } from "@/components/ui/dropdown-menu";
 import { useSessionContext, useSupabaseClient } from "@supabase/auth-helpers-react";
 import { CopyIcon, type CopyIconHandle } from "@/components/animated-icons/easyprompt";
+import { useCreateTemplate } from "@/components/ui/create-template-dialog";
 import {
   NavigationMenuContent,
   NavigationMenuItem,
@@ -89,6 +90,7 @@ const Navbar2 = ({
   const pathname = usePathname();
   const { session } = useSessionContext();
   const supabase = useSupabaseClient();
+  const { openDialog } = useCreateTemplate();
   const isHome = pathname === "/";
   // CSS animation class names
   const navAnimation = isHome ? "animate-slide-fade-down" : "";
@@ -97,6 +99,51 @@ const Navbar2 = ({
   const borderImage = typeof window !== 'undefined' && window.innerWidth >= 716
     ? 'linear-gradient(to right, transparent 10%, var(--border) 50%, transparent 90%) 1'
     : undefined;
+
+  // Move renderMenuItem inside component to access openDialog
+  const renderMenuItem = (item: MenuItem) => {
+    if (item.items) {
+      return (
+        <NavigationMenuItem key={item.title} className={`flex-1 basis-0 grow min-w-0 sm:flex-none sm:grow-0 w-full sm:w-auto ${item.desktopOnly ? 'hidden sm:flex' : ''}`}>
+          <NavigationMenuTrigger>{item.title}</NavigationMenuTrigger>
+          <NavigationMenuContent className="origin-top-center relative top-11 w-full overflow-hidden rounded-md border shadow data-[motion=from-end]:slide-in-from-right-52 data-[motion=from-start]:slide-in-from-left-52 data-[motion=to-end]:slide-out-to-right-52 data-[motion=to-start]:slide-out-to-left-52 data-[motion^=from-]:animate-in data-[motion^=from-]:fade-in data-[motion^=to-]:animate-out data-[motion^=to-]:fade-out data-[state=closed]:animate-out data-[state=closed]:zoom-out-95 data-[state=open]:animate-in data-[state=open]:zoom-in-90 md:absolute md:left-1/2 md:w-80 md:-translate-x-1/2">
+            {item.items.map((subItem) => (
+              <NavigationMenuLink asChild key={subItem.url ?? subItem.title} className="w-full opacity-70 hover:opacity-100">
+                <SubMenuLink item={subItem} />
+              </NavigationMenuLink>
+            ))}
+          </NavigationMenuContent>
+        </NavigationMenuItem>
+      );
+    }
+
+    // Special handling for Create button
+    if (item.title === "Create") {
+      return (
+        <NavigationMenuItem key={item.title} className={`flex-1 basis-0 grow min-w-0 sm:flex-none sm:grow-0 w-full sm:w-auto ${item.desktopOnly ? 'hidden sm:flex' : ''}`}>
+          <Button 
+            variant="ghost" 
+            onClick={() => openDialog()}
+            className={`w-full sm:w-auto min-w-0 h-auto rounded-full flex flex-col items-center gap-1 sm:h-8 sm:flex-row sm:gap-1.5 ${item.mobileOnly ? 'sm:hidden' : ''} ${item.active ? 'opacity-100 text-accent-foreground dark:text-accent-foreground dark:opacity-100' : ''} flex-1 px-0 sm:px-3 ${item.mobileOnly ? 'text-sm' : ''}`}
+          >
+            {item.icon && <span className="text-current">{item.icon}</span>}
+            <span>{item.title}</span>
+          </Button>
+        </NavigationMenuItem>
+      );
+    }
+
+    return (
+      <NavigationMenuItem key={item.title} className={`flex-1 basis-0 grow min-w-0 sm:flex-none sm:grow-0 w-full sm:w-auto ${item.desktopOnly ? 'hidden sm:flex' : ''}`}>
+        <Button variant="ghost" asChild className={`w-full sm:w-auto min-w-0 h-auto rounded-full flex flex-col items-center gap-1 sm:h-8 sm:flex-row sm:gap-1.5 ${item.mobileOnly ? 'sm:hidden' : ''} ${item.active ? 'opacity-100 text-accent-foreground dark:text-accent-foreground dark:opacity-100' : ''}`}>
+          <Link href={item.url} className={`flex-1 flex w-full sm:w-auto flex-col items-center gap-1 sm:flex-row px-0 sm:px-3 ${item.mobileOnly ? 'text-sm' : ''}`}>
+            {item.icon && <span className="text-current">{item.icon}</span>}
+            <span>{item.title}</span>
+          </Link>
+        </Button>
+      </NavigationMenuItem>
+    );
+  };
   return (
     <>
       <div
@@ -217,33 +264,7 @@ const Navbar2 = ({
   );
 };
 
-const renderMenuItem = (item: MenuItem) => {
-  if (item.items) {
-    return (
-      <NavigationMenuItem key={item.title} className={`flex-1 basis-0 grow min-w-0 sm:flex-none sm:grow-0 w-full sm:w-auto ${item.desktopOnly ? 'hidden sm:flex' : ''}`}>
-        <NavigationMenuTrigger>{item.title}</NavigationMenuTrigger>
-        <NavigationMenuContent className="origin-top-center relative top-11 w-full overflow-hidden rounded-md border shadow data-[motion=from-end]:slide-in-from-right-52 data-[motion=from-start]:slide-in-from-left-52 data-[motion=to-end]:slide-out-to-right-52 data-[motion=to-start]:slide-out-to-left-52 data-[motion^=from-]:animate-in data-[motion^=from-]:fade-in data-[motion^=to-]:animate-out data-[motion^=to-]:fade-out data-[state=closed]:animate-out data-[state=closed]:zoom-out-95 data-[state=open]:animate-in data-[state=open]:zoom-in-90 md:absolute md:left-1/2 md:w-80 md:-translate-x-1/2">
-          {item.items.map((subItem) => (
-            <NavigationMenuLink asChild key={subItem.url ?? subItem.title} className="w-full opacity-70 hover:opacity-100">
-              <SubMenuLink item={subItem} />
-            </NavigationMenuLink>
-          ))}
-        </NavigationMenuContent>
-      </NavigationMenuItem>
-    );
-  }
 
-  return (
-    <NavigationMenuItem key={item.title} className={`flex-1 basis-0 grow min-w-0 sm:flex-none sm:grow-0 w-full sm:w-auto ${item.desktopOnly ? 'hidden sm:flex' : ''}`}>
-      <Button variant="ghost" asChild className={`w-full sm:w-auto min-w-0 h-auto rounded-full flex flex-col items-center gap-1 sm:h-8 sm:flex-row sm:gap-1.5 ${item.mobileOnly ? 'sm:hidden' : ''} ${item.active ? 'opacity-100 text-accent-foreground dark:text-accent-foreground dark:opacity-100' : ''}`}>
-        <Link href={item.url} className={`flex-1 flex w-full sm:w-auto flex-col items-center gap-1 sm:flex-row px-0 sm:px-3 ${item.mobileOnly ? 'text-sm' : ''}`}>
-          {item.icon && <span className="text-current">{item.icon}</span>}
-          <span>{item.title}</span>
-        </Link>
-      </Button>
-    </NavigationMenuItem>
-  );
-};
 
 const renderMobileMenuItem = (item: MenuItem) => {
   if (item.items) {

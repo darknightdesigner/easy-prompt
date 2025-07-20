@@ -20,8 +20,8 @@ const promptContainerStyles = {
 
 interface TemplateData {
   id: string;
-  title: string;
-  content: string;
+  description: string;  // Updated to match new DB schema
+  template: string;     // Updated to match new DB schema
   slug: string;
   profiles: {
     display_name: string;
@@ -97,8 +97,8 @@ export default function TemplateDetailPage() {
           authorAvatar={template.profiles.avatar_url}
           displayName={template.profiles.display_name}
           username={template.profiles.username}
-          title={template.title}
-          value={template.content}
+          title={template.description}  // Updated to use description field
+          value={template.template}     // Updated to use template field
           likesCount={template.engagement.likes_count}
           commentsCount={0}
           sharesCount={template.engagement.shares_count}
@@ -113,6 +113,12 @@ export default function TemplateDetailPage() {
             readOnly
           />
         </PromptTemplate>
+      )}
+      
+      {!loading && !template && (
+        <div className="w-full pr-2 pl-2 pt-2 sm:pr-6 sm:pl-6 sm:pt-6 pb-3 text-center">
+          <p className="text-muted-foreground">Template not found.</p>
+        </div>
       )}
 
       </PageContainer.Header>

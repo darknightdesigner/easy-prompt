@@ -7,6 +7,7 @@ import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
 import { PostInput } from '@/components/ui/post-input';
 import { PageContainer } from '@/components/layout/page-container';
+import { useCreateTemplate } from '@/components/ui/create-template-dialog';
 
 // Customize PromptTemplate container styles here
 const promptContainerStyles = {
@@ -18,8 +19,8 @@ const promptContainerStyles = {
 
 interface Template {
   id: string;
-  title: string;
-  content: string;
+  description: string;  // Updated to match DB schema
+  template: string;     // Updated to match DB schema
   slug: string;
   visibility?: string;
   created_at?: string;
@@ -47,8 +48,8 @@ interface Template {
 // Raw template data from Supabase might have a different structure
 interface RawTemplate {
   id: string;
-  title: string;
-  content: string;
+  description: string;  // Updated from title
+  template: string;     // Updated from content
   slug: string;
   visibility?: string;
   created_at?: string;
@@ -83,8 +84,8 @@ interface RawTemplate {
 function isTemplate(obj: any): obj is Template {
   return obj && 
     typeof obj.id === 'string' && 
-    typeof obj.title === 'string' && 
-    typeof obj.content === 'string' && 
+    typeof obj.description === 'string' &&  // Updated to match DB schema
+    typeof obj.template === 'string' &&     // Updated to match DB schema
     typeof obj.slug === 'string' && 
     obj.profiles && 
     Array.isArray(obj.engagements);
@@ -124,8 +125,8 @@ function normalizeTemplate(template: RawTemplate): Template {
   
   return {
     id: template.id,
-    title: template.title,
-    content: template.content,
+    description: template.description,  // Use description field directly
+    template: template.template,        // Use template field directly
     slug: template.slug,
     visibility: template.visibility,
     created_at: template.created_at,
@@ -146,6 +147,7 @@ export default function HomePage() {
   const [page, setPage] = useState(1);
   const [hasMore, setHasMore] = useState(true);
   const [sortBy, setSortBy] = useState<'created_at' | 'likes_count' | 'views_count'>('created_at');
+  const { openDialog } = useCreateTemplate();
   
   useEffect(() => {
     async function loadTemplates() {
@@ -258,7 +260,7 @@ export default function HomePage() {
       }}
     >
       <PageContainer.Header>
-        <PostInput className="rounded-3xl" />
+        <PostInput className="rounded-3xl" onClick={openDialog} />
       </PageContainer.Header>
       
       <PageContainer.Content>
@@ -297,17 +299,17 @@ export default function HomePage() {
             <PromptTemplate
               {...promptContainerStyles}
               key={template.id}
+              title={template.description}
               authorAvatar={template.profiles?.avatar_url || ""}
               displayName={template.profiles?.display_name || ""}
               username={template.profiles?.username || ""}
-              title={template.title}
               likesCount={template.engagements?.[0]?.likes_count || 0}
               commentsCount={0} // You can add this later
               sharesCount={template.engagements?.[0]?.shares_count || 0}
               savesCount={template.engagements?.[0]?.saves_count || 0}
               verified={false} // Add this field to your database if needed
               shareUrl={`/${template.profiles?.username}/templates/${template.slug}`}
-              value={template.content}
+              value={template.template}
               onLike={() => handleLike(template.id)}
               onSave={() => handleSave(template.id)}
               onShare={() => handleShare(template.id)}

@@ -23,8 +23,8 @@ export async function getPromptTemplateFeed({
     .from('prompt_templates')
     .select(`
       id, 
-      title, 
-      content, 
+      description, 
+      template, 
       slug, 
       visibility,
       created_at,
@@ -76,7 +76,7 @@ export async function getPromptTemplate(id: string) {
   const { data: template, error: templateError } = await supabase
     .from('prompt_templates')
     .select(`
-      id, title, content, slug, visibility,
+      id, description, template, slug, visibility,
       profiles:author_id (id, display_name, username, avatar_url)
     `)
     .eq('id', id)
@@ -129,7 +129,7 @@ export async function getPromptTemplateBySlug(slug: string) {
   const { data: template, error: templateError } = await supabase
     .from('prompt_templates')
     .select(`
-      id, title, content, slug, visibility,
+      id, description, template, slug, visibility,
       profiles:author_id (id, display_name, username, avatar_url),
       engagements (likes_count, saves_count, shares_count, views_count)
     `)

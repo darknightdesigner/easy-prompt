@@ -569,7 +569,7 @@ function PromptTemplate({
           {(displayName || title) && (
             <div className="flex items-start gap-2 pt-2 pl-2 pr-2">
               {currentStep >= 0 ? (
-                <div className="shrink-0 w-[38px] h-[38px] rounded-full bg-primary/10 flex items-center justify-center text-primary text-lg font-semibold">
+                <div className="shrink-0 w-[40px] h-[40px] mt-1 rounded-full bg-primary/10 flex items-center justify-center text-primary text-lg font-semibold">
                   {currentStep === totalSteps ? (
                     <Icon name="check" weight="bold" className="size-5" />
                   ) : (
@@ -583,10 +583,10 @@ function PromptTemplate({
                       <img
                         src={authorAvatar}
                         alt={displayName ?? username}
-                        className="w-[38px] h-[38px] rounded-full object-cover"
+                        className="w-[40px] h-[40px] mt-1 rounded-full object-cover"
                       />
                     ) : (
-                      <div className="w-[38px] h-[38px] rounded-full bg-muted flex items-center justify-center">
+                      <div className="w-[40px] h-[40px] mt-1 rounded-full bg-muted flex items-center justify-center">
                         <Icon name="profile" className="size-5 text-muted-foreground" />
                       </div>
                     )}
@@ -999,7 +999,7 @@ function TopSocialActionBar() {
     >
       <div className="flex items-center gap-0">
         {/* Spacer element that matches avatar width */}
-        <div className="shrink-0 w-[38px] mr-2 sm:block"></div>
+        <div className="shrink-0 w-[40px] mr-2 sm:block"></div>
         {!wizardActive && (
           <PromptTemplateAction>
             <Button data-stop-nav

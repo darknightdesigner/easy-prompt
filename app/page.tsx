@@ -5,9 +5,10 @@ import { motion } from "motion/react";
 import { TextEffect } from "@/components/motion-primitives/text-effect";
 import { ContainerEffect } from "@/components/motion-primitives/container-effect";
 import { CopyIcon } from "@/components/animated-icons/easyprompt";
-import React from "react";
+import React, { useMemo } from "react";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
+import { useCreateTemplate } from "@/components/ui/create-template-dialog";
 import WavyCanvas from "@/components/graphics/WavyCanvas";
 import {
   PromptTemplate,
@@ -16,51 +17,62 @@ import {
 
 const HeroSection = React.memo(function HeroSection() {
   return (
-    <div className="relative z-10 w-full">
-      <div className="mx-auto w-full flex flex-col items-stretch px-4">
-        <div className="flex flex-col items-center gap-2 text-center mt-0 sm:mt-16 relative z-10">
-          <h1 className="mb-2 text-4xl font-semibold tracking-tight text-pretty sm:text-5xl">
-            <TextEffect
-              preset="fade-in-blur"
-              delay={0.1}
-              speedReveal={1}
-              speedSegment={0.5}
-            >
-              Powerful prompts made simple
-            </TextEffect>
-          </h1>
-          <p className="mx-auto text-foreground/70">
-            <TextEffect
-              as="span"
-              preset="fade-in-blur"
-              delay={0.5}
-              speedReveal={4}
-              speedSegment={1}
-            >
-              {"Discover world-class prompts and copy them simply, using {variables}"}
-            </TextEffect>
-          </p>
-          <ContainerEffect preset="fade-in-blur" delay={0.6} transition={{ duration: 0.6 }}>
-            <div className="mt-3 flex flex-wrap justify-center gap-3">
-              <Button variant="outline" className="shadow-none">
-                <Icon name="plus" weight="bold" className="size-4.5" />
-                Create Template
-              </Button>
-              <Button asChild variant="outline" className="shadow-none">
-                <Link href="/home" className="flex items-center gap-1">
-                  <Icon name="chatSmileRoundedCustom" weight="bold" className="size-4.5" />
-                  Explore Prompts
-                </Link>
-              </Button>
-            </div>
-          </ContainerEffect>
-        </div>
-      </div>
-    </div>
+    <>
+      <h1 className="mb-2 text-4xl font-semibold tracking-tight text-pretty sm:text-5xl">
+        <TextEffect
+          preset="fade-in-blur"
+          delay={0.1}
+          speedReveal={1}
+          speedSegment={0.5}
+        >
+          Powerful prompts made simple
+        </TextEffect>
+      </h1>
+      <p className="mx-auto text-foreground/70">
+        <TextEffect
+          as="span"
+          preset="fade-in-blur"
+          delay={0.5}
+          speedReveal={4}
+          speedSegment={1}
+        >
+          {"Discover world-class prompts and copy them simply, using {variables}"}
+        </TextEffect>
+      </p>
+    </>
   );
 });
 
 HeroSection.displayName = "HeroSection";
+
+const HeroButtons = React.memo(function HeroButtons() {
+  const { openDialog } = useCreateTemplate();
+  
+  const buttonContent = useMemo(() => (
+    <ContainerEffect key="hero-buttons" preset="fade-in-blur" delay={0.6} transition={{ duration: 0.6 }}>
+      <div className="mt-3 flex flex-wrap justify-center gap-3">
+        <Button 
+          variant="outline" 
+          className="shadow-none"
+          onClick={() => openDialog()}
+        >
+          <Icon name="plus" weight="bold" className="size-4.5" />
+          Create Template
+        </Button>
+        <Button asChild variant="outline" className="shadow-none">
+          <Link href="/home" className="flex items-center gap-1">
+            <Icon name="chatSmileRoundedCustom" weight="bold" className="size-4.5" />
+            Explore Prompts
+          </Link>
+        </Button>
+      </div>
+    </ContainerEffect>
+  ), [openDialog]);
+  
+  return buttonContent;
+});
+
+HeroButtons.displayName = "HeroButtons";
 
 export default function Home() {
   return (
@@ -79,7 +91,14 @@ export default function Home() {
           <WavyCanvas />
         </motion.div>
       </div>
-      <HeroSection />
+      <div className="relative z-10 w-full">
+        <div className="mx-auto w-full flex flex-col items-stretch px-4">
+          <div className="flex flex-col items-center gap-2 text-center mt-0 sm:mt-16 relative z-10">
+            <HeroSection />
+            <HeroButtons />
+          </div>
+        </div>
+      </div>
       <ContainerEffect className="flex justify-center" preset="fade-in-blur" delay={0.7} transition={{ duration: 0.6 }}>
         <div className="relative w-full flex-1 sm:max-w-176 px-2 sm:px-4" style={{ minHeight: '393px' }}>
           <PromptTemplate
