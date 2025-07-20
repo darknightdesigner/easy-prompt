@@ -107,8 +107,8 @@ export function StepNavigation() {
           </TemplateAction>
         )}
         
-        {/* Template creation toolbar icons - hide on template step */}
-        {state.currentStep !== TEMPLATE_STEPS.TEMPLATE && (
+        {/* Template creation toolbar icons - hide on template and preview steps */}
+        {state.currentStep !== TEMPLATE_STEPS.TEMPLATE && state.currentStep !== TEMPLATE_STEPS.PREVIEW && (
           <>
             <TemplateAction tooltip="Add media">
               <Button
