@@ -63,7 +63,7 @@ export function AuthRequiredDialogProvider({
             </AlertDialogCancel>
             <AlertDialogAction asChild>
               <Button asChild>
-                <a href="/register">Sign up</a>
+                <a href="/login">Sign in</a>
               </Button>
             </AlertDialogAction>
           </AlertDialogFooter>

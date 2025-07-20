@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { supabaseBrowser } from "@/lib/supabaseBrowser";
+import { getAndClearReturnUrl, getFallbackUrl } from "@/lib/utils/auth-redirect";
 
 interface AuthFormProps {
   variant: "signin" | "signup";
@@ -39,14 +40,25 @@ export function AuthForm({ variant }: AuthFormProps) {
       return;
     }
 
-    // success – redirect to home
-    router.replace("/");
+    // Success - redirect to stored return URL or fallback
+    const returnUrl = getAndClearReturnUrl() || getFallbackUrl();
+    router.replace(returnUrl);
   }
 
   async function handleGoogle() {
     try {
       setOauthLoading(true);
-      await supabase.auth.signInWithOAuth({ provider: "google" });
+      
+      // Get return URL to include in OAuth redirect
+      const returnUrl = getAndClearReturnUrl() || getFallbackUrl();
+      const redirectTo = `${window.location.origin}/login?returnUrl=${encodeURIComponent(returnUrl)}`;
+      
+      await supabase.auth.signInWithOAuth({ 
+        provider: "google",
+        options: {
+          redirectTo
+        }
+      });
     } finally {
       setOauthLoading(false);
     }
