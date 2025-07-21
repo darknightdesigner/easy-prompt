@@ -45,6 +45,9 @@ export function StepProgress() {
           <span className="text-xs text-muted-foreground">
             {state.variables.length} variable{state.variables.length !== 1 ? 's' : ''} detected
           </span>
+          <div className="text-xs text-muted-foreground/70 mt-0.5">
+            Using {"{{ variable }}"} syntax
+          </div>
         </div>
       )}
     </div>

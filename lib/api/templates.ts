@@ -182,4 +182,6 @@ export class TemplateAPI {
   static async saveDraft(formData: CreateTemplateFormData): Promise<TemplateData> {
     return this.create(formData, { saveAsDraft: true, visibility: 'private' })
   }
+
+
 }

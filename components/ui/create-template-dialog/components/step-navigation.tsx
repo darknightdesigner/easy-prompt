@@ -107,20 +107,35 @@ export function StepNavigation() {
           </TemplateAction>
         )}
         
-        {/* Template creation toolbar icons - hide on template and preview steps */}
-        {state.currentStep !== TEMPLATE_STEPS.TEMPLATE && state.currentStep !== TEMPLATE_STEPS.PREVIEW && (
+        {/* Add media button - hide on template and preview steps */}
+        {state.currentStep === TEMPLATE_STEPS.DESCRIPTION && (
+          <TemplateAction tooltip="Add media">
+            <Button
+              variant="ghost"
+              size="sm"
+              type="button"
+              disabled={state.isLoading}
+            >
+              <Icon name="imageSquare" className="size-4.5" />
+            </Button>
+          </TemplateAction>
+        )}
+        
+        {/* Any Model button - visible on all steps */}
+        <TemplateAction tooltip="Any Model">
+          <Button
+            variant="ghost"
+            size="sm"
+            type="button"
+            disabled={state.isLoading}
+          >
+            <Icon name="Robot" className="size-4.5" />
+          </Button>
+        </TemplateAction>
+        
+        {/* Other toolbar icons - hide on template step */}
+        {state.currentStep !== TEMPLATE_STEPS.TEMPLATE && (
           <>
-            <TemplateAction tooltip="Add media">
-              <Button
-                variant="ghost"
-                size="sm"
-                type="button"
-                disabled={state.isLoading}
-              >
-                <Icon name="imageSquare" className="size-4.5" />
-              </Button>
-            </TemplateAction>
-            
             <TemplateAction tooltip="Add tags">
               <Button
                 variant="ghost"
@@ -129,17 +144,6 @@ export function StepNavigation() {
                 disabled={state.isLoading}
               >
                 <Icon name="Tag" className="size-4.5" />
-              </Button>
-            </TemplateAction>
-            
-            <TemplateAction tooltip="Any Model">
-              <Button
-                variant="ghost"
-                size="sm"
-                type="button"
-                disabled={state.isLoading}
-              >
-                <Icon name="Robot" className="size-4.5" />
               </Button>
             </TemplateAction>
             

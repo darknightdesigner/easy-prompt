@@ -106,7 +106,7 @@ export const ContainerEffect: React.FC<ContainerEffectProps> = ({
   onAnimationComplete,
   onAnimationStart,
 }) => {
-  const MotionComponent = motion(AsComponent);
+  const MotionComponent = motion.create(AsComponent);
 
   const finalVariants = useMemo(() => {
     let variantsToUse = customVariants || (preset ? presetVariants[preset] : presetVariants.fade);

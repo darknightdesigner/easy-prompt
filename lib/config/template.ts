@@ -13,7 +13,11 @@ export const TEMPLATE_CONFIG = {
   
   // UI constants
   DESCRIPTION_PLACEHOLDER: "Describe your prompt template",
-  TEMPLATE_PLACEHOLDER: "Enter your template here",
+  TEMPLATE_PLACEHOLDER: "Enter your template here using {{ variable }} syntax",
+  
+  // Variable syntax examples
+  VARIABLE_EXAMPLE: "{{ user_name }}",
+  VARIABLE_SYNTAX_HELP: "Use {{ variable }} syntax. Examples: {{ name }}, {{ first_name }}, {{ userId }}",
   
   // Button labels
   SAVE_DRAFT_LABEL: "Save Draft",
@@ -35,6 +39,8 @@ export const TEMPLATE_CONFIG = {
     TEMPLATE_TOO_SHORT: `Template must be at least 10 characters`,
     TEMPLATE_TOO_LONG: `Template cannot exceed 5000 characters`,
     TOO_MANY_VARIABLES: `Template cannot have more than 20 variables`,
+    INVALID_VARIABLE_SYNTAX: "Variables must use {{ variable }} syntax",
+    INVALID_VARIABLE_NAME: "Variable names must use snake_case or camelCase (no spaces or special characters)",
     PROFILE_NOT_FOUND: "User profile not found. Please refresh and try again.",
     NETWORK_ERROR: "Network error. Please check your connection and try again.",
   },

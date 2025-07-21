@@ -60,7 +60,7 @@ export function CreateTemplateDialog() {
       case TEMPLATE_STEPS.DESCRIPTION:
         return "Describe your prompt template"
       case TEMPLATE_STEPS.TEMPLATE:
-        return "Use curly braces like {variable_name} to create fillable variables"
+        return "Use curly braces like {{variable_name}} to create fillable variables"
       case TEMPLATE_STEPS.PREVIEW:
         return state.data.description || "Review your template before creating"
       default:

@@ -85,6 +85,15 @@ export function StepPreview() {
           />
         </div>
       </div>
+      
+      {/* Variable usage hint */}
+      {state.variables.length > 0 && (
+        <div className="px-4 pb-2">
+          <div className="text-xs text-muted-foreground/70">
+            💡 Variables like {"{{ "}{state.variables[0]}{" }}"} will be filled in when users copy this template
+          </div>
+        </div>
+      )}
     </div>
   )
 }

@@ -434,8 +434,8 @@ function PromptTemplate({
   const generateFinalContent = React.useCallback(() => {
     let finalContent = value ?? internalValue;
     variables.forEach((v) => {
-      const replacement = variableValues[v] ?? `{${v}}`;
-      finalContent = finalContent.replace(new RegExp(`\\{${v}\\}`, "g"), replacement);
+      const replacement = variableValues[v] ?? `{{ ${v} }}`;
+      finalContent = finalContent.replace(new RegExp(`\\{\\{\\s*${v.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}\\s*\\}\\}`, "g"), replacement);
     });
     return finalContent;
   }, [value, internalValue, variables, variableValues]);
@@ -621,7 +621,7 @@ function PromptTemplate({
                 {title && (
                   <div className={cn("leading-normal", currentStep >= 0 && "text-muted-foreground")}>
                     {currentStep >= 0 && currentStep < totalSteps && currentVar ? (
-                      <span>{`{${truncateText(variableValues[currentVar] ? variableValues[currentVar] : currentVar, 30)}}`}</span>
+                      <span>{`{{ ${truncateText(variableValues[currentVar] ? variableValues[currentVar] : currentVar, 30)} }}`}</span>
                     ) : currentStep === totalSteps ? (
                       <span>Final prompt with all variables filled</span>
                     ) : (
@@ -676,7 +676,7 @@ function PromptTemplate({
                     value={variableValues[currentVar] ?? ""}
                     onChange={(e) => handleVariableChange(e.target.value)}
                     onKeyDown={handleKeyDown}
-                    placeholder={`Enter {${currentVar}}`}
+                    placeholder={`Enter {{ ${currentVar} }}`}
                     className="text-base md:text-base text-card-foreground w-full p-4 resize-none overflow-hidden md:overflow-auto border-none bg-transparent! dark:bg-transparent! shadow-none outline-none focus-visible:ring-0 focus-visible:ring-offset-0"
                     style={{ height: '240px' }}
                     rows={1}

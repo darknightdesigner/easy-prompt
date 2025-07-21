@@ -123,7 +123,7 @@ CREATE INDEX IF NOT EXISTS idx_prompt_templates_variables ON prompt_templates US
 
 -- 8. Add helpful comments
 COMMENT ON COLUMN prompt_templates.description IS 'User-entered description of what the template does';
-COMMENT ON COLUMN prompt_templates.template IS 'The actual prompt template with {variables}';
+COMMENT ON COLUMN prompt_templates.template IS 'The actual prompt template with {{ variables }}';
 COMMENT ON COLUMN prompt_templates.variables IS 'Array of variable names extracted from template';
 COMMENT ON COLUMN prompt_templates.status IS 'draft or published - controlled by save draft vs create template buttons';
 COMMENT ON COLUMN prompt_templates.visibility IS 'public, unlisted, or private - defaults to public for published templates';

@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { supabaseBrowser } from "@/lib/supabaseBrowser";
 import { getAndClearReturnUrl, getFallbackUrl } from "@/lib/utils/auth-redirect";
+import { syncCurrentUserAvatar } from "@/lib/utils/avatar-sync";
 
 interface AuthFormProps {
   variant: "signin" | "signup";
@@ -40,7 +41,17 @@ export function AuthForm({ variant }: AuthFormProps) {
       return;
     }
 
-    // Success - redirect to stored return URL or fallback
+    // Success - sync avatar if available, then redirect
+    try {
+      const syncResult = await syncCurrentUserAvatar();
+      if (syncResult.success && syncResult.updated) {
+        console.log('Avatar synced successfully');
+      }
+    } catch (error) {
+      // Don't block login if avatar sync fails
+      console.warn('Avatar sync failed:', error);
+    }
+    
     const returnUrl = getAndClearReturnUrl() || getFallbackUrl();
     router.replace(returnUrl);
   }

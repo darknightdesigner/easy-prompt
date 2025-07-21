@@ -51,6 +51,15 @@ export function StepDescription() {
           </span>
         </div>
       </div>
+      
+      {/* Next step hint */}
+      {state.data.description.length > 20 && (
+        <div className="px-4 pb-2">
+          <div className="text-xs text-muted-foreground/70">
+            🚀 Next: Create your template using {"{{ variable }}"} syntax for dynamic content
+          </div>
+        </div>
+      )}
     </div>
   )
 }
