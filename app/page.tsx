@@ -100,61 +100,48 @@ export default function Home() {
         </div>
       </div>
       <ContainerEffect className="flex justify-center" preset="fade-in-blur" delay={0.7} transition={{ duration: 0.6 }}>
-        <div className="relative w-full flex-1 sm:max-w-176 px-2 sm:px-4" style={{ minHeight: '393px' }}>
+        <div className="relative w-full flex-1 sm:max-w-176 px-2 sm:px-4" style={{ minHeight: '425px' }}>
           <PromptTemplate
             initialExpanded={true}
             authorAvatar="https://ci3.googleusercontent.com/mail-sig/AIorK4yctzAmNSeWRCuUGwYHYlqVFpxrb40OIXsdWX-IOdVDk9b3GmtZUcGmrRLYDjMQnbTCcv9qFLpnpEEt"
             displayName="Andres Gonzalez"
             username="batman"
-            title="Create specialized YouTube video scripts based on your niche"
+            title="The personalized $100M startup idea researcher that feels like a cheat code. Paste your unique profile, skills, etc... and get 5–7 sourced, founder‑fit opportunities in minutes."
             likesCount={25}
             commentsCount={5}
             sharesCount={4}
             savesCount={21}
             verified={true}
             shareUrl={"https://www.easyprompt.ai"}
-            value={`You are an award-winning YouTube scriptwriter and growth strategist.
+            value={`You are a seasoned venture analyst with instant access to up‑to‑the‑minute market data, private funding databases, patent filings, and technology trend reports.
 
-TASK  
-Create a complete, timestamped script for a YouTube video.
+GOAL  
+Identify 5–7 “golden‑zone” startup opportunities I should pursue next—ideas that (a) leverage my unique unfair advantages, (b) ride strong market tailwinds, and (c) have a credible path to $100M+ in yearly revenues within 7 years.
 
-VIDEO BRIEF  
-• Niche / industry: {{ niche }}  
-• Specific topic or angle: {{ video_topic }}  
-• Target viewer persona(s): {{ audience }}  
-• Goal of the video (educate / sell / build authority / entertain): {{ video_goal }}  
-• Desired video length (minutes): {{ video_length }}  
-• Tone & style (e.g., playful, cinematic, no-fluff, storytelling): {{ tone_style }}  
-• On-screen host's persona or credibility blurb: {{ host_persona }}  
-• Key points or takeaways that **must** be covered (bullet list): {{ key_points }}  
-• Real-world examples, data, or case studies available: {{ supporting_material }}  
-• Primary call-to-action at the end: {{ cta }}  
-• Secondary CTAs or brand integrations (if any): {{ secondary_ctas }}  
+INPUTS  
+• Founder profile: {{founder_profile}}  
+• Core skills & unfair advantages: {{skills}}  
+• Target/acceptable industries: {{industries}}  
+• Capital constraints for MVP: {{capital_limit}} (e.g., <$250k)  
+• Personal mission & values: {{mission}}  
+• Time horizon to MVP: {{mvp_timeline}}  
 
-FORMAT REQUIREMENTS  
-1. **Compelling Title**: 3 click-worthy title options (≤60 chars).  
-2. **Hook (00:00-00:20)**: 1-2 punchy sentences that grab attention and preview the transformation/value.  
-3. **Intro (00:20-00:45)**: Presenter intro + why the viewer should care, ending with a one-sentence promise.  
-4. **Body**  
-   - Break into logical chapters with timestamps (e.g., 01:15, 03:40…).  
-   - Use storytelling frameworks (problem → insight → solution) where possible.  
-   - Include dialogue, on-screen text cues, B-roll notes, and any graphics callouts.  
-5. **Recap & CTA (final 30-45 sec)**: Summarize key takeaways, deliver {{ cta }}, and tease the next video.  
-6. **SEO Section (after the script)**:  
-   - 15 high-intent tags/keywords.  
-   - 150-word video description incorporating those keywords naturally.  
-   - 3 thumbnail headline ideas.
+DELIVERABLE (for **each** opportunity)  
+1. 🔑 One‑sentence concept  
+2. 📈 “Why Now”: key macro & micro trends enabling this idea (with sources)  
+3. 🧩 Founder‑fit rationale (how my skills give me an edge)  
+4. ⚠️ Top 3 execution or market risks  
+5. ✅ First quick‑and‑cheap experiment to validate demand (with success metric)  
+6. 💵 Comparable exits or recent funding rounds (size, year, investors)
 
 CONSTRAINTS  
-- Write at a 6th-to-8th-grade reading level unless {{ tone_style }} states otherwise.  
-- Keep sentences ≤20 words; use active voice.  
-- Infuse the brand voice: {{ brand_voice_guidelines }}.  
-- Avoid filler phrases ("so yeah," "basically") and clichés.
+• Prioritize markets that are growing ≥15% CAGR or poised for regulatory tailwinds.  
+• Favor business models that can reach breakeven within 18 months on projected unit economics.  
+• Avoid ideas requiring >5 full‑time engineers before product‑market fit.  
+• Reference at least three reputable, current sources per opportunity.  
+• Present results in a clean Markdown table for easy comparison.
 
-DELIVERABLE  
-Return everything in **markdown** with headings and bullet lists for easy pasting into Notion.
-
-BEGIN.`}
+Begin.`}
         >
           <PromptTemplateTextarea
             className="w-full resize-none text-base placeholder:text-muted-foreground"

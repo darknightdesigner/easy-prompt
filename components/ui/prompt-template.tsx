@@ -402,14 +402,14 @@ function PromptTemplate({
     setExpanded(false);
     
     // Focus and select the textarea content after a longer delay to ensure it's rendered
-    // and any animations have completed
+    // and any animations have completed (especially important for mobile Safari)
     setTimeout(() => {
       if (variableInputRef.current) {
         variableInputRef.current.focus();
         // Select all text in the textarea
         variableInputRef.current.select();
       }
-    }, 50); // Increased delay to ensure animations complete
+    }, 300); // Increased delay for mobile compatibility with complex animations
   };
 
   const generateFinalContent = React.useCallback(() => {
@@ -437,7 +437,7 @@ function PromptTemplate({
           // Select all text in the textarea for easy replacement
           variableInputRef.current.select();
         }
-      }, 50); // Increased delay to ensure animations complete
+      }, 300); // Increased delay for mobile compatibility with complex animations
     } else if (currentStep === totalSteps) {
       // Focus on preview textarea when reaching the final step
       // but don't select the text to avoid unwanted highlighting
@@ -446,7 +446,7 @@ function PromptTemplate({
           previewTextareaRef.current.focus();
           // No text selection for preview - just focus
         }
-      }, 50); // Increased delay to ensure animations complete
+      }, 300); // Increased delay for mobile compatibility with complex animations
     }
   }, [currentStep, totalSteps, expanded]);
   

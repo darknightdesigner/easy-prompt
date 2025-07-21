@@ -4,9 +4,9 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Icon } from "@/components/ui/icon";
 import { cn } from "@/lib/utils";
+import { useSessionContext } from "@supabase/auth-helpers-react";
 
 interface PostInputProps {
-  avatarUrl?: string;
   className?: string;
   onClick?: () => void;
 }
@@ -18,7 +18,11 @@ interface PostInputProps {
  * attach an `onClick` handler (e.g. open a dialog). For now, only the
  * visual layout is provided.
  */
-export function PostInput({ avatarUrl, className, onClick }: PostInputProps) {
+export function PostInput({ className, onClick }: PostInputProps) {
+  const { session } = useSessionContext();
+  
+  // Get user avatar from session
+  const userAvatar = session?.user?.user_metadata?.avatar_url;
   return (
     <div
       onClick={onClick}
@@ -28,11 +32,13 @@ export function PostInput({ avatarUrl, className, onClick }: PostInputProps) {
       )}
     >
       {/* Avatar */}
-      <Avatar className="h-[38px] w-[38px]">
-        {avatarUrl ? (
-          <AvatarImage src={avatarUrl} alt="User avatar" />
+      <Avatar className="h-[40px] w-[40px]">
+        {userAvatar ? (
+          <AvatarImage src={userAvatar} alt="User avatar" />
         ) : (
-          <AvatarFallback>?</AvatarFallback>
+          <AvatarFallback>
+            <Icon name="profile" className="h-4 w-4" />
+          </AvatarFallback>
         )}
       </Avatar>
 
