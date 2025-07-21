@@ -398,18 +398,21 @@ function PromptTemplate({
   const startWizard = () => {
     setCurrentStep(0);
     
+    // Show the prompt container so the wizard inputs are visible
+    setShowPrompt(true);
+    
     // Reset expanded state to default when starting the wizard
     setExpanded(false);
     
-    // Focus and select the textarea content after a longer delay to ensure it's rendered
-    // and any animations have completed (especially important for mobile Safari)
+    // Focus and select the textarea content after animations complete
+    // Increased delay for mobile Safari compatibility with motion animations
     setTimeout(() => {
       if (variableInputRef.current) {
         variableInputRef.current.focus();
         // Select all text in the textarea
         variableInputRef.current.select();
       }
-    }, 300); // Increased delay for mobile compatibility with complex animations
+    }, 300); // Longer delay to ensure spring animations complete
   };
 
   const generateFinalContent = React.useCallback(() => {
@@ -437,7 +440,7 @@ function PromptTemplate({
           // Select all text in the textarea for easy replacement
           variableInputRef.current.select();
         }
-      }, 300); // Increased delay for mobile compatibility with complex animations
+      }, 50); // Increased delay to ensure animations complete
     } else if (currentStep === totalSteps) {
       // Focus on preview textarea when reaching the final step
       // but don't select the text to avoid unwanted highlighting
@@ -446,7 +449,7 @@ function PromptTemplate({
           previewTextareaRef.current.focus();
           // No text selection for preview - just focus
         }
-      }, 300); // Increased delay for mobile compatibility with complex animations
+      }, 50); // Increased delay to ensure animations complete
     }
   }, [currentStep, totalSteps, expanded]);
   
