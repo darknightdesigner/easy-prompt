@@ -105,7 +105,6 @@ export default function TemplateDetailPage() {
           savesCount={template.engagement.saves_count}
           verified={false}
           shareUrl={`/${username}/templates/${slug}`}
-          variableQuestions={template.variableQuestions}
           initialExpanded={true}
         >
           <PromptTemplateTextarea

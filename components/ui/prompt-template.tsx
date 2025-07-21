@@ -29,10 +29,7 @@ import React, {
   useCallback,
 } from "react"
 
-type VariableMetadata = {
-  question: string;
-  defaultValue?: string;
-}
+
 
 type PromptTemplateContextType = {
   isLoading: boolean
@@ -75,7 +72,6 @@ type PromptTemplateContextType = {
   completedSteps: number
   shareUrl: string
   variables: string[]
-  variableMetadata: Record<string, VariableMetadata>
   startWizard: () => void
   currentStep: number
   setCurrentStep: React.Dispatch<React.SetStateAction<number>>
@@ -122,7 +118,6 @@ const PromptTemplateContext = createContext<PromptTemplateContextType>({
   completedSteps: 0,
   shareUrl: '',
   variables: [],
-  variableMetadata: {},
   startWizard: () => {},
   currentStep: -1,
   setCurrentStep: () => {},
@@ -165,7 +160,6 @@ type PromptTemplateProps = {
   onShare?: () => void
   /** Optional share URL (falls back to window.location.href) */
   shareUrl?: string
-  variableQuestions?: Record<string, string> // Map of variable names to their questions
   children: React.ReactNode
   className?: string
   /** Whether the container is initially expanded */
@@ -202,7 +196,6 @@ function PromptTemplate({
   onSave,
   onShare,
   shareUrl: propShareUrl,
-  variableQuestions,
   children,
   borderClass = "border",
   backgroundClass = "bg-secondary",
@@ -218,7 +211,7 @@ function PromptTemplate({
   const [expanded, setExpanded] = useState(false);
   const [currentStep, setCurrentStep] = useState(-1); // -1 means wizard inactive
   const [variableValues, setVariableValues] = useState<Record<string, string>>({});
-  const [variableMetadata, setVariableMetadata] = useState<Record<string, VariableMetadata>>({});
+
   const [buttonOpacity, setButtonOpacity] = useState(1) // Start with 100% opacity for mobile, will be adjusted for desktop
   const [isMobile, setIsMobile] = useState(false)
   const contentRef = useRef<HTMLDivElement>(null)
@@ -351,25 +344,13 @@ function PromptTemplate({
       return next;
     });
 
-    // Update variable metadata with questions
-    setVariableMetadata(prev => {
-      const next: Record<string, VariableMetadata> = {};
-      variables.forEach(v => {
-        next[v] = {
-          question: variableQuestions?.[v] || `Enter ${v.replace(/_/g, " ")}`,
-          defaultValue: prev[v]?.defaultValue || ""
-        };
-      });
-      return next;
-    });
-
     // Clamp currentStep so it never exceeds new totalSteps
     setCurrentStep(prev => {
       if (prev === -1) return prev; // wizard inactive
       if (variables.length === 0) return -1; // no variables -> deactivate wizard
       return Math.min(prev, variables.length - 1);
     });
-  }, [variables, variableQuestions]);
+  }, [variables]);
   // Calculate completedSteps - only show as fully complete on the final preview step
   // When on first question, we'll pass a fractional value to ensure 5% progress
   const completedSteps = 
@@ -550,7 +531,6 @@ function PromptTemplate({
           completedSteps,
           shareUrl,
           variables,
-          variableMetadata,
           startWizard,
           currentStep,
           setCurrentStep,
@@ -597,7 +577,7 @@ function PromptTemplate({
               <div className="flex flex-col pr-3 sm:pr-4">
                 {currentStep >= 0 && currentStep < totalSteps && currentVar ? (
                   <div className="flex items-center gap-0 font-semibold text-foreground">
-                    {variableMetadata[currentVar]?.question || `Enter ${currentVar.replace(/_/g, " ")}`}
+                    {`Enter ${currentVar.replace(/_/g, " ")}`}
                   </div>
                 ) : currentStep === totalSteps ? (
                   <div className="flex items-center gap-0 font-semibold text-foreground">
@@ -1144,7 +1124,6 @@ function TopSocialActionBar() {
 function DefaultPromptFooter() {
   const {
     variables,
-    variableMetadata,
     currentStep,
     setCurrentStep,
     totalSteps,
@@ -1182,7 +1161,7 @@ function DefaultPromptFooter() {
   const { requireAuth } = useRequireAuth();
   const wizardActive = variables.length > 0 && currentStep >= 0 && currentStep <= totalSteps;
 
-  const variableQuestion = currentStep >= 0 && currentStep < variables.length ? variableMetadata[variables[currentStep]]?.question : "";
+  const variableQuestion = currentStep >= 0 && currentStep < variables.length ? `Enter ${variables[currentStep].replace(/_/g, " ")}` : "";
   
   // We use separate states for showing/hiding the prompt and expanding/collapsing the text area
   

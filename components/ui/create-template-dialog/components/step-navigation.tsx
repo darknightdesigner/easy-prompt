@@ -93,7 +93,7 @@ export function StepNavigation() {
   )
 
   return (
-    <div className="flex items-center justify-between px-2 py-2 border-t bg-background/50">
+    <div className="flex items-center justify-between px-2 py-2 border-t">
       {/* Left side - Icon toolbar */}
       <div className="flex items-center gap-0">
         {/* Back button (only show when not on first step) */}

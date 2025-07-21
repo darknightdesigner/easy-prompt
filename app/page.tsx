@@ -36,7 +36,7 @@ const HeroSection = React.memo(function HeroSection() {
           speedReveal={4}
           speedSegment={1}
         >
-          {"Discover world-class prompts and copy them simply, using {variables}"}
+          {"Discover world-class prompts and copy them simply, using {{ variables }}"}
         </TextEffect>
       </p>
     </>
@@ -113,37 +113,23 @@ export default function Home() {
             savesCount={21}
             verified={true}
             shareUrl={"https://www.easyprompt.ai"}
-            variableQuestions={{
-              niche: "What industry or topic is your channel about?",
-              video_topic: "What specific topic will this video cover?",
-              audience: "Who is your target audience?",
-              video_goal: "What's the main goal of this video?",
-              video_length: "How long should the video be (in minutes)?",
-              tone_style: "What tone or style do you want for the video?",
-              host_persona: "Describe the on-screen host's persona",
-              key_points: "What key points must be covered?",
-              supporting_material: "What examples or data can you provide?",
-              cta: "What's your main call-to-action?",
-              secondary_ctas: "Any secondary calls-to-action?",
-              brand_voice_guidelines: "Describe your brand voice"
-            }}
             value={`You are an award-winning YouTube scriptwriter and growth strategist.
 
 TASK  
 Create a complete, timestamped script for a YouTube video.
 
 VIDEO BRIEF  
-• Niche / industry: {niche}  
-• Specific topic or angle: {video_topic}  
-• Target viewer persona(s): {audience}  
-• Goal of the video (educate / sell / build authority / entertain): {video_goal}  
-• Desired video length (minutes): {video_length}  
-• Tone & style (e.g., playful, cinematic, no-fluff, storytelling): {tone_style}  
-• On-screen host’s persona or credibility blurb: {host_persona}  
-• Key points or takeaways that **must** be covered (bullet list): {key_points}  
-• Real-world examples, data, or case studies available: {supporting_material}  
-• Primary call-to-action at the end: {cta}  
-• Secondary CTAs or brand integrations (if any): {secondary_ctas}  
+• Niche / industry: {{ niche }}  
+• Specific topic or angle: {{ video_topic }}  
+• Target viewer persona(s): {{ audience }}  
+• Goal of the video (educate / sell / build authority / entertain): {{ video_goal }}  
+• Desired video length (minutes): {{ video_length }}  
+• Tone & style (e.g., playful, cinematic, no-fluff, storytelling): {{ tone_style }}  
+• On-screen host's persona or credibility blurb: {{ host_persona }}  
+• Key points or takeaways that **must** be covered (bullet list): {{ key_points }}  
+• Real-world examples, data, or case studies available: {{ supporting_material }}  
+• Primary call-to-action at the end: {{ cta }}  
+• Secondary CTAs or brand integrations (if any): {{ secondary_ctas }}  
 
 FORMAT REQUIREMENTS  
 1. **Compelling Title**: 3 click-worthy title options (≤60 chars).  
@@ -153,17 +139,17 @@ FORMAT REQUIREMENTS
    - Break into logical chapters with timestamps (e.g., 01:15, 03:40…).  
    - Use storytelling frameworks (problem → insight → solution) where possible.  
    - Include dialogue, on-screen text cues, B-roll notes, and any graphics callouts.  
-5. **Recap & CTA (final 30-45 sec)**: Summarize key takeaways, deliver {cta}, and tease the next video.  
+5. **Recap & CTA (final 30-45 sec)**: Summarize key takeaways, deliver {{ cta }}, and tease the next video.  
 6. **SEO Section (after the script)**:  
    - 15 high-intent tags/keywords.  
    - 150-word video description incorporating those keywords naturally.  
    - 3 thumbnail headline ideas.
 
 CONSTRAINTS  
-- Write at a 6th-to-8th-grade reading level unless {tone_style} states otherwise.  
+- Write at a 6th-to-8th-grade reading level unless {{ tone_style }} states otherwise.  
 - Keep sentences ≤20 words; use active voice.  
-- Infuse the brand voice: {brand_voice_guidelines}.  
-- Avoid filler phrases (“so yeah,” “basically”) and clichés.
+- Infuse the brand voice: {{ brand_voice_guidelines }}.  
+- Avoid filler phrases ("so yeah," "basically") and clichés.
 
 DELIVERABLE  
 Return everything in **markdown** with headings and bullet lists for easy pasting into Notion.
