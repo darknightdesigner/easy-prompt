@@ -17,7 +17,6 @@ export const TEMPLATE_CONFIG = {
   
   // Variable syntax examples
   VARIABLE_EXAMPLE: "{{ user_name }}",
-  VARIABLE_SYNTAX_HELP: "Use {{ variable }} syntax. Examples: {{ name }}, {{ first_name }}, {{ userId }}",
   
   // Button labels
   SAVE_DRAFT_LABEL: "Save Draft",

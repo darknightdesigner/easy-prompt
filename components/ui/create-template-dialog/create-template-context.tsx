@@ -109,6 +109,28 @@ export function CreateTemplateDialogProvider({ children }: CreateTemplateDialogP
     }))
   }, [])
 
+  const addVariableToTemplate = useCallback((variableName: string) => {
+    const variableText = `{{ ${variableName} }}`
+    const currentTemplate = state.data.template
+    
+    // Add variable at the end of the template with a space if needed
+    const newTemplate = currentTemplate + (currentTemplate && !currentTemplate.endsWith(' ') ? ' ' : '') + variableText
+    updateTemplate(newTemplate)
+  }, [state.data.template, updateTemplate])
+
+  const renameVariableInTemplate = useCallback((oldName: string, newName: string) => {
+    const currentTemplate = state.data.template
+    
+    // Create regex to match the old variable with whitespace tolerance
+    const oldVariableRegex = new RegExp(`\\{\\{\\s*${oldName.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}\\s*\\}\\}`, 'g')
+    
+    // Replace all instances of the old variable with the new one
+    const newTemplate = currentTemplate.replace(oldVariableRegex, `{{ ${newName} }}`)
+    
+    // Update the template
+    updateTemplate(newTemplate)
+  }, [state.data.template, updateTemplate])
+
   // Validation
   const validateCurrentStep = useCallback(() => {
     const validation = useStepValidation(state.data, state.currentStep)
@@ -192,6 +214,8 @@ export function CreateTemplateDialogProvider({ children }: CreateTemplateDialogP
     // Form data
     updateDescription,
     updateTemplate,
+    addVariableToTemplate,
+    renameVariableInTemplate,
     
     // Validation
     validateCurrentStep,

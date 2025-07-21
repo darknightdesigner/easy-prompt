@@ -51,6 +51,8 @@ export interface CreateTemplateContextType {
   // Form data
   updateDescription: (description: string) => void
   updateTemplate: (template: string) => void
+  addVariableToTemplate: (variableName: string) => void
+  renameVariableInTemplate: (oldName: string, newName: string) => void
   
   // Validation
   validateCurrentStep: () => boolean

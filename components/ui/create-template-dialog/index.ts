@@ -15,6 +15,7 @@ export { StepPreview } from "./steps/step-preview"
 // Navigation components
 export { StepNavigation } from "./components/step-navigation"
 export { PreviewIcons } from "./components/preview-icons"
+export { AddVariablePopover } from "./components/add-variable-popover"
 
 // Types
 export type { 

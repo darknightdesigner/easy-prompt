@@ -10,6 +10,7 @@ import {
   Dialog,
   DialogContent,
   DialogTitle,
+  DialogDescription,
 } from "@/components/ui/dialog"
 import { VisuallyHidden } from "@radix-ui/react-visually-hidden"
 import { Icon } from "@/components/ui/icon"
@@ -74,15 +75,16 @@ export function CreateTemplateDialog() {
         className="sm:max-w-[600px] max-h-[90vh] overflow-hidden p-1 rounded-[28px] bg-secondary gap-2"
         showCloseButton={true}
       >
-        {/* Hidden title for accessibility */}
+        {/* Hidden title and description for accessibility */}
         <VisuallyHidden>
           <DialogTitle>{getStepTitle()}</DialogTitle>
+          <DialogDescription>{getStepDescription()}</DialogDescription>
         </VisuallyHidden>
         
         {/* Header with step badge and title */}
       <div className="flex items-start gap-2 pt-2 pl-2 pr-2">
         {/* Step number badge */}
-        <div className="shrink-0 w-[40px] h-[40px] mt-1 rounded-full bg-primary/10 flex items-center justify-center text-primary text-lg font-semibold">
+        <div className="shrink-0 w-[40px] h-[40px] mt-1 rounded-full bg-primary/5 flex items-center justify-center text-primary text-lg font-semibold">
           {state.currentStep === TEMPLATE_STEPS.PREVIEW ? (
             <Avatar className="size-[40px]">
               {session?.user?.user_metadata?.avatar_url ? (

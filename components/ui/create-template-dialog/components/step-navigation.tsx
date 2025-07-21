@@ -10,6 +10,8 @@ import { Icon } from "@/components/ui/icon"
 import { useCreateTemplate } from "../create-template-context"
 import { TEMPLATE_STEPS, TOTAL_STEPS } from "@/lib/types/template"
 import { TEMPLATE_CONFIG } from "@/lib/config/template"
+import { AddVariablePopover } from "./add-variable-popover"
+import { VariablesDetectedPopover } from "./variables-detected-popover"
 import {
   Tooltip,
   TooltipContent,
@@ -22,11 +24,13 @@ export function StepNavigation() {
     state, 
     nextStep, 
     prevStep, 
-    canProceedToNextStep, 
-    validateCurrentStep,
     createTemplate, 
-    saveDraft,
-    closeDialog 
+    saveDraft, 
+    canProceedToNextStep, 
+    addVariableToTemplate, 
+    renameVariableInTemplate,
+    validateCurrentStep,
+    closeDialog
   } = useCreateTemplate()
 
   const isFirstStep = state.currentStep === TEMPLATE_STEPS.DESCRIPTION
@@ -206,33 +210,38 @@ export function StepNavigation() {
               <>
                 {/* Only show variable counter when there are variables */}
                 {state.variables.length > 0 && (
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={() => {
-                      // Add your custom action here
-                      console.log('Variable counter clicked:', state.variables.length)
-                    }}
-                    disabled={state.isLoading}
-                    className="gap-1.5 shadow-none"
-                  >
-                    {state.variables.length}
-                  </Button>
+                  <Tooltip>
+                    <VariablesDetectedPopover 
+                      variables={state.variables}
+                      onRenameVariable={renameVariableInTemplate}
+                      trigger={
+                        <TooltipTrigger asChild>
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            disabled={state.isLoading}
+                            className="gap-1.5 shadow-none"
+                          >
+                            {state.variables.length}
+                          </Button>
+                        </TooltipTrigger>
+                      }
+                    />
+                    <TooltipContent>
+                      <p>
+                        {state.variables.length === 1 
+                          ? "1 variable detected" 
+                          : `${state.variables.length} variables detected`
+                        }
+                      </p>
+                    </TooltipContent>
+                  </Tooltip>
                 )}
                 
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={() => {
-                    // Add your custom action here
-                    console.log('Add Variable button clicked on template step')
-                  }}
+                <AddVariablePopover 
+                  onAddVariable={addVariableToTemplate}
                   disabled={state.isLoading}
-                  className="gap-1.5 shadow-none"
-                >
-                  <Icon name="plus" className="size-4" />
-                  Add Variable
-                </Button>
+                />
               </>
             )}
             

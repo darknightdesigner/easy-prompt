@@ -8,7 +8,9 @@
 import React, { useEffect, useRef } from "react"
 import { Textarea } from "@/components/ui/textarea"
 import { useCreateTemplate } from "../create-template-context"
+
 import { TEMPLATE_CONFIG } from "@/lib/config/template"
+
 
 export function StepTemplate() {
   const { state, updateTemplate } = useCreateTemplate()
@@ -20,6 +22,8 @@ export function StepTemplate() {
       textareaRef.current.focus()
     }
   }, [])
+
+
 
 
 
@@ -47,6 +51,7 @@ export function StepTemplate() {
             </span>
           )}
           
+
           
           {/* Character count */}
           <span className={`text-muted-foreground text-xs ${isNearLimit ? 'text-warning' : ''}`}>
@@ -54,36 +59,6 @@ export function StepTemplate() {
           </span>
         </div>
       </div>
-
-      {/* Variables list at bottom */}
-      {state.variables.length > 0 && (
-        <div className="px-4 pb-2">
-          <div className="mb-1">
-            <span className="text-xs text-muted-foreground">
-              Variables detected:
-            </span>
-          </div>
-          <div className="flex flex-wrap gap-1">
-            {state.variables.map((variable, index) => (
-              <span
-                key={index}
-                className="inline-flex items-center px-1.5 py-0.5 rounded bg-primary/10 text-primary text-xs font-mono"
-              >
-                {`{{ ${variable} }}`}
-              </span>
-            ))}
-          </div>
-        </div>
-      )}
-      
-      {/* Syntax help when no variables detected */}
-      {state.variables.length === 0 && state.data.template.length > 10 && (
-        <div className="px-4 pb-2">
-          <div className="text-xs text-muted-foreground">
-            💡 {TEMPLATE_CONFIG.VARIABLE_SYNTAX_HELP}
-          </div>
-        </div>
-      )}
     </div>
   )
 }

@@ -37,6 +37,7 @@ const registry = {
   menu: Phosphor.ListIcon,
   pencil: Phosphor.PencilSimpleIcon,
   arrowcounterclockwise: Phosphor.ArrowCounterClockwiseIcon,
+  "x": Phosphor.XIcon,
   CaretRight: Phosphor.CaretRightIcon,
   ChatCircleText: Phosphor.ChatCircleTextIcon,
   EyeSlash: Phosphor.EyeSlashIcon,
