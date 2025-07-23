@@ -405,14 +405,13 @@ function PromptTemplate({
     setExpanded(false);
     
     // Focus and select the textarea content after animations complete
-    // Increased delay for mobile Safari compatibility with motion animations
     setTimeout(() => {
       if (variableInputRef.current) {
         variableInputRef.current.focus();
         // Select all text in the textarea
         variableInputRef.current.select();
       }
-    }, 300); // Longer delay to ensure spring animations complete
+    }, 50); // Delay to ensure animations complete
   };
 
   const generateFinalContent = React.useCallback(() => {
@@ -451,21 +450,21 @@ function PromptTemplate({
         }
       }, 50); // Increased delay to ensure animations complete
     }
-  }, [currentStep, totalSteps, expanded]);
+  }, [currentStep, totalSteps]);
   
   // Auto-resize variable input textarea when its value changes
   useEffect(() => {
     if (currentStep >= 0 && currentStep < totalSteps) {
       autoResizeTextarea(variableInputRef.current);
     }
-  }, [variableValues, currentVar, currentStep, expanded]);
+  }, [variableValues, currentVar, currentStep]);
   
   // Auto-resize preview textarea when content changes
   useEffect(() => {
     if (currentStep === totalSteps) {
       autoResizeTextarea(previewTextareaRef.current);
     }
-  }, [generateFinalContent, currentStep, expanded]);
+  }, [generateFinalContent, currentStep]);
 
 
   const handleChange = (newValue: string) => {
