@@ -7,15 +7,23 @@ export default async function PublicProfilePage({ params }: { params: Promise<{ 
   const { username } = await params;
 
   const supabase = await supabaseServer();
+  
+  // Get current session to check if user is viewing their own profile
+  const { data: { session } } = await supabase.auth.getSession();
+  
+  // Get the profile data
   const { data: profile } = await supabase
     .from("profiles")
-    .select("display_name, username, bio, avatar_url")
+    .select("id, display_name, username, bio, avatar_url")
     .eq("username", username)
     .single();
 
   if (!profile) {
     redirect("/404");
   }
+
+  // Check if this is the current user's own profile
+  const isOwnProfile = session?.user?.id === profile.id;
 
   return (
     <PageContainer
@@ -34,6 +42,7 @@ export default async function PublicProfilePage({ params }: { params: Promise<{ 
           username={profile.username}
           bio={profile.bio}
           avatarUrl={profile.avatar_url}
+          isOwnProfile={isOwnProfile}
         />
       </section>
     </PageContainer>

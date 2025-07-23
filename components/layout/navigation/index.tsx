@@ -6,6 +6,7 @@ import React, { useRef } from "react";
 import { usePathname, useRouter } from "next/navigation";
 import Link from "next/link";
 
+import { useCurrentUsername } from "@/lib/hooks/use-current-username";
 import { cn } from "@/lib/utils";
 
 import {
@@ -78,7 +79,7 @@ const Navbar2 = ({
     { title: "Search", url: "/search", icon: <Icon name="search" className="size-4.5" /> },
     { title: "Create", url: "#", icon: <Icon name="PlusSquare" className="size-4.5" /> },
     { title: "Saved", url: "#", icon: <Icon name="bookmark" className="size-4.5" /> },
-    { title: "Profile", url: "/me", icon: <Icon name="profile" className="size-4.5" />, mobileOnly: true },
+    { title: "Profile", url: "#", icon: <Icon name="profile" className="size-4.5" />, mobileOnly: true },
   ],
   auth = {
     login: { title: "Login", url: "/login" },
@@ -87,9 +88,10 @@ const Navbar2 = ({
 }: Navbar2Props) => {
   const copyIconRef = useRef<CopyIconHandle>(null);
   const router = useRouter();
-  const pathname = usePathname();
   const { session } = useSessionContext();
   const supabase = useSupabaseClient();
+  const { username } = useCurrentUsername();
+  const pathname = usePathname();
   const { openDialog } = useCreateTemplate();
   const isHome = pathname === "/";
   // CSS animation class names
@@ -176,7 +178,7 @@ const Navbar2 = ({
                   {menu
                       .map((item) =>
                         item.title === "Profile"
-                          ? { ...item, url: session ? "/me" : auth.login.url }
+                          ? { ...item, url: session && username ? `/${username}` : auth.login.url }
                           : item
                       )
                       .map((item) => {
@@ -200,7 +202,10 @@ const Navbar2 = ({
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end">
                   <DropdownMenuItem asChild className="cursor-pointer">
-                    <Link href="/me" className="flex items-center gap-2">
+                    <Link href={username ? `/${username}` : "#"} className={cn(
+                      "flex items-center gap-2",
+                      !username && "opacity-50 pointer-events-none"
+                    )}>
                       <Icon name="profile" className="size-3.5 text-foreground" />
                       Profile
                     </Link>

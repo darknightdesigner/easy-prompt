@@ -106,7 +106,7 @@ export default function Home() {
             authorAvatar="https://ci3.googleusercontent.com/mail-sig/AIorK4yctzAmNSeWRCuUGwYHYlqVFpxrb40OIXsdWX-IOdVDk9b3GmtZUcGmrRLYDjMQnbTCcv9qFLpnpEEt"
             displayName="Andres Gonzalez"
             username="batman"
-            title="The personalized $100M startup idea researcher that feels like a cheat code. Paste your unique profile, skills, etc... and get 5–7 sourced, founder‑fit opportunities in minutes."
+            title="The personalized $100M startup idea researcher that feels like a cheat code."
             likesCount={25}
             commentsCount={5}
             sharesCount={4}
